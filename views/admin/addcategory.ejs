@@ -1,0 +1,94 @@
+<%-include("../partials/admin-header") %>
+
+  <!-- <div class="container-fluid  category h-100">
+    <div class="row h-100 justify-content-center align-items-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="mb-4 text-center">Add Category</h3>
+            <form action="/admin/addcategory" method="POST">
+              <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" class="form-control mt-3" id="categoryName" name="categoryName" placeholder="Enter Category Name" required>
+              </div>
+              <div class="form-group">
+                <label for="categoryDescription" class="mt-3">Category Description</label>
+                <textarea class="form-control mt-3" id="categoryDescription" name="categoryDescription" placeholder="Enter Category Description"></textarea>
+              </div>
+              <button type="submit" class="btn btn-outline-success btn-block mt-3">Add Category</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+<!-- Button trigger modal -->
+<div class="d-flex justify-content-end mt-3 add-product">
+    <button type="button" class="btn btn-info   " data-bs-toggle="modal" data-bs-target="#exampleModal">Add Category</button>
+</div>
+
+<% if (errorMessage) { %>
+  <p class="alert alert-danger">
+      <%= errorMessage %>
+  </p>
+  <% } %>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+ 
+            <form action="/admin/addcategory" method="POST">
+              <div class="form-group">
+                <label for="categoryName">Category Name</label>
+                <input type="text" class="form-control mt-3" id="categoryName" name="categoryName" placeholder="Enter Category Name" required>
+              </div>
+              <div class="form-group">
+                <label for="categoryDescription" class="mt-3">Category Description</label>
+                <textarea class="form-control mt-3" id="categoryDescription" name="categoryDescription" placeholder="Enter Category Description"></textarea>
+              </div>
+              <button type="submit" class="btn btn-outline-success btn-block mt-3">Add Category</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Display Categories in a Table -->
+<div class="container mt-4">
+    <h3>Category List</h3>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Category Name</th>
+          <th scope="col">Category Description</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% categories.forEach(category => { %>
+          <tr>
+            <td><%= category.categoryName %></td>
+            <td><%= category.categoryDescription %></td>
+            <td>
+              <!-- Add edit and delete actions as needed -->
+              <!-- <a href="/admin/categoryIsListed/<%= category._id %>" class="btn btn-outline-success btn-sm">Listed</a>  -->
+              <!-- <a href="/admin/deletecategory/<%= category._id %>" class="btn btn-danger btn-sm">Delete</a>  -->
+              <% if (category.isListed) { %>
+                <a href="/admin/categoryIsListed/<%= category._id %>" class="btn btn-outline-success btn-sm">Listed</a>
+              <% } else { %>
+                <a href="/admin/categoryIsListed/<%= category._id %>" class="btn btn-outline-danger btn-sm">Unlisted</a>
+              <% } %>
+              
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <%-include("../partials/end") %>
