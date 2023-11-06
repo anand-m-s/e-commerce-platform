@@ -1,9 +1,10 @@
 const session = require("express-session");
 const Admin = require("../model/adminModel");
+const Product = require("../model/productModel");
+const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const Category = require("../model/category");
-const Product = require("../model/productModel");
-const multerFunc = require("../helpers/multerFunc")
+const multerFunc = require("../helpers/multerFunc");
 //Admin Login
 const adminLogin = async (req, res) => {
     const { email, password} = req.body;
@@ -45,14 +46,24 @@ const admindashboard = (req, res) =>{
     }
   };
 
-const adminlogout = (req,res)=>{
-    req.session.destroy((err) => {
-      if (err) {
-          console.error(err);
-      }
-      res.redirect('/admin');
-  });
+// const adminlogout = (req,res)=>{
+//     req.session.destroy((err) => {
+//       if (err) {
+//           console.error(err);
+//       }
+//       res.redirect('/admin');
+//   });
+//   }
+
+const adminlogout = (req, res) => {
+  try {
+    req.session.adminId = null;
+    res.redirect('/admin');
+  } catch (err) {
+    console.error(err);
   }
+};
+
 
 const loadcategory = async(req,res)=>{
   if(req.session.adminId){
@@ -105,8 +116,13 @@ const isListedtoggle =async(req,res)=>{
 const loadAddProduct = async(req,res)=>{
   try {
     const categories = await Category.find({})
+    const products = await Product.find({})
     if(req.session.adminId){
-        res.render('admin/addproduct',{email:req.session.email,categories})
+        res.render('admin/addproduct',
+        {email:req.session.email,
+          categories,
+          products
+        })
     }else{
         res.redirect("/admin")
     }
@@ -124,7 +140,7 @@ const addproduct = async (req, res) => {
         return res.status(500).json({ error: 'Image upload failed' });
       }
       const { Name, Category, Brand, Description, Price } = req.body;
-      // const existingCategory = await Category.findById(Category);
+    
       // const existingCategory = await Category.findOne({ categoryName: Category });
       // if (!existingCategory) {
       //   return res.status(400).json({ error: 'Selected category does not exist.' });
@@ -143,6 +159,7 @@ const addproduct = async (req, res) => {
           path,
         },
       });
+      console.log(newProduct.ProductImage.path);
        await newProduct.save();
       res.redirect('/admin/addproduct');
     });
@@ -151,6 +168,15 @@ const addproduct = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+const usermanage = async(req,res)=>{
+  try {
+    const users = await User.find({})
+    res.render("admin/usermanagement",{users});
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports={
     adminLogin,
@@ -161,5 +187,6 @@ module.exports={
     loadcategory,
     isListedtoggle,
     loadAddProduct,
-    addproduct
+    addproduct,
+    usermanage
 }

@@ -8,6 +8,7 @@ router.get("/adminlogout",adminController.adminlogout)
 router.get("/addcategory",adminController.loadcategory)
 router.get("/categoryIsListed/:categoryId",adminController.isListedtoggle)
 router.get("/addproduct",adminController.loadAddProduct)
+router.get("/usermanagement",adminController.usermanage)
 
 
 router.post("/adminlogin",adminController.adminLogin)

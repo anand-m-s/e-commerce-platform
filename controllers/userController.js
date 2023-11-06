@@ -2,6 +2,7 @@ const session = require("express-session");
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring")
+const Product = require("../model/productModel");
 
 
     //register
@@ -56,23 +57,22 @@ const login = async (req, res) => {
     }
 }
 
-const homelogin = (req,res)=>{
+const homelogin = async(req,res)=>{
+    const products = await Product.find({})
     if(req.session.userId){
-        res.render("home",{username:req.session.username})
+        res.render("home",{username:req.session.username,products})
     }else{
         res.redirect("/login")
     }
 }
 
-const indexlogin = (req,res)=>{
+const indexlogin = async(req,res)=>{
+    const products = await Product.find({})
     if(req.session.userId){
-        res.redirect("/home")
+        res.redirect("home")
     }
-    // else if(req.session.adminId){
-    //     res.redirect("/admin/admindashboard")
-    // }
     else{
-        res.render("index", {title : "index"})
+        res.render("index", {title : "index",products})
     }
 }
 
@@ -92,14 +92,24 @@ const loginlogin = (req, res) => {
     }
 }
 // Logout controller
+// const logout = (req, res) => {
+//     req.session.destroy((err) => {
+//         if (err) {
+//             console.error(err);
+//         }
+//         res.redirect('/login');
+//     });
+// };
+
 const logout = (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error(err);
-        }
-        res.redirect('/login');
-    });
-};
+    try {
+      req.session.userId = null;
+      res.redirect('/login');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
 
 //reset password
 const forgotpassword = async(req,res)=>{

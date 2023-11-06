@@ -43,3 +43,124 @@ body {
   background-color: hsla(205, 8%, 52%, 0.374);
   display: block;
  }
+
+ .sidebar{
+  background-image: url(https://img.freepik.com/premium-photo/silver-glitter-abstract-background_136875-2199.jpg);
+ }
+ .dashboard{
+  background-image: url();
+}
+
+.add-product-head{
+  color:#fff;
+  background-color: black;
+}
+.modal-addproduct{
+  display: flex;
+  justify-content: end;
+
+}
+.modal-addproduct button{
+  margin-top: 1rem;
+  margin-right: 1.5rem;
+  color: #fff;
+  background-color: black;
+} 
+.modal-addproduct button:hover{
+  background-color: greenyellow;
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
