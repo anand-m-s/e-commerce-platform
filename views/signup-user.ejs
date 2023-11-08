@@ -1,19 +1,20 @@
 <%-include("./partials/header") %>
-  <%-include("./partials/navigation") %>
+<%-include("./partials/navigation") %>
 
-    <section class="signup__sec" id="login-section">
-      <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-lg-12 col-xl-11">
-            <div class="card text-black" style="border-radius: 25px;">
-              <div class="card-body p-md-5">
-                <div class="row justify-content-center">
-                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 ">Sign up</p>
-
-                    <form class="mx-1 mx-md-4" name="submission" id="signup-form" action="/signup" method="post"">
+<section class="signup__sec" id="login-section">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                 
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 ">Sign up</p>
+                
+                <form class="mx-1 mx-md-4" name="submission" id="signup-form" action="/signup" method="post"">
+                  
+                  <span id="passwordError" class="errorP"></span>
                     
                           <% if (errorMessage) { %>
                        <p class="alert alert-danger"><%= errorMessage %></p>
@@ -50,7 +51,6 @@
                         <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="confirmPassword">Confirm Password</label>
-                          <span id="passwordError"  style="color: red;"></span>
                           <input type="password" id="confirmPassword" class="form-control" name="confirmPassword"
                             required />
                         </div>
@@ -76,7 +76,10 @@
                     
                       <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                         <button type="submit" class="btn btn-primary btn-lg"id="submitBtn">Sign Up </button>
+                      </div>
+                      <div class="redirect-login">
 
+                        <p>If u already have an account <a style="text-decoration: none;" href="/login">login</a></p>
                       </div>
                       <div id="recaptcha-container"></div>
 
@@ -96,29 +99,30 @@
         </div>
       </div>
     </section>
-
     <section style="display: none;" id="otp-section">
       <section>
         <div class="container mt-5" style="height: 100vh">
           <div class="row " style="height: 70%;">
-            <div class="col-md-4  offset-md-2 bg-dark text-white">
+            <div class="col-md-4  offset-md-2  text-white">
               <div class="otp-text">
-    
-                <div class="logo_img mt-5">
-                  <img src="" class="mt-5 img-fluid" alt="">
+                <div class="logo mt-5">
+                  <img src="/images/11960539_10153376489078311_2095619424_o.webp" class="otp-img img-fluid" alt="">
                 </div>
               </div>
             </div>
             <div class="col-md-4 border d-flex justify-content-center align-items-center">
               <div>
                 <h6>Please enter your OTP</h6>
-                <p class="text-danger otpalert text-center"></p>
+                <p class="text-danger otpalert text-center" id="error-message"></p>
                 <form action="/signup" id="otp-form" method="post">
                   <div class="form-outline form-white mb-4 mt-5">
                     <input type="text" id="otp" class="form-control" placeholder="OTP" name="digit" />
-
-                     
                     <button class="btn btn-dark mt-5" type="submit">Verify OTP</button>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-danger otpalert text-center"></p>
+                    <p>Didn't receive the OTP? <a href="#" id="resend-otp">Resend OTP</a></p>
+                    <p id="timer-text" style="display: none;">Resend OTP in <span id="timer">120</span> seconds</p>                    
                   </div>
                 </form>
               </div>

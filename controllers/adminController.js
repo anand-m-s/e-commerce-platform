@@ -66,19 +66,18 @@ const adminlogout = (req, res) => {
 
 
 const loadcategory = async(req,res)=>{
-  if(req.session.adminId){
-    try {
+  try {
+      if(req.session.adminId){
       //fetch category data from the database
       const categories = await Category.find();
       res.render('admin/addcategory',{email:req.session.email,categories})
+    }else{
+      res.redirect("/admin")
+  }
     } catch (error) {
       console.log(error);
       res.status(500).send("Error fetching category data");
-    }
-
-  }else{
-      res.redirect("/admin")
-  }
+    } 
 }
 
 const addcategory = async(req,res)=>{
@@ -171,13 +170,153 @@ const addproduct = async (req, res) => {
 
 const usermanage = async(req,res)=>{
   try {
-    const users = await User.find({})
-    res.render("admin/usermanagement",{users});
+    if(req.session.adminId){
+      
+      const users = await User.find({})
+
+      res.render("admin/usermanagement",{email:req.session.email,users});
+    }else{
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const deleteProduct = async (req,res)=>{
+  try {
+    const productId = req.query.productId;
+    console.log(productId);
+    if (!productId) {
+      // Handle the case where productId is missing in the query
+      return res.status(400).json({ error: 'Product ID is missing in the query parameters' });
+    }
+    await Product.findByIdAndRemove(productId);
+    res.redirect("/admin/addproduct")
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const editProduct = async(req,res)=>{
+  try {
+    const productId = req.params.productId;
+    console.log(productId);
+    if(!productId){
+      return res.status(400).json({error: "Product ID is missing in the query parameteres"});
+    }
+    const products = await Product.findById(productId);
+    const categories = await Category.find({})
+    if(req.session.adminId){
+
+      res.render("admin/edit-product",{products,categories,email:req.session.email})   
+    }else{
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+
+const useraction =async (req,res)=>{
+  const userID = req.query.id;
+  const action = req.query.action;
+  try {
+      const user = await User.findById(userID);
+      if(!user){
+          return res.status(400).send("user not found");
+      }
+      if (action === "block") {
+        user.Isblocked = true;
+      } else if (action === "unblock") {
+        user.Isblocked = false;
+      }      
+        await user.save()
+        res.redirect("/admin/usermanagement")
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+}
+
+const updateProduct = async(req,res)=>{
+  try {
+    multerFunc.Multer.single('ProductImage')(req, res, async (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Image upload failed' });
+      }
+    const productId =req.query.id;
+    const product = await Product.findById(productId);
+
+    if(!product){
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    const { Name, Category, Brand, Description, Price } = req.body;
+    product.Name = Name;
+    product.Category = Category;
+    product.Brand = Brand;
+    product.Description = Description;
+    product.Price = Price;
+       // Check if a new product image was uploaded
+       if (req.file) {
+        const { filename, path } = req.file;
+        product.ProductImage.filename = filename;
+        product.ProductImage.path = path;
+      }
+      // Save the updated product
+      await product.save();
+      // Redirect to a page or route after the update (e.g., the product details page)
+      res.redirect(`/admin/addproduct`);
+     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+    
+  }
+}
+
+const loadEditCategory = async(req,res)=>{
+  try {
+    if(req.session.adminId){
+      categoryID =req.query.id
+      const category = await Category.findById(categoryID)
+      res.render("admin/editcategory",{email:req.session.email,category})
+    }else[
+      res.redirect("/admin")
+    ]
+    
   } catch (error) {
     console.log(error);
   }
 }
+// Update a category
+const updatecategory = async (req, res) => {
+  
+  try {
+    const categoryID = req.query.id
+    const category = await Category.findById(categoryID);
+    
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+    
+    const {  categoryName, categoryDescription, isListed } = req.body;
+    // Update the category fields
+    category.categoryName = categoryName;
+    category.categoryDescription = categoryDescription;
+    category.isListed = isListed === 'on'; // Check the checkbox value
 
+    await category.save();
+
+    res.redirect("/admin/addcategory"); // Redirect to a category list page or another suitable location
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+};
 module.exports={
     adminLogin,
     adminLog,
@@ -188,5 +327,11 @@ module.exports={
     isListedtoggle,
     loadAddProduct,
     addproduct,
-    usermanage
+    usermanage,
+    deleteProduct,
+    editProduct, 
+    useraction,
+    updateProduct,
+    loadEditCategory,
+    updatecategory
 }

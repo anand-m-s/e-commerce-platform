@@ -6,6 +6,7 @@
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
+                <th scope="col">Mobile</th>
                 <th scope="col">Status</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -15,6 +16,7 @@
                 <tr>
                     <td><%= user.username %></td>
                     <td><%= user.email %></td>
+                    <td><%= user.phone %></td>
                     <td>
                         <% if (user.Isblocked) { %>
                             <span class="badge bg-danger">Blocked</span>
@@ -23,12 +25,12 @@
                         <% } %>
                     </td>
                     <td>
-                        <a href="/admin/edituser/<%= user._id %>" class="btn btn-primary btn-sm">Edit</a>
                         <% if (user.Isblocked) { %>
-                            <a href="/admin/unblockuser/<%= user._id %>" class="btn btn-success btn-sm">Unblock</a>
-                        <% } else { %>
-                            <a href="/admin/blockuser/<%= user._id %>" class="btn btn-danger btn-sm">Block</a>
-                        <% } %>
+                            <a href="/admin/useractions?id=<%= user._id %>&action=unblock" class="btn btn-success btn-sm">Unblock</a>
+                          <% } else { %>
+                            <a href="/admin/useractions?id=<%= user._id %>&action=block" class="btn btn-danger btn-sm">Block</a>
+                          <% } %>
+                       
                     </td>
                 </tr>
             <% }); %>

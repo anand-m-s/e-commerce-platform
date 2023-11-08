@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-analytics.js";
+// import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-analytics.js";
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 // import { showAlert, hideAlert } from './javascript';
 
@@ -14,7 +14,7 @@ const firebaseConfig = {
 };
 let userData;
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
 const auth = getAuth();
 const loginform = document.querySelector('#signup-form')
 const loginsection = document.querySelector('#login-section')
@@ -22,8 +22,31 @@ const otpsection = document.querySelector('#otp-section')
 const otpform = document.querySelector('#otp-form')
 const errorP = document.querySelector('#passwordError')
 const otpalert = document.querySelector('.otpalert')
+const resendOTPButton = document.getElementById('resend-otp');
 const currentURL = window.location.href;
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
+let timerSeconds = 120; // Change this to the desired timer duration
+let timerInterval;
+
+// Function to start the timer
+function startTimer() {
+  timerSeconds = 120; // Reset the timer duration
+  document.getElementById('resend-otp').style.display = 'none';
+  document.getElementById('timer-text').style.display = 'block';
+  const timerElement = document.getElementById('timer');
+
+  timerInterval = setInterval(function () {
+    timerElement.textContent = timerSeconds;
+    timerSeconds--;
+
+    if (timerSeconds < 0) {
+      clearInterval(timerInterval);
+      document.getElementById('timer-text').style.display = 'none';
+      document.getElementById('resend-otp').style.display = 'block';
+    }
+  }, 1000);
+}
 
 if (currentURL.includes('/signup')) {
   window.recaptchaVerifier = new RecaptchaVerifier(auth, 'submitBtn', {
@@ -32,117 +55,93 @@ if (currentURL.includes('/signup')) {
       // reCAPTCHA solved, allow signInWithPhoneNumber.
     }
   });
-
   loginform.addEventListener('submit', async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     userData = {
       Username: loginform.username.value,
       Password: loginform.password.value,
       Confirmpassword: loginform.confirmPassword.value,
-      Mobilenumber: loginform.phone.value,
+      phone: loginform.phone.value,
       Email: loginform.email.value,
-      // referencedBy:loginform.referenceId.value
-    }
-
+    };
+  
     // VALIDATION
-    if (userData.Username === '' || userData.Password === '' || userData.Confirmpassword === '' || userData.Mobilenumber === '' || userData.Email === '') {
-      errorP.innerHTML = "Please fill all fields"
+    if (userData.Username === '' || userData.Password === '' || userData.Confirmpassword === '' || userData.phone === '' || userData.Email === '') {
+      errorP.innerHTML = "Please fill all fields";
+    } else if (userData.Password.length < 8) {
+      errorP.innerHTML = "Enter a strong password";
+    } else if (userData.Password !== userData.Confirmpassword) {
+      errorP.innerHTML = "Password doesn't match.";
+    } else if (userData.phone.length !== 10) {
+      errorP.innerHTML = "Please check the entered number";
+    } else if (emailRegex.test(userData.Email) === false) {
+      errorP.innerHTML = "Please check your entered email";
     } else {
-      if (userData.Password !== userData.Confirmpassword) {
-        errorP.innerHTML = "Password doesn't match."
-        // setTimeout(() => {
-        //   window.location.reload()
-        // }, 1000)
-      } else if (userData.Mobilenumber.length !== 10) {
-        errorP.innerHTML = "Please check entered number"
-      } else if (emailRegex.test(userData.Email) === false) {
-        errorP.innerHTML = "Please check your entered email"
-      } else {
-        const mobilenumber = '+91' + loginform.phone.value
-        const appVerifier = window.recaptchaVerifier;
-        await fetch('/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userData }),
-        }).then((response) => {
-          if (response.status === 400) {
-            window.location.href = '/login'
-            alert('Please login, Already signedIn')
-          } else if (response.status === 200) {
-            signInWithPhoneNumber(auth, mobilenumber, appVerifier)
-              .then((confirmationResult) => {
-                // SMS sent. Prompt user to type the code from the message, then sign the
-                // user in with confirmationResult.confirm(code).
-                window.confirmationResult = confirmationResult;
-                loginsection.style.display = 'none';
-                otpsection.style.display = 'block';
-                // ...
-              }).catch((error) => {
-                // Error; SMS not sent
-
-                errorP.innerHTML = "Sorry, Can't send otp. Please check your mobile number"
-                setTimeout(() => {
-                  window.location.reload()
-                }, 1000)
-              });
-          }
-        })
-      }
-    }
-  })
-
-
-  otpform.addEventListener('submit', (e) => {
-    e.preventDefault()
-    // Example for debugging 'otpinput'
-    const otpInput = document.querySelector('#otp');
-    console.log(otpInput); // Check if 'otp-input' element is correctly selected
-    console.log(otpInput.value); // Check the 'value' property
-
-    let otp_number = otpform.otp.value
-    confirmationResult.confirm(otp_number).then(async (result) => {
-      console.log(result)
-      const user = result;
-
-      userData.phone = result.user.phoneNumber;
-      console.log(userData);
-      fetch("/signup", {
-        method: 'post',
+      const mobilenumber = '+91' + loginform.phone.value;
+      const appVerifier = window.recaptchaVerifier;
+  
+      // Use a single fetch request to send user data and request OTP
+      await fetch('/signup', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ userData }),
-
-      }).then(res=>{
-        window.location.href = "\login";
+      })
+      .then((response) => {
+        if (response.status === 400) {
+          window.location.href = '/login';
+          alert('Please login, Already signedIn');
+        } else if (response.status === 200) {
+          signInWithPhoneNumber(auth, mobilenumber, appVerifier)
+            .then((confirmationResult) => {
+              // SMS sent. Prompt user to type the code from the message, then sign the
+              // user in with confirmationResult.confirm(code).
+              window.confirmationResult = confirmationResult;
+              loginsection.style.display = 'none';
+              otpsection.style.display = 'block';
+              startTimer();
+            })
+            .catch((error) => {
+              // Error; SMS not sent
+              errorP.innerHTML = "Sorry, Can't send OTP. Please check your mobile number";
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            });
+        }
+      });
+      resendOTPButton.addEventListener('click', async () => {
+        clearInterval(timerInterval)
+        signInWithPhoneNumber(auth, mobilenumber, appVerifier)
+            .then((confirmationResult) => {
+              // SMS sent. Prompt user to type the code from the message, then sign the
+              // user in with confirmationResult.confirm(code).
+              window.confirmationResult = confirmationResult;
+              startTimer();
+            })
+        
       });
 
-
     }
-      //   await fetch('/createsession', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({ userData }),
-      //   }).then(() => {
-      //     otpform.otp.value = '';
-      //     window.location.href = '/';
-      //   }).catch((err) => {
-      //     console.log(err)
-      //   })
-      // }).catch((error) => {
-      //   // User couldn't sign in (bad verification code?)
-      //   // ...
-      //   loginsection.style.display = 'none';
-      //   otpsection.style.display = 'block';
-      //   otpalert.innerHTML = "otp didn't match"
-      // }
-    );
-  })
+  });
+  otpform.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const otpInput = document.querySelector('#otp');
+    let otp_number = otpform.otp.value;
+    confirmationResult.confirm(otp_number).then(async (result) => {
+      userData.phone = result.user.phoneNumber;
+      console.log(userData);
+      window.location.href = '/login';
+      // Now, instead of sending data again, you can add the logic to handle OTP verification.
+    }).catch((error) => {
+      // OTP confirmation failed, display an error message
+      const errorMessageElement = document.getElementById('error-message');
+      errorMessageElement.textContent = 'Incorrect OTP. Please try again.';
+    });
+  });
 }
+
 else {
   const mobileLoginSection = document.getElementById('mobile-login-section')
   const mobileLoginForm = document.querySelector('#mobile-login-form')
@@ -191,8 +190,6 @@ else {
             });
         }
       })
-
-
   })
   otpLoginForm.addEventListener('submit', (e) => {
     e.preventDefault()

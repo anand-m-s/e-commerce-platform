@@ -7,35 +7,31 @@ const Product = require("../model/productModel");
 
     //register
     const register = async (req, res) => {
-        console.log(req.body);
-        const { Username, Email, Password, phone } = req.body.userData;
-        const existingUser = await User.findOne({ $or: [{ email : Email }, {username: Username }] });
-        console.log(existingUser);
         try {
+            const { Username, Email, Password, phone } = req.body.userData;
+            const existingUser = await User.findOne({ $or: [{ email : Email }, {username: Username }] });
             if (existingUser) {
                 const errorMessage = "User already exists";
                 res.redirect(`/signup?error=${encodeURIComponent(errorMessage)}`);
             } else {
-
                 // Hash the password
-                console.log(Password);
                 const hashedPassword = await bcrypt.hash(Password, 10);
                 const newUser = new User({ username : Username, email:  Email, password: hashedPassword, phone })
                 const userresult = await newUser.save();
                 console.log(userresult);
-
                 res.redirect("/login");
             }
         }
         catch (err) {
+            
             console.log(err);
             res.redirect("/signup")
         }
     }
 // Login
 const login = async (req, res) => {
-    const { email, password } = req.body;
     try {
+        const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (user) {
             const passwordMatch = await bcrypt.compare(password, user.password);
@@ -83,6 +79,7 @@ const signuplogin = (req,res)=>{
         res.render("signup-user", {title :"signup"})
     }
 }
+
 
 const loginlogin = (req, res) => {
     if (req.session.userId) {
