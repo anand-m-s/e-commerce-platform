@@ -16,56 +16,56 @@
         <div class="modal-body">
             <form action="/admin/addproduct" method="POST" enctype="multipart/form-data">
 
-  <div class="form-floating mb-3 text-center">
-    <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name" required>
-    <label for="productname">Product Name</label>
-    <div class="invalid-feedback">Product Name Can't Be Empty</div>
-  </div>
+                <div class="form-floating mb-3 text-center">
+                  <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name" required>
+                  <label for="productname">Product Name</label>
+                  <div class="invalid-feedback">Product Name Can't Be Empty</div>
+                </div>
 
-  <div class="form-floating mb-3 text-center">
-    <select class="form-control" id="category" name="Category" required>
-      <option value="" disabled selected> Select Category</option>
-      <% categories.forEach(category => { %>
-        <option value="<%= category._id %>"><%= category.categoryName %></option>
-      <% }); %>
-    </select>
-    <label for="category">Category</label>
-    <div class="invalid-feedback">Please select a category</div>
-  </div>
+                <div class="form-floating mb-3 text-center">
+                  <select class="form-control" id="category" name="Category" required>
+                    <option value="" disabled selected> Select Category</option>
+                    <% categories.forEach(category => { %>
+                      <option value="<%= category._id %>"><%= category.categoryName %></option>
+                    <% }); %>
+                  </select>
+                  <label for="category">Category</label>
+                  <div class="invalid-feedback">Please select a category</div>
+                </div>
 
-  <div class="form-floating mb-3 text-center">
-    <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
-    <label for="brand">Brand</label>
-    <div class="invalid-feedback">Brand Name Can't Be Empty</div>
-  </div>
+                <div class="form-floating mb-3 text-center">
+                  <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
+                  <label for="brand">Brand</label>
+                  <div class="invalid-feedback">Brand Name Can't Be Empty</div>
+                </div>
 
-  <div class="form-floating mb-3 text-center">
-    <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description" required></textarea>
-    <label for="description">Description</label>
-    <div class="invalid-feedback">Description Can't Be Empty</div>
-  </div>
+                <div class="form-floating mb-3 text-center">
+                  <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description" required></textarea>
+                  <label for="description">Description</label>
+                  <div class="invalid-feedback">Description Can't Be Empty</div>
+                </div>
 
-  <div class="form-floating mb-3 text-center">
-    <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
-    <label for="productprice">Product Price:</label>
-    <div class="invalid-feedback">Product Price Can't Be Empty</div>
-  </div>
+                <div class="form-floating mb-3 text-center">
+                  <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
+                  <label for="productprice">Product Price:</label>
+                  <div class="invalid-feedback">Product Price Can't Be Empty</div>
+                </div>
 
-  <div class="form-group text-center">
-    <p>Product Image:</p>
-    <div class="custom-file">
-      <input type="file" class="custom-file-input" id="productimage" name="ProductImage" required>
-      <label class="custom-file-label" for="productimage"></label>
-      <div class="invalid-feedback">File Format Not Supported</div>
-    </div>
-  </div>
+                <div class="form-group text-center">
+                  <p>Product Image:</p>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
+                    <label class="custom-file-label" for="productimage"></label>
+                    <div class="invalid-feedback">File Format Not Supported</div>
+                  </div>
+                </div>
 
-  <div class="form-group " id="product-image"></div>
+                <div class="form-group " id="product-image"></div>
 
-  <div class="text-center">
-    <button class="btn btn-success btn-block mt-3" type="submit">Add Product</button>
-  </div>
-</form>
+                <div class="text-center">
+                  <button class="btn btn-success btn-block mt-3" type="submit">Add Product</button>
+                </div>
+              </form>
 
         </div>
       
@@ -92,10 +92,18 @@
           <tr>
               <td><%= product.Name %></td>
               <td><%= product.Brand %></td>
-              <td>$<%= product.Price %></td>
+              <td>₹<%= product.Price %></td>
               <td>
-                  <img style="width: 50px;"  src="/images/uploads/<%= product.ProductImage.filename %>" class="product-image" alt="<%= product.Name %>" />
+                <div class="product-images">
+                  <% if (product.ProductImage && product.ProductImage.length > 0) { %>
+                    <img style="width: 50px;" src="/images/uploads/<%= product.ProductImage[0].filename %>" class="product-image" alt="<%= product.Name %>" />
+                
+                  <% } else { %>
+                    <p>No images available for this product</p>
+                  <% } %>
+                </div>
               </td>
+              
             <td>
               <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary btn-sm">Edit</a>
               <a href="/admin/deleteproduct?productId=<%= product._id %>" class="btn btn-danger btn-sm">Delete</a>
@@ -108,7 +116,7 @@
 
 
 
-<script>
+<!-- <script>
   const productPriceInput = document.getElementById('productprice');
   const submitButton = document.querySelector('.btn-success');
 productPriceInput.addEventListener('input', (event) => {
@@ -131,7 +139,47 @@ productPriceInput.addEventListener('input', (event) => {
     submitButton.disabled = false;
   }
 });
-</script>
+</script> -->
+<script>
+  const productPriceInput = document.getElementById('productprice');
+const productImageInput = document.getElementById('productimage');
+const submitButton = document.querySelector('.btn-success');
 
+productPriceInput.addEventListener('input', (event) => {
+  const productPrice = parseFloat(event.target.value);
+
+  if (productPrice < 0) {
+    productPriceInput.classList.add('is-invalid');
+    productPriceInput.nextElementSibling.textContent = 'Product price cannot be negative';
+  } else {
+    productPriceInput.classList.remove('is-invalid');
+    productPriceInput.nextElementSibling.textContent = '';
+  }
+
+  if (productPrice < 0) {
+    submitButton.disabled = true;
+  } else {
+    submitButton.disabled = false;
+  }
+});
+
+productImageInput.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  const allowedFormats = ['image/jpeg', 'image/png', 'image/gif',"image/webp"]; // Add more formats if needed
+
+  if (file) {
+    if (!allowedFormats.includes(file.type)) {
+      productImageInput.classList.add('is-invalid');
+      productImageInput.nextElementSibling.textContent = 'File format not supported';
+      submitButton.disabled = true;
+    } else {
+      productImageInput.classList.remove('is-invalid');
+      productImageInput.nextElementSibling.textContent = '';
+      submitButton.disabled = false;
+    }
+  }
+});
+
+</script>
 
   <%-include("../partials/end") %>

@@ -19,10 +19,12 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   Price: Number,
-  ProductImage: {
-    filename: String, 
-    path: String,     
-  },
+  ProductImage:[
+    {
+      filename: String,
+      path: String,
+    },
+  ],
   Isdeleted: {
     type: Boolean,
     default: false,

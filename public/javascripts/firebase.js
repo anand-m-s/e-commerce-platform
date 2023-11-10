@@ -3,14 +3,23 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.1/firebas
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js";
 // import { showAlert, hideAlert } from './javascript';
 
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDHL5ZqPrD0QFOd6dvlDP0W5ZD1eegmZrs",
+//   authDomain: "cartblizz-7db91.firebaseapp.com",
+//   projectId: "cartblizz-7db91",
+//   storageBucket: "cartblizz-7db91.appspot.com",
+//   messagingSenderId: "1005464021454",
+//   appId: "1:1005464021454:web:9d16aee50ef5a9a37ce39f",
+//   measurementId: "G-RC3JKG85T5"
+// };
 const firebaseConfig = {
-  apiKey: "AIzaSyDHL5ZqPrD0QFOd6dvlDP0W5ZD1eegmZrs",
-  authDomain: "cartblizz-7db91.firebaseapp.com",
-  projectId: "cartblizz-7db91",
-  storageBucket: "cartblizz-7db91.appspot.com",
-  messagingSenderId: "1005464021454",
-  appId: "1:1005464021454:web:9d16aee50ef5a9a37ce39f",
-  measurementId: "G-RC3JKG85T5"
+  apiKey: "AIzaSyAYbmkCfbyyY7hWKKsbTxWTZqH8EwEAWTs",
+  authDomain: "e-commerce-ff372.firebaseapp.com",
+  projectId: "e-commerce-ff372",
+  storageBucket: "e-commerce-ff372.appspot.com",
+  messagingSenderId: "201968717019",
+  appId: "1:201968717019:web:e20ca9a3700ec9261d90fe",
+  measurementId: "G-4C36EDFLE4"
 };
 let userData;
 const app = initializeApp(firebaseConfig);
@@ -76,6 +85,8 @@ if (currentURL.includes('/signup')) {
       errorP.innerHTML = "Please check the entered number";
     } else if (emailRegex.test(userData.Email) === false) {
       errorP.innerHTML = "Please check your entered email";
+    }else if (!isNaN(userData.Username) || userData.Username.trim() === '') {
+      errorP.innerHTML = "Username must be a string";
     } else {
       const mobilenumber = '+91' + loginform.phone.value;
       const appVerifier = window.recaptchaVerifier;
@@ -125,22 +136,61 @@ if (currentURL.includes('/signup')) {
 
     }
   });
-  otpform.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const otpInput = document.querySelector('#otp');
-    let otp_number = otpform.otp.value;
-    confirmationResult.confirm(otp_number).then(async (result) => {
+//   otpform.addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     const otpInput = document.querySelector('#otp');
+//     let otp_number = otpform.otp.value;
+//     confirmationResult.confirm(otp_number).then(async (result) => {
+//       userData.phone = result.user.phoneNumber;
+//       console.log(userData);
+//       window.location.href = '/login';
+//       // Now, instead of sending data again, you can add the logic to handle OTP verification.
+//     }).catch((error) => {
+//       // OTP confirmation failed, display an error message
+//       const errorMessageElement = document.getElementById('error-message');
+//       errorMessageElement.textContent = 'Incorrect OTP. Please try again.';
+//     });
+//   });
+// }
+otpform.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const otpInput = document.querySelector('#otp');
+  const otp_number = otpform.otp.value;
+    // Assuming confirmationResult is available globally
+    const result = await confirmationResult.confirm(otp_number).then(async (result)=>{
+
       userData.phone = result.user.phoneNumber;
-      console.log(userData);
-      window.location.href = '/login';
-      // Now, instead of sending data again, you can add the logic to handle OTP verification.
+      console.log(userData.phone);
+     
+      // Now, instead of sending data again, you can add the logic to handle OTP verification on the server
+      const response = await fetch('/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({Phone:userData.phone})
+      });
+  
+      if (response.status === 200) {
+        
+        // OTP verification successful, update your client-side logic as needed
+        userData.Isverified = true; // Assuming you have this property in your userData object
+        window.location.href = '/login';
+      } else {
+        // OTP verification failed, display an error message
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.textContent = 'Incorrect OTP. Please try again.';
+      
+    } 
     }).catch((error) => {
-      // OTP confirmation failed, display an error message
-      const errorMessageElement = document.getElementById('error-message');
-      errorMessageElement.textContent = 'Incorrect OTP. Please try again.';
-    });
-  });
+            // OTP confirmation failed, display an error message
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.textContent = 'Incorrect OTP. Please try again.';
+          });
+
+})
 }
+
 
 else {
   const mobileLoginSection = document.getElementById('mobile-login-section')

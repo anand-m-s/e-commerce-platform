@@ -3,12 +3,13 @@
 <div class="d-flex justify-content-end mt-3 add-product">
     <button type="button" class="btn btn-outline-secondary   " data-bs-toggle="modal" data-bs-target="#exampleModal">Add Category</button>
 </div>
-
-<% if (errorMessage) { %>
-  <p class="alert alert-danger">
-      <%= errorMessage %>
-  </p>
-  <% } %>
+<div class="categoryerr">
+  <% if (errorMessage) { %>
+    <p class="alert alert-danger">
+        <%= errorMessage %>
+    </p>
+    <% } %>
+</div>
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">

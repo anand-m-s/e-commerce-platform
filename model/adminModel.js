@@ -22,6 +22,4 @@ adminSchema.methods.authenticate = function (password) {
 const Admin = mongoose.model('Admin', adminSchema);
 
 
-
-
 module.exports = Admin
