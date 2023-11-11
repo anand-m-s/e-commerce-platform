@@ -4,9 +4,8 @@ const userController = require("../controllers/userController")
 const setErrorMessage = require('../middleware/errormsg');
 
 router.use(setErrorMessage);
-
 router.get('/',userController.indexlogin);
-router.get("/login",userController.loginlogin);
+router.get("/login",userController.userLogin);
 router.get('/home',userController.homelogin);
 router.get('/signup',userController.signuplogin);
 router.get("/logout",userController.logout);
@@ -23,6 +22,5 @@ router.get("/products",userController.displayProduct)
 router.post("/login",userController.login);
 router.post("/signup",userController.register);
 router.post("/forgotpassword",userController.forgotpassword)
-router.post('/verify-otp',userController.verifyOtp);
 
 module.exports = router;

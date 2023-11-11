@@ -9,17 +9,19 @@ const Product = require("../model/productModel");
 const register = async (req, res) => {
     try {
         const { Username, Email, Password, phone } = req.body.userData;
-        const existingUser = await User.findOne({ $or: [{ email: Email }, { username: Username }] });
+        const existingUser = await User.findOne({ $or: [{ email: Email }, { username: Username },{phone:phone}] });
         if (existingUser) {
-            const errorMessage = "User already exists";
-            res.redirect(`/signup?error=${encodeURIComponent(errorMessage)}`);
+            // Sending a 409 Conflict status code for user conflict
+            return res.status(409).send("User already exists"); 
+            // res.redirect(`/signup?error=${encodeURIComponent(errorMessage)}`);
+            
         } else {
             // Hash the password
             const hashedPassword = await bcrypt.hash(Password, 10);
             const newUser = new User({ username: Username, email: Email, password: hashedPassword, phone })
             const userresult = await newUser.save();
-            // console.log(userresult);
-            // res.redirect("/login");
+            console.log(userresult);
+            res.redirect("/login");
         }
     }
     catch (err) {
@@ -28,21 +30,6 @@ const register = async (req, res) => {
     }
 }
 
-//verify otp
-const verifyOtp =async (req, res) => {
-    try {
-      const { phone } = req.body.Phone;
-      const phoneNumber = req.body.Phone;
-    await User.findOneAndUpdate(
-        { phone: phoneNumber.slice(-10) }, // Use slice to get the last 10 digits
-        { $set: { Isverified: true } }
-        );
-        res.status(200).send({ message: 'OTP verification successful' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ error: 'Internal server error' });
-    }
-}
 // Login
 const login = async (req, res) => {
     try {
@@ -51,14 +38,15 @@ const login = async (req, res) => {
         if (user) {
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (passwordMatch) {
-                if(user.Isverified && user.Isblocked!==true){
+                if(user.Isblocked!==true){
                     req.session.userId = user._id;
                     req.session.username = user.username;
                     res.redirect("/home");
                 }else{
                     if (user.Isverified!==true){
-                        const errorMessage = "User not verified";
-                        res.render("login-user", { title: "Login", errorMessage });
+                        const errorMessage = "User not verified with otp please signup again!";
+                        // res.render("login-user", { title: "Login", errorMessage });
+                        res.render("signup-user",{errorMessage});
                     } else{
                         const errorMessage = "Blocked"
                         res.render("login-user",{title:"login",errorMessage}) 
@@ -84,6 +72,7 @@ const homelogin = async (req, res) => {
         if (req.session.userId) {
             const user = await User.findById(req.session.userId);
             if(user && user.Isblocked){
+                req.session.userId=null;
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
                 res.render("home", { username: req.session.username, products })
@@ -112,7 +101,6 @@ const indexlogin = async (req, res) => {
 
 const signuplogin = (req, res) => {
     try {
-        
         if (req.session.userId) {
             res.redirect("/home")
         } else {
@@ -124,7 +112,7 @@ const signuplogin = (req, res) => {
 }
 
 
-const loginlogin = (req, res) => {
+const userLogin = (req, res) => {
     try {
         
         if (req.session.userId) {
@@ -161,20 +149,23 @@ const forgotpassword = async (req, res) => {
         console.log(error);
     }
 }
-
-
-//display each product product detail page
-const displayProduct = async (req, res) => {
-    try {
-        const productId = req.query.productId;
-        console.log(productId);
-        if(!productId){
-            return res.status(400).json({error: "Product ID is missing in the query parameteres"});
+const displayProduct = async(req,res)=>{
+    try {   
+        const user = await User.findById(req.session.userId);
+        if(user && user.Isblocked){
+            const errorMessage = "Your account is blocked";
+            req.session.userId =null;
+            res.render("login-user",{title:"login",errorMessage});
         }
+        const productId = req.query.productId;
         const products = await Product.findById(productId);
-        res.render("productdetails",{products,username: req.session.username});
+        if(!products){
+            res.status(404).json({ error: "Product not found" });
+        }
+        res.render("productdetails",{products,username:req.session.username});
     } catch (error) {
-
+        console.log(error);
+        res.status(500).send("An error occurred");
     }
 }
 
@@ -185,11 +176,8 @@ module.exports = {
     homelogin,
     indexlogin,
     signuplogin,
-    loginlogin,
+    userLogin,
     logout,
     forgotpassword,
     displayProduct,
-    verifyOtp
-    
-
 }

@@ -9,10 +9,6 @@ const userSchema = new mongoose.Schema({
     },
     password: String,
     phone: String,
-    Isverified: {
-        type: Boolean,
-        default: false
-    },
     Isblocked: {
         type: Boolean,
         default: false

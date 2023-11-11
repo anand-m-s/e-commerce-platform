@@ -14,7 +14,7 @@
                 
                 <form class="mx-1 mx-md-4" name="submission" id="signup-form" action="/signup" method="post"">
                   
-                  <span id="passwordError" class="errorP"></span>
+                      <span  class="errorP"></span>
                     
                           <% if (errorMessage) { %>
                        <p class="alert alert-danger"><%= errorMessage %></p>
@@ -27,6 +27,7 @@
                         <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="userName">Your Name</label>
+                          <span class="nameerr inperr" ><p></p></span>
                           <input type="text" id="userName" class="form-control" name="username" required />
                         </div>
                       </div>
@@ -35,6 +36,7 @@
                         <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="email">Your Email</label>
+                          <span class="emailerr inperr" ><p></p></span>
                           <input type="email" id="email" class="form-control" name="email" required />
                         </div>
                       </div>
@@ -43,6 +45,7 @@
                         <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="password">Password</label>
+                          <span class="passworderr inperr"><p></p></span>
                           <input type="password" id="password" class="form-control" name="password" required />
                         </div>
                       </div>
@@ -51,6 +54,7 @@
                         <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="confirmPassword">Confirm Password</label>
+                          <span class="passworderror inperr" ><p></p></span>
                           <input type="password" id="confirmPassword" class="form-control" name="confirmPassword"
                             required />
                         </div>
@@ -60,6 +64,7 @@
                         <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="phone">Phone</label>
+                          <span class="phoneerr inperr" ><p></p></span>
                           <input type="number" id="phone" class="form-control" name="phone" required />
                           
                         </div>
@@ -114,9 +119,11 @@
                   <div class="text-center">
                     <p class="text-danger otpalert text-center"></p>
                     <p>Didn't receive the OTP? <a href="#" id="resend-otp">Resend OTP</a></p>
-                    <p id="timer-text" style="display: none;">Resend OTP in <span id="timer">120</span> seconds</p>                    
+                    <p id="timer-text" style="display: none;">Resend OTP in <span id="timer">60</span> seconds</p>                    
                   </div>
                 </form>
+                
+                <span class="otperrpop"></span>
               </div>
             </div>
           </div>

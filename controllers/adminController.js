@@ -56,14 +56,7 @@ const admindashboard = (req, res) =>{
   }  
   };
 
-// const adminlogout = (req,res)=>{
-//     req.session.destroy((err) => {
-//       if (err) {
-//           console.error(err);
-//       }
-//       res.redirect('/admin');
-//   });
-//   }
+
 
 const adminlogout = (req, res) => {
   try {
