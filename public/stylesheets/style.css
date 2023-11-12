@@ -14,7 +14,7 @@ body {
     /* border-right: 0.3px solid rgb(239, 232, 232); */
     background-color: rgba(154, 149, 149, 0.1);
     backdrop-filter: blur(40px);
-    padding: 1.8rem; 
+    padding: 1.5rem; 
     position: sticky;
     top: 0;
     z-index: 1; 
@@ -51,8 +51,9 @@ body {
 .inperr{
     color: rgb(230, 71, 71);
     background-color: whitesmoke;
-    border-radius: 1rem;
+    border-radius: .5rem;
     font-family: monospace;
+    /* margin-left: 9rem; */
 }
 /* errors */
 
@@ -68,11 +69,47 @@ body {
  .add-product{
   margin-right: 2rem;
  }
+ /* Modify the specificity to ensure the style is applied */
+
+  
+  .signupstyle{
+     background: transparent;
+     backdrop-filter: blur(20px);
+     /* border: 0; */
+     border-radius: 1rem;  
+    
+  }
+  .signupstyle:focus{
+     background: transparent;
+     backdrop-filter: blur(20px);
+     color: #fff;
+     
+  }
+  
+
+  .signuplabel{
+    color: #e7ebe3;
+    font-family: monospace;
+    
+  }
+
+  .signupcard{
+    border-radius: 25px;background: url(https://images.squarespace-cdn.com/content/v1/5ab926f8a9e0287fbf928015/1598846065932-7BP8W2QV1HPUX56HCCGP/The+Eye+-+Upscale.jpg?format=2500w);
+  
+    /* background: transparent;
+    border:none;    */
+    
+}
+
 
  .signup__sec{
-  background-color: hsla(205, 8%, 52%, 0.374);
-  display: block;
+  /* background-color: hsla(205, 8%, 52%, 0.374); */
+  /* display: block; */
+  height: 100vh;
+  
+  background: url(https://images.squarespace-cdn.com/content/v1/5ab926f8a9e0287fbf928015/1598822812606-RXRMLXPIKYEG605903U4/Psychedelic-Psilocybe-Background-Art-Sky-Mushrooms-4942519.jpg?format=2500w);
  }
+
 
  .sidebar{
   background-image: url(https://img.freepik.com/premium-photo/silver-glitter-abstract-background_136875-2199.jpg);
@@ -361,6 +398,14 @@ img{
     border-radius: 3rem;
     width:80%
 }
+
+.signloginbtn{
+    background-color: rgb(191, 226, 120);
+}
+.signloginbtn:hover{
+    background-color: rgb(177, 239, 54);
+    color: rgb(60, 157, 216);
+}
 /* admin login */
 
 /* category err */
@@ -370,6 +415,10 @@ img{
    color: #000;
 }
 /* category err */
+
+/* footer */
+
+/* footer */
 
 
 

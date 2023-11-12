@@ -268,7 +268,6 @@ const loadEditCategory = async(req,res)=>{
 }
 // Update a category
 const updatecategory = async (req, res) => {
-  
   try {
     const categoryID = req.query.id
     const category = await Category.findById(categoryID);
@@ -276,15 +275,12 @@ const updatecategory = async (req, res) => {
     if (!category) {
       return res.status(404).send("Category not found");
     }
-    
     const {  categoryName, categoryDescription, isListed } = req.body;
     // Update the category fields
     category.categoryName = categoryName;
     category.categoryDescription = categoryDescription;
     category.isListed = isListed === 'on'; // Check the checkbox value
-
     await category.save();
-
     res.redirect("/admin/addcategory"); // Redirect to a category list page or another suitable location
   } catch (error) {
     console.error(error);

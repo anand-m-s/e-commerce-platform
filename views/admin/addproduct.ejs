@@ -83,6 +83,7 @@
             <th scope="col">Product Name</th>
             <th scope="col">Brand</th>
             <th scope="col">Price</th>
+            <th scope="col">Category</th>
             <th scope="col">images</th>
           <th scope="col">Actions</th>
         </tr>
@@ -93,6 +94,7 @@
               <td><%= product.Name %></td>
               <td><%= product.Brand %></td>
               <td>₹<%= product.Price %></td>
+              <td><%= product.Category %></td>
               <td>
                 <div class="product-images">
                   <% if (product.ProductImage && product.ProductImage.length > 0) { %>

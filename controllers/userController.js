@@ -3,6 +3,8 @@ const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring")
 const Product = require("../model/productModel");
+const Category = require("../model/category");
+
 
 
 //register
@@ -43,14 +45,8 @@ const login = async (req, res) => {
                     req.session.username = user.username;
                     res.redirect("/home");
                 }else{
-                    if (user.Isverified!==true){
-                        const errorMessage = "User not verified with otp please signup again!";
-                        // res.render("login-user", { title: "Login", errorMessage });
-                        res.render("signup-user",{errorMessage});
-                    } else{
-                        const errorMessage = "Blocked"
-                        res.render("login-user",{title:"login",errorMessage}) 
-                    }
+                    const errorMessage = "Blocked"
+                    res.render("login-user",{title:"login",errorMessage})                                                           
                 }
             } else {
                 const errorMessage = "Invalid password";
@@ -68,7 +64,13 @@ const login = async (req, res) => {
 
 const homelogin = async (req, res) => {
     try {
-        const products = await Product.find({})
+        // const products = await Product.find({})
+        const filteredproducts = await Product.find({}).populate({
+            path: 'Category',
+            match: { isListed: true } // Filters the populated Category
+        });
+        // Filter out products where Category is null (not populated)
+        const products = filteredproducts.filter(product => product.Category !== null);
         if (req.session.userId) {
             const user = await User.findById(req.session.userId);
             if(user && user.Isblocked){
@@ -86,18 +88,24 @@ const homelogin = async (req, res) => {
 }
 
 const indexlogin = async (req, res) => {
-    try {
-        const products = await Product.find({})
+    try {             
         if (req.session.userId) {
             res.redirect("home")
         }
         else {
+            const filteredproducts = await Product.find({}).populate({
+                path: 'Category',
+                match: { isListed: true } // Filters the populated Category
+            });
+            // Filter out products where Category is null (not populated)
+            const products = filteredproducts.filter(product => product.Category !== null);
+        //    console.log(products);
             res.render("index", { title: "index", products })
         }
     } catch (error) {
         console.log(error);
     }
-}
+};
 
 const signuplogin = (req, res) => {
     try {
