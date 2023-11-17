@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-fixed-top" id="navbar">
   <div class="container-fluid" >
-    <a class="navbar-brand" href="/">Cartblizz</a>
+    <a class="navbar-brand nav-head1" href="/">Cartblizz</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -8,19 +8,27 @@
     <div class="collapse navbar-collapse " id="navbarSupportedContent">
       <ul class="navbar-nav  me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link  active" aria-current="page" href="/">Home</a>
+          <a class="nav-link nav-head  active" aria-current="page" href="/">Home</a>
         </li>
         <li>
-          <a class="nav-link  active" aria-current="page" href="/about">About</a>
+          <a class="nav-link nav-head  active" aria-current="page" href="/about">About</a>
         </li>
         <li>
-          <a class="nav-link  active" aria-current="page" href="/contact">Contact</a>
+          <a class="nav-link nav-head  active" aria-current="page" href="/contact">Contact</a>
         </li>
       </ul>
       <!-- <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form> -->
+     
+      <% if (typeof username !== 'undefined') { %>
+        <div >
+          <a class="cart-logo" href="/addtocart">            
+            <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart-eed150.svg" alt="Cart" class="" width="35" height="35">
+            </a>
+            </div>
+         <% }%>
       <div class="dropdown">
         <button class="btn navbtn dropdown-toggle capitalize" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
           <% if (typeof username !== 'undefined') { %>
@@ -32,13 +40,14 @@
         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
           <!-- <li><a class="dropdown-item" href="/login">Login</a></li>
           <li><a class="dropdown-item" href="/logout">Logout</a></li> -->
+          <li><a class="dropdown-item" href="#">Contact</a></li>
+          <li><a class="dropdown-item" href="#">Settings</a></li>
           <% if (typeof username !== 'undefined') { %>
+            <li><a class="dropdown-item" href="/userprofile">Profile</a></li>
             <li><a class="dropdown-item" href="/logout">Logout</a></li>
-          <% } else { %>
+            <% } else { %>
             <li><a class="dropdown-item" href="/login">Login</a></li>
           <% } %>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
-          <li><a class="dropdown-item" href="#">Contact</a></li>
           
 
         </ul>

@@ -12,13 +12,38 @@ body {
 #navbar{
     /* border-bottom: 0.3px solid rgb(239, 232, 232); */
     /* border-right: 0.3px solid rgb(239, 232, 232); */
-    background-color: rgba(154, 149, 149, 0.1);
+    /* background-color: rgba(102, 219, 219,.2); */
+    background: radial-gradient(circle at 10% 20%, rgb(220, 217, 249,) 0%, rgb(172, 224, 217) 89.8%);
+   
     backdrop-filter: blur(40px);
     padding: 1.5rem; 
     position: sticky;
     top: 0;
-    z-index: 1; 
+    z-index: 10; 
 }
+
+.nav-head{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.4rem;
+    transition: 0.3s ease-in;
+    
+}
+.nav-head:hover{
+ border-bottom: 1px solid rgb(191, 255, 94);  
+}
+/* .nav-head:hover {
+    margin-top: 0.5rem;
+    background-color: rgb(195, 255, 104);
+    height: 0.1rem;
+    transition: all 0.3s ease-in-out;
+    z-index: 0;
+  } */
+  
+.nav-head1{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.6rem;
+}
+
 .quantity-selector {
    width: 75px;
   }
@@ -75,14 +100,16 @@ body {
   .signupstyle{
      background: transparent;
      backdrop-filter: blur(20px);
-     /* border: 0; */
+  
      border-radius: 1rem;  
+     color: #fff;
     
   }
   .signupstyle:focus{
      background: transparent;
      backdrop-filter: blur(20px);
      color: #fff;
+     font-family: monospace;
      
   }
   
@@ -94,7 +121,9 @@ body {
   }
 
   .signupcard{
-    border-radius: 25px;background: url(https://images.squarespace-cdn.com/content/v1/5ab926f8a9e0287fbf928015/1598846065932-7BP8W2QV1HPUX56HCCGP/The+Eye+-+Upscale.jpg?format=2500w);
+    border-radius: 25px;
+    border:0;
+    background: linear-gradient(109.6deg, rgb(17, 151, 147) 11.2%, rgb(154, 214, 212) 55.4%, rgb(255, 233, 171) 100.2%);
   
     /* background: transparent;
     border:none;    */
@@ -107,7 +136,7 @@ body {
   /* display: block; */
   height: 100vh;
   
-  background: url(https://images.squarespace-cdn.com/content/v1/5ab926f8a9e0287fbf928015/1598822812606-RXRMLXPIKYEG605903U4/Psychedelic-Psilocybe-Background-Art-Sky-Mushrooms-4942519.jpg?format=2500w);
+  background: radial-gradient(circle at 10% 20%, rgb(43, 199, 188) 0%, rgb(219, 249, 203) 72.9%);
  }
 
 
@@ -307,12 +336,35 @@ img{
     }
 }
 
+/* home page carousel 
+.carousel_style{
+    margin-top: 1rem;
+} */
+/* home page carousel  */
+
 /* product details */
 .addtocart{
     background-color: #000;
-    color: white;
+    color:#fff;
 }
 
+.addtocart a{
+   color: #fff;
+ text-decoration: none;
+}
+.addtocart a:hover{
+   color: #000000;
+ text-decoration: none;
+}
+.addtocart:hover{
+    border: 1px solid greenyellow;
+    color: #000; 
+}
+.cart-logo{
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;  
+}
 .buynow{
     background-color: yellowgreen;
     color: #fff;
@@ -331,6 +383,47 @@ img{
     width: 10rem;
     height: 20rem;
 }
+
+/* add to cart page */
+.cart-products-card{
+    
+    background: linear-gradient(109.6deg, rgb(251, 250, 225) 11.2%, rgb(206, 240, 185) 47.5%, rgb(100, 163, 111) 100.2%);
+}
+.cart-item-display{
+ background-color: #000;
+ color: #fff;
+}
+.cart-box{
+    border: 0;
+}
+.cart-summary{
+    border: 0;
+}
+.checkoutbtn{
+    background-color: yellowgreen;
+    color: #fff;
+}
+.checkoutbtn:hover{
+    background: linear-gradient(109.6deg, rgb(251, 250, 225) 11.2%, rgb(206, 240, 185) 47.5%, rgb(100, 163, 111) 100.2%);
+    color: #000;
+}
+.cart-item-summary{
+ background-color:rgb(185, 218, 121);
+ color: #000;
+}
+.removebtn-cart{
+    display: flex;
+    justify-content: end;
+    margin-top: 4rem;
+}
+
+
+
+/* add to cart page */
+
+
+
+
 /* card alignments */
 .imgdiv{
     width:20rem ;
@@ -352,6 +445,7 @@ img{
 .card-div-product{
     width: 20rem;
     height: 25rem;
+    border-radius: 1rem;
 }
 /* card alignments */
 /* admin sidebar */
@@ -360,6 +454,17 @@ img{
     padding: 1.5rem;
 }
 /* admin sidebar */
+
+#dropdownMenuButton1{
+    background-color: yellowgreen;
+}
+
+.addcategorybtn{
+    background-color: #000;
+    color: #fff;
+}
+
+
 
 /* about page */
 
@@ -417,12 +522,64 @@ img{
 /* category err */
 
 /* footer */
-
+.footerstyle{
+    background-color: rgb(0, 0, 0);
+    padding: 1rem;  
+    position: sticky;
+    top: 100%
+}
+.footerstyle p{
+    color: #fff;
+}
+.footerstyle ul li{
+    color: #fff;
+    
+}
 /* footer */
 
 
 
+/* userprofile */
 
+.userprofile-title{
+    
+    background-image: linear-gradient(to right,#befff2,#f4c1fd,#53fff1);
+    border-radius: 1rem; 
+}
+.userprofile-card{
+    border: 2px solid rgb(164, 210, 70);
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color:#fff;
+}
+    /* display: grid;
+    grid-template-rows: 100px 100px 100px 100px 100px 100px;
+    grid-template-columns: 100px 100px 100px 100px 100px 100px; */
+
+/* .item1{
+    grid-row:1/3;
+    grid-column: 1/4;
+
+}
+.item1{
+    grid-row:1/3;
+    grid-column: 4/7;*/
+
+
+.addaddressbtn{
+    background-color: black;
+    color: #fff;
+}
+.addaddressbtn:hover{
+    background-image: linear-gradient(to right,#48f0ce,#edb4f1,#00ffea);
+    color: #fff;
+}
+.add-address-btn{
+    display: flex;
+    justify-content: end;
+    margin: .5rem;
+}
+/* userprofile */
 
 
 

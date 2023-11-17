@@ -13,7 +13,14 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    // agreedToTerms: { type: Boolean, default: false },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart',
+      },
+    address:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address', 
+    },],
 }, {
     timestamps: true, // Add createdAt and updatedAt timestamps
   });  

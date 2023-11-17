@@ -1,0 +1,254 @@
+<%-include("./partials/header") %>
+<%-include("./partials/navigation") %>
+
+
+<section class="h-100 gradient-custom">
+  <div class="container py-5">
+    <div class="row d-flex justify-content-center my-4">
+      <div class="col-md-8">
+        <div class="card mb-4 cart-box">
+          <div class="card-header  cart-item-display">
+            <h5 class="mb-0 text-center ">Cart - <%= cart.products.length %> items</h5>
+          </div>
+          <div class="card-body ">
+            <!-- Loop through each product in the cart -->
+            <% cart.products.forEach(item => { %>
+              <div id="cart-item-<%= item._id %>" class="row  cart-products-card mb-1 p-3">
+                <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                  <!-- Image -->
+                  <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                    <img src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="w-100" alt="<%= item.product.name %>" />                  
+                    <a href="#!">
+                      <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                    </a>
+                  </div>
+                  <!-- Image -->
+                </div>
+
+                <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                  <!-- Data -->
+                  <p><strong><%= item.product.Name %></strong></p>
+                  <p>Category: <%= item.product.Category.categoryName %></p>
+                  <p>Brand: <%= item.product.Brand %></p>
+                  <p>Price: <%= item.product.Price %></p>
+                  <p>Description: <%= item.product.Description %></p>
+                  <!-- Add more product details as needed -->
+                 
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                  <!-- Quantity -->
+                  <div class="d-flex mb-4">
+                    <button class="btn m-3 btn-outline-danger" style="height:2em;" onclick="updateQuantity('<%= item._id %>', -1,'<%= item.product._id %>','<%=cart._id%>'
+                    )">
+                      <p>-</p>
+                    </button>
+                  
+                    <div class="form-floating">
+                      <input
+                      id="form_<%= item._id %>"
+                        min="1"
+                        max="10"
+                        name="quantity"
+                        value="<%= item.quantity %>"
+                        type="number"
+                        class="form-control quantityInput"
+                        onchange="updateQuantity('<%=item._id %>', this.value)"
+                      />
+                      <label class="form-label" for="form1"></label>
+                    </div>
+                  
+                    <button class="btn m-3 btn-outline-success" style="height: 2em;" onclick="updateQuantity('<%= item._id %>', 1,'<%= item.product._id %>','<%=cart._id%>')">
+                      <p>+</p>
+                    </button>
+                  </div>
+                  <!-- Quantity -->
+
+                  <!-- Price -->
+                  <p class="text-start text-md-center">
+                    <strong class="price_<%= item._id %>">₹<%= item.product.Price * item.quantity %></strong>
+                  </p>
+                  
+           
+                  <div class="removebtn-cart">
+                    <a href="#">
+                      <button
+                        type="button"
+                        class="btn btn-danger btn-sm me-1 mb-2"
+                        data-mdb-toggle="tooltip"
+                        title="Remove item"
+                        data-cart-item-id="<%= cart._id %>"
+                        data-product-id="<%= item._id %>"
+                      >
+                        Remove
+                      </button>
+                    </a>
+                  </div>
+                  
+                  
+                </div>
+              </div>
+            <% }); %>
+         
+            <!-- Single item -->
+          </div>                  
+        </div>
+        <!-- Add the expected shipping delivery details here if needed -->
+
+      </div>
+      <div class="col-md-4">
+        <div class="card mb-4 cart-summary">
+          <div class="card-header py-3 cart-item-summary">
+            <h5 class="mb-0 text-center ">Summary</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <!-- Calculate total amount dynamically based on the products in the cart -->
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                PRICE DETAILS
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                <div>
+
+                    <strong>
+
+                        Price (<%= cart.products.length %> items)
+                    </strong>
+                </div>    
+                <!-- <h5 class="totalAmount">₹</h5> -->
+               <!-- Add this code to display the total amount in your addtocart.ejs template -->
+                     <!-- <span>₹<%= totalAmount %></span> -->
+                     
+              </li>
+          
+
+          
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                Shipping
+                <span></span>
+              </li>
+          
+              <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                <div>
+                  <strong>Total amount</strong>
+                </div>
+               
+                <h5 id="totalAmoutFrontend">₹<%= totalAmount %></h5>
+               
+              </li>
+            </ul>
+          
+            <button type="button" class="btn checkoutbtn btn-lg btn-block">
+              Go to checkout
+            </button>
+          </div>                    
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+
+<script>
+
+const totprice = document.querySelector("#totalAmoutFrontend")
+function updateQuantity(itemId, newQuantity, productId,cartId) {
+  const quantityInput = document.querySelector(`#form_${itemId}`);
+  const priceElement = document.querySelector(`.price_${itemId}`);
+  const currentQuantity = parseInt(quantityInput.value);
+  const updatedQuantity = currentQuantity + parseInt(newQuantity);
+  const totalAmountElement = document.querySelector('.total');
+
+  if (updatedQuantity >= 0 && updatedQuantity <= 10) {
+    // Update the quantity in the UI
+    quantityInput.value = updatedQuantity;
+
+    // Send an AJAX request to update the quantity in the database
+    fetch('/updateQuantity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ itemId, newQuantity: updatedQuantity, productId,cartId }),
+    })
+    .then(response => {
+      if (response.ok) {
+        // Handle success if needed
+        console.log('Quantity updated successfully.');
+
+        // Parse the response JSON to get the updatedCart data
+        return response.json();
+      } else {
+        // Handle error if needed
+        console.error('Failed to update quantity.');
+      }
+    })
+    .then(data => {
+  // Check if data is available and has updatedCart information
+  if (data && data.updatedCart && data.updatedPrice !== undefined) {
+    // Update the price in the UI
+    
+    priceElement.innerHTML = `₹${data.updatedPrice}`;
+   
+        // Access the populated cart data
+        const populatedCart = data.cart;
+    // Calculate the total amount based on the populated cart
+    const totalAmount = populatedCart.products.reduce(
+      (acc, item) => acc + item.product.Price * item.quantity,
+      0
+    );
+    
+    // Update the total amount in the UI
+    // totalAmountElement.textContent = `₹${totalAmount}`;
+    totprice.innerHTML = totalAmount
+  }
+}).catch(error => {
+      // Handle network error if needed
+      console.error('Network error:', error);
+    });
+  }
+}
+
+// quantity 
+//removefromcart
+  document.addEventListener('DOMContentLoaded', function () {
+    // Attach click event to the delete button
+    const deleteButtons = document.querySelectorAll('.removebtn-cart button');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        // Get the cart item ID and product ID from the data attributes
+        const cartItemId = button.dataset.cartItemId;
+        const productIdToRemove = button.dataset.productId;
+
+        // Send AJAX request to delete the item using POST
+        fetch(`/removeFromCart?itemId=${cartItemId}&productId=${productIdToRemove}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Update the UI or handle the response as needed
+          console.log(data);
+
+          console.log(data.totalAmount);
+          totprice.innerHTML = data.totalAmount
+          // Assuming each item has a unique identifier
+          const removedItemElement = document.getElementById(`cart-item-${productIdToRemove}`);
+
+          if (removedItemElement) {
+            removedItemElement.remove();
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+  });
+
+</script>
+<%-include("./partials/footer")  %> 
+<%-include("./partials/end") %>
