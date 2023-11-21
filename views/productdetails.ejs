@@ -22,10 +22,10 @@
                 
             </div>
             <div class = "product-div-right">
-                <span class = "product-name"><%=products.Name %></span>
+                <span class = "product-name"><%=products.Name %>(<%= products.Features[0].Color %>,<%= products.Features[0].Storage %>)</span>
                 <span class = "product-price">₹ <%=products.Price %></span>
                 <div class = "product-rating">
-                    <span><i class = "fas fa-star"></i></span>
+                    <span><i class="bi bi-star"></i></span>
                     <span><i class = "fas fa-star"></i></span>
                     <span><i class = "fas fa-star"></i></span>
                     <span><i class = "fas fa-star"></i></span>
@@ -33,9 +33,21 @@
                     <span>Rating</span>
                 </div>
                 <p class = "product-description"><%= products.Description %></p>
+                <div class="varient-select d-flex justify-content-around">
+
+                    <p class = " capitalize">RAM : <%= products.Features[0].Ram %></p>
+                    <p class = " capitalize">Storage : <%= products.Features[0].Storage %></p>
+                </div>
+               
+
+                    <p class = "capitalize shadow-lg p-1 text-center product-spec" >Processor : <%= products.Features[0].Processor %></p>
+                    <p class = " capitalize shadow-lg p-1 text-center product-spec">Operating system : <%= products.Features[0].Os %></p>
+                    <p class = " capitalize shadow-lg p-1 text-center product-spec">Color : <%= products.Features[0].Color %></p>
+               
                 <div class = "btn-groups">
-                    <button type = "button" class = "add-cart-btn">add to cart</button>
-                    <button type = "button" class = "buy-now-btn"></i>buy now</button>
+                    <button  type = "button" class = "add-cart-btn">add to cart</button>
+                    <button  type = "button" class = "buy-now-btn">Buy Now</button>
+                
                 </div>
             </div>
         </div>

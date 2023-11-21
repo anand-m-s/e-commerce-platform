@@ -109,10 +109,14 @@ if (errorMessages.length > 0) {
     // Displaying all error messages together
     errorP.innerHTML = "Please correct the following errors to proceed"
 } else {
-    // No errors, clear error message container
-    errorP.innerHTML = "";
-    // Continue with the rest of your code for the successful case
-    // (code related to sending the request and handling responses)
+
+    const response = await fetch('/signupVerify',{
+      method:'post',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(userData)
+    })
+    alert(response.status)
+    if(response.status===200){
       const mobilenumber = '+91' + loginform.phone.value;
       const appVerifier = window.recaptchaVerifier;
       signInWithPhoneNumber(auth, mobilenumber, appVerifier)
@@ -131,6 +135,16 @@ if (errorMessages.length > 0) {
           window.location.reload();
         }, 1000);
       });
+
+    }else if(response.status===209){
+      errorP.innerHTML = "User already exists"
+    }
+    // ---------------------------res.status(200).json({status:true})----------------------
+    // No errors, clear error message container
+    // errorP.innerHTML = "";
+    // Continue with the rest of your code for the successful case
+    // (code related to sending the request and handling responses)
+    
       resendOTPButton.addEventListener('click', async () => {
         clearInterval(timerInterval)
         signInWithPhoneNumber(auth, mobilenumber, appVerifier)

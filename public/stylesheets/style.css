@@ -74,11 +74,11 @@ body {
 }
 
 .inperr{
-    color: rgb(230, 71, 71);
-    background-color: whitesmoke;
+    color: rgb(255, 166, 134);
+    /* background-color: whitesmoke; */
     border-radius: .5rem;
     font-family: monospace;
-    /* margin-left: 9rem; */
+    margin-left: 9rem;
 }
 /* errors */
 
@@ -278,8 +278,10 @@ img{
     margin-top: 22px;
 }
 .btn-groups{
-    margin-top: 11rem;
-    margin-left: 3rem;
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     
 }
 .btn-groups button{
@@ -287,20 +289,22 @@ img{
     font-size: 16px;
     font-family: inherit;
     text-transform: uppercase;
-    padding: 15px 16px;
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
+    border: 0;
+    border-radius: .6rem;
+    padding: 10px;
 }
-.btn-groups button .fas{
+/* .btn-groups button .fas{
     margin-right: 8px;
-}
+} */
 .add-cart-btn{   
     background-color:yellowgreen;
     margin-right: .7rem;
 }
 .add-cart-btn:hover{
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(149, 202, 69);
     color: rgb(0, 0, 0)
 }
 .buy-now-btn{
@@ -308,8 +312,15 @@ img{
     
 }
 .buy-now-btn:hover{
-    background-color: #fff;
+    background-color:rgb(149, 202, 69);
     color: #000;
+}
+
+.product-spec{
+    background:transparent;
+    backdrop-filter: blur(40px);
+    color: #000;
+    border-radius: 10px;
 }
 
 @media screen and (max-width: 992px){
@@ -401,11 +412,14 @@ img{
 }
 .checkoutbtn{
     background-color: yellowgreen;
+
+}
+.checkoutbtn a{
     color: #fff;
+
 }
 .checkoutbtn:hover{
-    background: linear-gradient(109.6deg, rgb(251, 250, 225) 11.2%, rgb(206, 240, 185) 47.5%, rgb(100, 163, 111) 100.2%);
-    color: #000;
+   background-color: rgb(144, 215, 116);
 }
 .cart-item-summary{
  background-color:rgb(185, 218, 121);
@@ -513,6 +527,49 @@ img{
 }
 /* admin login */
 
+/* usermanagement */
+.usermanage-head{
+    background-color: #c3eb9a;
+    display: flex;
+    padding: .5rem;
+    justify-content: space-around;
+    align-items: center;
+    font-family: monospace;
+    margin-bottom: 1rem;
+}
+
+.usermanage-search{
+    width: 30rem;
+}
+.usermanage-search input{
+    background: transparent;
+    border: 1px solid rgb(65, 66, 63);
+    border-radius: 1rem;
+    width: 18rem;
+    height: 2.5rem;
+    text-align: center;
+    margin-top: .4rem;
+    
+}
+.usermanage-search input::placeholder{
+    text-align: center;
+}
+
+.usermanage-search button{
+    background-color: rgb(108, 212, 212);
+    border-radius: 3rem;
+    color: #fff;
+    width: 5rem;
+    height: 2.4rem;
+}
+.usermanage-search button:hover{
+    background-color: rgb(108, 212, 212);
+    backdrop-filter: blur(10px);
+    border: 2px solid greenyellow;
+    border-radius: 1rem;
+}
+/* usermanagement */
+
 /* category err */
 .categoryerr{
     display: flex;
@@ -543,36 +600,24 @@ img{
 
 .userprofile-title{
     
-    background-image: linear-gradient(to right,#befff2,#f4c1fd,#53fff1);
-    border-radius: 1rem; 
+    background: radial-gradient(circle at 10% 20%, rgb(116, 203, 199) 0%, rgb(220, 246, 200) 90%);
+
 }
 .userprofile-card{
     border: 2px solid rgb(164, 210, 70);
-    border-radius: 1rem;
+ 
     padding: 1rem;
     background-color:#fff;
 }
-    /* display: grid;
-    grid-template-rows: 100px 100px 100px 100px 100px 100px;
-    grid-template-columns: 100px 100px 100px 100px 100px 100px; */
-
-/* .item1{
-    grid-row:1/3;
-    grid-column: 1/4;
-
-}
-.item1{
-    grid-row:1/3;
-    grid-column: 4/7;*/
-
 
 .addaddressbtn{
-    background-color: black;
-    color: #fff;
+    background-color: rgb(205, 238, 144);
+    color: #000000;
 }
 .addaddressbtn:hover{
-    background-image: linear-gradient(to right,#48f0ce,#edb4f1,#00ffea);
-    color: #fff;
+   background-color: #c3eb9a;
+    color: #000;
+    border: 1px solid darkgreen;
 }
 .add-address-btn{
     display: flex;
@@ -580,6 +625,42 @@ img{
     margin: .5rem;
 }
 /* userprofile */
+
+/* checkout */
+#checkoutcard{
+
+    display: flex;
+        justify-content: space-between;
+}
+
+
+
+#paymentMethods {
+    display: flex;
+  }
+  
+  .paymentMethod {
+    margin-right: 20px;
+   
+}
+
+.paymentMethod label {
+    border: 2px solid #ccc;
+    padding: 10px;
+    display: block;
+    cursor: pointer;
+  }
+  
+  .paymentMethod input[type="radio"]:checked + label {
+    background-color: #7caf4c;
+    color: #fff;
+
+  
+  }
+  
+
+
+/* checkout */
 
 
 

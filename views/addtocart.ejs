@@ -27,11 +27,11 @@
 
                 <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
                   <!-- Data -->
-                  <p><strong><%= item.product.Name %></strong></p>
-                  <p>Category: <%= item.product.Category.categoryName %></p>
+                  <p><strong><%= item.product.Name %>(<%= item.product.Features[0].Color %>,<%= item.product.Features[0].Storage %>)</strong></p>
                   <p>Brand: <%= item.product.Brand %></p>
+                  <p>RAM: <%= item.product.Features[0].Ram %></p>
                   <p>Price: <%= item.product.Price %></p>
-                  <p>Description: <%= item.product.Description %></p>
+                  
                   <!-- Add more product details as needed -->
                  
                 </div>
@@ -117,7 +117,7 @@
                 </div>    
                 <!-- <h5 class="totalAmount">₹</h5> -->
                <!-- Add this code to display the total amount in your addtocart.ejs template -->
-                     <!-- <span>₹<%= totalAmount %></span> -->
+                     
                      
               </li>
           
@@ -139,7 +139,10 @@
             </ul>
           
             <button type="button" class="btn checkoutbtn btn-lg btn-block">
-              Go to checkout
+              <a style="text-decoration: none;" href="/checkout">
+
+                Go to checkout
+              </a>
             </button>
           </div>                    
         </div>
@@ -149,11 +152,11 @@
 </section>
 
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+
 
 <script>
 
-const totprice = document.querySelector("#totalAmoutFrontend")
+const totprice = document.querySelector("#totalAmoutFrontend");
 function updateQuantity(itemId, newQuantity, productId,cartId) {
   const quantityInput = document.querySelector(`#form_${itemId}`);
   const priceElement = document.querySelector(`.price_${itemId}`);
@@ -161,11 +164,8 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
   const updatedQuantity = currentQuantity + parseInt(newQuantity);
   const totalAmountElement = document.querySelector('.total');
 
-  if (updatedQuantity >= 0 && updatedQuantity <= 10) {
-    // Update the quantity in the UI
+  if (updatedQuantity >= 1 && updatedQuantity <= 5) {
     quantityInput.value = updatedQuantity;
-
-    // Send an AJAX request to update the quantity in the database
     fetch('/updateQuantity', {
       method: 'POST',
       headers: {
@@ -175,18 +175,13 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
     })
     .then(response => {
       if (response.ok) {
-        // Handle success if needed
-        console.log('Quantity updated successfully.');
-
-        // Parse the response JSON to get the updatedCart data
+        console.log('Quantity updated successfully.');    
         return response.json();
-      } else {
-        // Handle error if needed
+      } else {      
         console.error('Failed to update quantity.');
       }
     })
     .then(data => {
-  // Check if data is available and has updatedCart information
   if (data && data.updatedCart && data.updatedPrice !== undefined) {
     // Update the price in the UI
     
@@ -202,7 +197,7 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
     
     // Update the total amount in the UI
     // totalAmountElement.textContent = `₹${totalAmount}`;
-    totprice.innerHTML = totalAmount
+    totprice.innerHTML =`₹${totalAmount}`
   }
 }).catch(error => {
       // Handle network error if needed
@@ -211,7 +206,6 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
   }
 }
 
-// quantity 
 //removefromcart
   document.addEventListener('DOMContentLoaded', function () {
     // Attach click event to the delete button

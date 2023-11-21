@@ -10,9 +10,9 @@ router.get("/addcategory",adminController.loadcategory)
 router.get("/categoryIsListed/:categoryId",adminController.isListedtoggle)
 router.get("/addproduct",adminController.loadAddProduct)
 router.get("/usermanagement",adminController.usermanage)
+router.get("/useractions",adminController.useraction);
 router.get('/editproduct/:productId', adminController.editProduct);
 router.get("/deleteproduct",adminController.deleteProduct);
-router.get("/useractions",adminController.useraction)
 router.get('/editcategory', adminController.loadEditCategory);
 
 

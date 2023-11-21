@@ -1,6 +1,13 @@
 <%-include("../partials/admin-header") %>
 <div class="container mt-4">
-    <h3>User Management</h3>
+    <div class="usermanage-head">
+        <h3>User Management</h3>
+        <div class=" usermanage-search d-flex">
+            <input type="search"  placeholder="search" aria-label="Search" aria-describedby="search-addon" />
+            <button type="button" class="btn m-2">search</button>
+          </div>
+
+    </div>
     <table class="table table-hover">
         <thead>
             <tr>
@@ -36,7 +43,35 @@
             <% }); %>
         </tbody>
     </table>
+    <div class="pagination-container">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <% if (currentPage > 1) { %>
+              <li class="page-item">
+                <a class="page-link" href="/admin/usermanagement?page=<%= currentPage - 1 %>" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            <% } %>
+      
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="/admin/usermanagement?page=<%= i %>"><%= i %></a>
+              </li>
+            <% } %>
+      
+            <% if (currentPage < totalPages) { %>
+              <li class="page-item">
+                <a class="page-link" href="/admin/usermanagement?page=<%= currentPage + 1 %>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            <% } %>
+          </ul>
+        </nav>
+      </div>
+      
 </div>
-
+    
 <%-include("../partials/end") %>
 

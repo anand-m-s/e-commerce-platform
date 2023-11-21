@@ -7,65 +7,120 @@
 </div>
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog" >
+      <div class="modal-content" >
         <div class="modal-header" style="text-align: center; background-color: black; color: aliceblue;">
           <h1 class="modal-title fs-5 " id="exampleModalLabel">Add Product</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="/admin/addproduct" method="POST" enctype="multipart/form-data">
+          <form action="/admin/addproduct" method="POST" enctype="multipart/form-data">
 
-                <div class="form-floating mb-3 text-center">
-                  <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name" required>
-                  <label for="productname">Product Name</label>
-                  <div class="invalid-feedback">Product Name Can't Be Empty</div>
+            <div class="form-row d-flex justify-content-around">
+
+
+            <div class="form-floating mb-3 text-center col-md-5">
+              <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name" required>
+              <label for="productname">Product Name</label>
+              <div class="invalid-feedback">Product Name Can't Be Empty</div>
+            </div>
+
+            <div class="form-floating mb-3 text-center col-md-5">
+              <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
+              <label for="brand">Brand</label>
+              <div class="invalid-feedback">Brand Name Can't Be Empty</div>
+            </div>
+
+            </div>
+          
+       
+            <div class="form-row d-flex justify-content-around">
+            <div class="form-floating mb-3 text-center col-md-5">
+              <input type="text" class="form-control" id="processor" name="Processor" placeholder="Enter Processor">
+              <label for="processor">Processor</label>
+            </div>
+          
+            <div class="form-floating mb-3 text-center col-md-5">
+              <input type="text" class="form-control" id="os" name="OS" placeholder="Enter OS">
+              <label for="os">OS</label>
+            </div>
+            </div>
+          
+      
+
+            <div class="form-row d-flex justify-content-around">           
+                <div class="form-floating mb-3 text-center col-md-5">
+                  <input type="text" class="form-control" id="ram" name="RAM" placeholder="Enter RAM">
+                  <label for="ram">RAM</label>
+              </div>                      
+                <div class="form-floating mb-3 text-center col-md-5">
+                  <input type="text" class="form-control" id="storage" name="Storage" placeholder="Enter Storage">
+                  <label for="storage">Storage</label>
                 </div>
+            </div>
+          
+            <div class="form-row d-flex justify-content-around">
 
-                <div class="form-floating mb-3 text-center">
-                  <select class="form-control" id="category" name="Category" required>
-                    <option value="" disabled selected> Select Category</option>
-                    <% categories.forEach(category => { %>
-                      <option value="<%= category._id %>"><%= category.categoryName %></option>
-                    <% }); %>
-                  </select>
-                  <label for="category">Category</label>
-                  <div class="invalid-feedback">Please select a category</div>
-                </div>
+              <div class="form-floating mb-3 text-center col-md-5">
+                <input type="text" class="form-control" id="color" name="Color" placeholder="Enter Color">
+                <label for="color">Color</label>
+              </div>
+            
+              <div class="form-floating mb-3 text-center col-md-5">
+                <input type="number" class="form-control" id="stock" name="Stock" placeholder="Enter Stock">
+                <label for="stock">Stock</label>
+              </div>
+            </div>
+          
+            <div class="form-row d-flex justify-content-around">
 
-                <div class="form-floating mb-3 text-center">
-                  <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
-                  <label for="brand">Brand</label>
-                  <div class="invalid-feedback">Brand Name Can't Be Empty</div>
-                </div>
+              <div class="form-floating mb-3 text-center col-md-5">
+                <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
+                <label for="productprice">Product Price</label>
+                <div class="invalid-feedback">Product Price Can't Be Empty</div>
+              </div>
+            
+              <div class="form-floating mb-3 text-center col-md-5">
+                <input type="number" class="form-control" id="saleprice" name="SalePrice" placeholder="Enter Sale Price">
+                <label for="saleprice">Sale Price</label>
+              </div>
+              </div>
 
-                <div class="form-floating mb-3 text-center">
-                  <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description" required></textarea>
-                  <label for="description">Description</label>
-                  <div class="invalid-feedback">Description Can't Be Empty</div>
-                </div>
-
-                <div class="form-floating mb-3 text-center">
-                  <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
-                  <label for="productprice">Product Price:</label>
-                  <div class="invalid-feedback">Product Price Can't Be Empty</div>
-                </div>
-
-                <div class="form-group text-center">
-                  <p>Product Image:</p>
-                  <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
-                    <label class="custom-file-label" for="productimage"></label>
-                    <div class="invalid-feedback">File Format Not Supported</div>
-                  </div>
-                </div>
-
-                <div class="form-group " id="product-image"></div>
-
-                <div class="text-center">
-                  <button class="btn btn-success btn-block mt-3" type="submit">Add Product</button>
-                </div>
-              </form>
+              <div class="form-floating mb-3 text-center">
+                <select class="form-control" id="category" name="Category" required>
+                  <option value="" disabled selected> Select Category</option>
+                  <% categories.forEach(category => { %>
+                  <option value="<%= category._id %>"><%= category.categoryName %></option>
+                  <% }); %>
+                </select>
+                <label for="category">Category</label>
+                <div class="invalid-feedback">Please select a category</div>
+              </div>
+            
+              
+            
+              <div class="form-floating mb-3 text-center">
+                <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description" required></textarea>
+                <label for="description">Description</label>
+                <div class="invalid-feedback">Description Can't Be Empty</div>
+              </div>
+          
+            <div class="form-group text-center">
+              <p>Product Image:</p>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
+                <label class="custom-file-label" for="productimage"></label>
+                <div class="invalid-feedback">File Format Not Supported</div>
+              </div>
+            </div>
+          
+            <div class="form-group " id="product-image"></div>
+          
+            <div class="text-center">
+              <button class="btn btn-success btn-block mt-3" type="submit">Add Product</button>
+            </div>
+          </form>
+          
 
         </div>
       

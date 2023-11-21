@@ -1,86 +1,85 @@
 
-<%-include("./partials/header")  %>
-
-<%-include("./partials/navigation")  %>
 
 
-<!--  carousel-->
-<div class="carousel_style">
+<%- include("./partials/header") %>
 
-  <div id="carouselExampleAutoplaying" class="carousel slide " data-bs-ride="carousel">
-    <div class="carousel-inner ">
-      <div class="carousel-item active">
-        <img src="/images/d5a2a6481656bb58 (1).webp" class="d-block w-100 carousel_style" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="/images/89a97ae7c718bee4.webp" class="d-block w-100 carousel_style" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="/images/d5a2a6481656bb58.webp" class="d-block w-100 carousel_style" alt="...">
-      </div>
+<%- include("./partials/navigation") %>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2">
+      <!-- Your sidebar content goes here -->
+      <h2>Sidebar</h2>
+      <!-- Add any additional content you want in the sidebar -->
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
-</div>
-<!-- Carousel -->
 
-
-  <section >
-    <div class="container py-5">
-      <div class="row index-row">
-        <% products.forEach(product => { %>
-          <div class="col-md-8 col-lg-6 col-xl-3 card-main p-3">
-            <div class="card card-div-product">
-              <div class="imgdiv">
-                <a href="/products?productId=<%= product._id %>">
-                  <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
-                </a>
-              </div>
-              <div class="card-body">
-                <div class="text-center">
-                  <h3 class="card-title capitalize" style="margin-bottom: 15px;"><%= product.Name %></h3>
-               
-                </div>
-                <div>
-                  <div class="d-flex justify-content-around">
-                    <h5><%= product.Brand %></h5>
-                    <h6>₹<%= product.Price %></h6>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-around  mt-1">
-                  <button class="btn addtocart ">Add to cart</button>
-                  <button class="btn buynow ">Buy now</button>
-                </div>
-              </div>
+    <!-- Main Content -->
+    <div class="col-md-10">
+      <!-- Carousel -->
+      <div class="carousel_style">
+        <!-- Carousel code goes here -->
+        <div id="carouselExampleAutoplaying" class="carousel slide " data-bs-ride="carousel">
+          <div class="carousel-inner ">
+            <div class="carousel-item active">
+              <img src="/images/d5a2a6481656bb58 (1).webp" class="d-block w-100 carousel_style" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="/images/89a97ae7c718bee4.webp" class="d-block w-100 carousel_style" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="/images/d5a2a6481656bb58.webp" class="d-block w-100 carousel_style" alt="...">
             </div>
           </div>
-        <% }); %>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
+      <!-- End Carousel -->
+
+      
+      <section>
+        <div class="container py-5">
+          <div class="row index-row">
+            <% products.forEach(product => { %>
+              <div class="col-md-4 col-lg-4 col-xl-4 card-main p-2">
+                <div class="card card-div-product">
+                  <div class="imgdiv">
+                    <a href="/products?productId=<%= product._id %>">
+                      <img src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
+                    </a>
+                  </div>
+                  <div class="card-body">
+                    <div class="text-center">
+                      <h3 class="card-title capitalize" style="margin-bottom: 15px;"><%= product.Name %></h3>
+                    </div>
+                    <div>
+                      <div class="d-flex justify-content-around">
+                        <h5><%= product.Brand %></h5>
+                        <h6>₹<%= product.Price %></h6>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-around mt-1">
+                      <button class="btn addtocart ">Add to cart</button>
+                      <button class="btn buynow ">Buy now</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      </section>
     </div>
-  </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <!-- End Main Content -->
+  </div>
+</div>
 
 
 <%-include("./partials/footer")  %> 

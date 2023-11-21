@@ -18,7 +18,18 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Features:[
+    {
+      Processor:String,
+      Ram:String,
+      Storage:String,
+      Os:String,
+      Color:String,
+    }
+  ],
+  Stock:Number,
   Price: Number,
+  SalePrice:Number,
   ProductImage:[
     {
       filename: String,

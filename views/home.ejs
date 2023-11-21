@@ -37,7 +37,7 @@
       <div class="row index-row">
         <% products.forEach(product => { %>
           <div class="col-md-8 col-lg-6 col-xl-3 card-main p-3">
-            <div class="card card-div-product">
+            <div class="card card-div-product ">
               <div class="imgdiv">
                 <a href="/products?productId=<%= product._id %>">
                   <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />

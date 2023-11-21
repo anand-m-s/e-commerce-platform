@@ -138,36 +138,6 @@ const loadAddProduct = async(req,res)=>{
     res.status(500).json({ error: 'Internal server error' });
   }
 }
-// const addproduct = async (req, res) => {
-//   try {
-//     multerFunc.Multer.single('ProductImage')(req, res, async (err) => {
-//       if (err) {
-//         console.error(err);
-//         return res.status(500).json({ error: 'Image upload failed' });
-//       }
-//       const { Name, Category, Brand, Description, Price } = req.body;
-//       const { filename, path } = req.file;
-//       // Create and save the product with the image information
-//       const newProduct = new Product({
-//         Name,
-//         Category,
-//         Brand,
-//         Description,
-//         Price,
-//         ProductImage: {
-//           filename,
-//           path,
-//         },
-//       });
-//       console.log(newProduct.ProductImage.path);
-//        await newProduct.save();
-//       res.redirect('/admin/addproduct');
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
 
 const addproduct = async (req, res) => {
   try {
@@ -176,7 +146,7 @@ const addproduct = async (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Image upload failed' });
       }
-      const { Name, Category, Brand, Description, Price } = req.body;
+      const { Name, Category, Brand, Description, Price,Storage,RAM,OS,Color,Processor,Stock,SalePrice} = req.body;
       // const files = req.files;
       const files = req.files; // Access uploaded files
 
@@ -191,6 +161,15 @@ const addproduct = async (req, res) => {
         Brand,
         Description,
         Price,
+        Features:[{
+          Processor:Processor,
+          Ram:RAM,
+          Storage:Storage,
+          Os:OS,
+          Color:Color
+        }],
+        SalePrice,
+        Stock,
         ProductImage: ProductImage, // Update the field name to match your model
       });
       await newProduct.save();
@@ -236,21 +215,32 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
-const usermanage = async(req,res)=>{
+const usermanage = async (req, res) => {
+  const ITEMS_PER_PAGE = 4; // Adjust as needed
   try {
-    if(req.session.adminId){
-      
-      const users = await User.find({})
+    if (req.session.adminId) {
+      const page = req.query.page || 1;
 
-      res.render("admin/usermanagement",{email:req.session.email,users});
-    }else{
-      res.redirect("/admin");
+      const users = await User.find({})
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+      const totalUsers = await User.countDocuments({});
+      const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
+
+      res.render('admin/usermanagement', 
+      {email: req.session.email,
+        users,
+        currentPage: page,
+        totalPages,
+      });
+    } else {
+      res.redirect('/admin');
     }
   } catch (error) {
     console.log(error);
   }
 };
+
 
 const loadEditCategory = async(req,res)=>{
   try {
