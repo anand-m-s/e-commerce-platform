@@ -22,6 +22,8 @@ router.get("/addproductstocart",userController.addProductsToCart);
 router.get("/addtocart",cartController.addToCart);
 router.get("/checkout",userController.loadCheckOutPage);
 router.post("/signupVerify",userController.signupVerify);
+router.get("/orderlist",userController.loadOrderList);
+router.get("/orderdetails",userController.OrderDetails)
 
 
 router.post("/login",userController.login);

@@ -1,0 +1,50 @@
+<%- include("./partials/header") %>
+<%- include("./partials/navigation") %>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10">
+            <div class="rounded">
+                <div class="table-responsive table-borderless">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order Id</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>status</th>
+                                <th>Action</th>
+                                
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body">
+                            <% orders.forEach(order=>{ %>
+                            <tr class="cell-1">
+                                <td><%=order._id  %></td>
+                                <td><%= order.totalPrice %></td>
+                                <td><%=order.orderDate.toLocaleDateString() %></td>
+                                <td><%= order.orderStatus %></td>
+                                <td>
+                                    <a href="/orderdetails?orderId=<%= order._id %>">
+
+                                        <button class="btn btn-success" style="font-size: 10px; padding: 5px 10px;">Details</button>
+                                    </a>
+                                    <button  class="btn btn-outline-danger" style="font-size: 10px; padding: 5px 10px;">Cancel</button>
+                                </td>
+                                
+                                <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                            </tr>
+                            <% }) %>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%-include('./partials/footer') %>
+<%- include("./partials/end") %>

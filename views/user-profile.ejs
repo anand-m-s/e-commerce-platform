@@ -29,7 +29,10 @@
               <p class="text-muted mb-1"><%= users.email %></p>
               <p class="text-muted mb-4"><%= users.phone %></p>
               <div class="d-flex justify-content-center mb-2">
-                <button type="button" class="btn btn-outline-success">Orders</button>
+               <a href="/orderlist">
+
+                 <button type="button" class="btn btn-outline-success">Orders</button>
+               </a> 
                 <button type="button" class="btn btn-outline-primary ms-1">Wishlist</button>
               </div>
             </div>
@@ -104,9 +107,9 @@
                 <div class="row mb-3">
                     <% for (let j = i; j < i + 2 && j < address.length; j++) { %>
                         <div class="col-md-6 userprofile-main">
-                            <div class="p-3 userprofile-title position-relative ">
+                            <div class="p-3 userprofile-title position-relative  ">
                                
-                                <div class="card-header  text-white">
+                                <div class="card-header  ">
                                     <h5 class="text-center">Address <%= j + 1 %></h5>
                                 </div>
                                 <div class="d-flex userprofile-card">
@@ -200,33 +203,6 @@
         </div>
     </div>
 </div>
-<!-- <script>
-  $(document).ready(function () {
-    // Attach an event listener to the delete link
-    $('.delete-link').on('click', function (event) {
-      // Prevent the default behavior of the link
-      event.preventDefault();
-      
-      // Get the address ID from the data attribute
-      const addressId = $(this).data('address-id');
-      
-      // Send an AJAX request to delete the address
-      $.ajax({
-        type: 'GET',
-        url: '/userAddressDelete?id=' + addressId,
-        success: function (response) {
-          // Update the UI based on the server response
-          console.log(response); // Log the response for debugging
-          // You can remove the deleted address from the UI or perform other actions
-          $(`#address-${addressId}`).remove();
-        },
-        error: function (error) {
-          console.error(error); // Log any errors for debugging
-        }
-      });
-    });
-  });
-</script> -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
 

@@ -8,7 +8,7 @@
       <div class="col-md-8">
         <div class="card mb-4 cart-box">
           <div class="card-header  cart-item-display">
-            <h5 class="mb-0 text-center ">Cart - <%= cart.products.length %> items</h5>
+            <h5 class="mb-0 text-center" >Cart - <%= cart.products.length %> items</h5>
           </div>
           <div class="card-body ">
             <!-- Loop through each product in the cart -->
@@ -151,19 +151,16 @@
   </div>
 </section>
 
-
-
-
+<%-include("./partials/footer")  %> 
 <script>
-
 const totprice = document.querySelector("#totalAmoutFrontend");
+const checkoutButton = document.querySelector('.checkoutbtn');
 function updateQuantity(itemId, newQuantity, productId,cartId) {
   const quantityInput = document.querySelector(`#form_${itemId}`);
   const priceElement = document.querySelector(`.price_${itemId}`);
   const currentQuantity = parseInt(quantityInput.value);
   const updatedQuantity = currentQuantity + parseInt(newQuantity);
   const totalAmountElement = document.querySelector('.total');
-
   if (updatedQuantity >= 1 && updatedQuantity <= 5) {
     quantityInput.value = updatedQuantity;
     fetch('/updateQuantity', {
@@ -184,20 +181,16 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
     .then(data => {
   if (data && data.updatedCart && data.updatedPrice !== undefined) {
     // Update the price in the UI
-    
     priceElement.innerHTML = `₹${data.updatedPrice}`;
-   
         // Access the populated cart data
         const populatedCart = data.cart;
     // Calculate the total amount based on the populated cart
     const totalAmount = populatedCart.products.reduce(
       (acc, item) => acc + item.product.Price * item.quantity,
       0
-    );
-    
-    // Update the total amount in the UI
-    // totalAmountElement.textContent = `₹${totalAmount}`;
+    );    
     totprice.innerHTML =`₹${totalAmount}`
+
   }
 }).catch(error => {
       // Handle network error if needed
@@ -206,18 +199,19 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
   }
 }
 
+
+
+
+
+
+
 //removefromcart
-  document.addEventListener('DOMContentLoaded', function () {
-    // Attach click event to the delete button
+  document.addEventListener('DOMContentLoaded', function () {    
     const deleteButtons = document.querySelectorAll('.removebtn-cart button');
-
     deleteButtons.forEach(button => {
-      button.addEventListener('click', function () {
-        // Get the cart item ID and product ID from the data attributes
+      button.addEventListener('click', function () {        
         const cartItemId = button.dataset.cartItemId;
-        const productIdToRemove = button.dataset.productId;
-
-        // Send AJAX request to delete the item using POST
+        const productIdToRemove = button.dataset.productId;        
         fetch(`/removeFromCart?itemId=${cartItemId}&productId=${productIdToRemove}`, {
           method: 'POST',
           headers: {
@@ -225,24 +219,19 @@ function updateQuantity(itemId, newQuantity, productId,cartId) {
           },
         })
         .then(response => response.json())
-        .then(data => {
-          // Update the UI or handle the response as needed
+        .then(data => {          
           console.log(data);
-
           console.log(data.totalAmount);
-          totprice.innerHTML = data.totalAmount
-          // Assuming each item has a unique identifier
+          totprice.innerHTML = data.totalAmount          
           const removedItemElement = document.getElementById(`cart-item-${productIdToRemove}`);
-
           if (removedItemElement) {
             removedItemElement.remove();
-          }
+          }        
+         
         })
         .catch(error => console.error('Error:', error));
       });
     });
   });
-
 </script>
-<%-include("./partials/footer")  %> 
 <%-include("./partials/end") %>

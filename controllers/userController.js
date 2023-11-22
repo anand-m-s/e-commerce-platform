@@ -371,8 +371,6 @@ const addProductsToCart = async(req,res)=>{
     }
 }
 
-
-
   const loadCheckOutPage = async(req,res)=>{
     try {
         if(req.session.userId){
@@ -390,7 +388,10 @@ const addProductsToCart = async(req,res)=>{
             const totalAmount = cart.products.reduce(
                 (acc, item) => acc + item.product.Price * item.quantity,
                 0
-              );                        
+              );     
+              if(totalAmount===0){
+                return res.redirect("/addtocart")
+              }                   
             res.render("checkOutPage",{user,address,cart,totalAmount,username:req.session.username});
         }else{
             res.redirect("/login")
@@ -400,48 +401,6 @@ const addProductsToCart = async(req,res)=>{
         
     }
 }
-
-
-// const checkOut = async (req, res) => {
-//     try {
-//       const userId = req.session.userId;
-//       const {billingAddress,paymentMethod} = req.body
-//       const user = await User.findById(userId);
-//       if (!user) {
-//         return res.status(404).json({ error: 'User not found' });
-//       }
-//       const selectedAddress = user.address[billingAddress];
-//       if (!selectedAddress) {
-//         return res.status(400).json({ error: 'Billing address not selected' });
-//       }
-     
-//       const cart = await Cart.findOne({ user: userId }).populate({
-//         path: 'products.product',
-//       });      
-//       const totalAmount = cart.products.reduce(
-//         (acc, item) => acc + item.product.Price * item.quantity,
-//         0
-//       );
-//       console.log(totalAmount);
-//       const newOrder = new Order({
-//         user: userId,
-//         address: selectedAddress,
-//         products: cart.products.map(item => ({
-//           product: item.product._id,
-//           quantity: item.quantity,
-//           pricePerQnt: item.product.Price,
-//         })),
-//         totalPrice: totalAmount,
-//         paymentMethod,
-//         orderStatus: 'Pending', 
-//       });
-//       await newOrder.save();
-//       res.send("sucess") 
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   }
   
 const checkOut = async (req, res) => {
     try {
@@ -498,6 +457,35 @@ const checkOut = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+  const loadOrderList =async(req,res)=>{
+    try {        
+        if(req.session.userId){
+            const userId = req.session.userId;
+            const orders = await Order.find({user:userId})            
+            res.render("orderlist",{orders,username:req.session.username});
+        }else{
+            res.redirect("/login");
+        }
+    } catch (error) {
+        
+    }
+}
+
+const OrderDetails= async(req,res)=>{
+    if(req.session.userId){
+        const orderId = req.query.orderId;
+        const order = await Order.findById({_id:orderId}).populate({path:"products.product"});
+        const address = await Address.findById({_id:order.address});      
+        console.log(order.products);
+        console.log(address);
+        
+        res.render("orderdetails",{order,address,username:req.session.username});
+
+    }else{
+        res.redirect("/login");
+    }
+}
   
 
 module.exports = {
@@ -522,6 +510,8 @@ module.exports = {
     addProductsToCart,
     loadCheckOutPage,
     checkOut,
-    signupVerify
+    signupVerify,
+    loadOrderList,
+    OrderDetails
  
 }
