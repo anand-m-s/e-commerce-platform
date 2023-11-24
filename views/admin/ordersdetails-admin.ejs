@@ -1,0 +1,148 @@
+<%-include("../partials/admin-header") %>
+
+<div class="container shadow-lg">
+    <article class="card">
+        <header class="card-header text-white bg-black"> My Orders / Tracking </header>
+        <div class="card-body">
+            <h6>Order ID:<%= order._id %></h6>
+            <article class="card">
+                <div class="card-body row">
+                 
+                    <div class="col"> <strong>Customer:</strong> <br> <%= order.user.username %> <br> <%= order.user.phone %>  </div>
+                    <div class="col"> <strong>Deliver to:</strong> <br><%= order.address.fullName%> <br> <%= order.address.addressline %><br><%= order.address.city,%> ,<%= order.address.pincode %> <br> <%= order.address.phone %>  </div>
+                    <div class="col"  id="statusDetails"> <strong>Status:</strong> <br> <%= order.orderStatus %></div>
+                    <div class="col"> 
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" id="statusDropdownBtn" type="button" data-bs-toggle="dropdown"  aria-expanded="false">
+                              Select Status
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="statusDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Order confirmed">Order confirmed</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Cancel Order">Cancel order</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Pending">Pending</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Out of delivery">Out of delivery</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Shipped">Shipped</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Return confirmed">Return confirmed</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#" data-status="Delivered">Delivered</a>
+                                </li>                              
+                            </ul>
+                          </div>
+                    </div>
+
+                    
+                </div>
+            </article>
+            <hr>
+            <ul class="row">
+                <% order.products.forEach(item=>{%>                
+                <li class="col-md-4">
+                    <figure class="itemside mb-3">
+                        <div class="aside"><img src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="img-sm border"></div>
+                        <figcaption class="info align-self-center">
+                            <p class="title"> <%= item.product.Name %> <br> </p> <span class="text-muted">Price: <%= item.product.Price %> <br>Quantity: <%= item.quantity %> </span>
+                            <p>Total amount : <%= item.product.Price*item.quantity %></p>
+
+                            
+                        </figcaption>
+                    </figure>               
+                   
+                </li>
+                <%}) %>
+            </ul>
+            <hr>
+            <a href="/orderlist" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
+</div>
+
+
+<script>
+// Add an event listener to the dropdown items
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+
+dropdownItems.forEach(item => {
+    item.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the default behavior of the anchor tag
+
+        // Extract the status from the data-status attribute
+        const newStatus = this.getAttribute('data-status');
+        const orderId = '<%= order._id%>'
+        console.log(orderId);
+        console.log(newStatus)
+
+        // Update the order status using the fetch function
+        updateOrderStatus(orderId,newStatus);
+    });
+});
+
+function updateOrderStatus(orderId, status) {
+    // Assuming your server endpoint for updating order status is '/updateOrderStatus'
+    const url = `/admin/updateOrderStatus`;
+
+    fetch(url, {
+        method: 'POST', // You can use 'PUT' or 'PATCH' depending on your server API
+        headers: {
+            'Content-Type': 'application/json',
+            // You may need to include other headers like authorization if required
+        },
+        // You can include a request body if your server expects it
+        body: JSON.stringify({ orderId, status }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Assuming your server responds with the updated order status
+        const updatedStatus = status;
+        console.log(updatedStatus);
+
+        // Update the front-end to reflect the new status
+        updateFrontendStatus(updatedStatus);
+
+        console.log('Order status updated successfully:', updatedStatus);
+    })
+    .catch(error => {
+        console.error('Error updating order status:', error);
+    });
+}
+
+function updateFrontendStatus(status) {
+    // Implement the logic to update the front-end with the new status
+    // You can update the DOM, trigger UI changes, etc.
+    const statusDetailsDiv = document.getElementById('statusDetails');
+    if (statusDetailsDiv) {
+        statusDetailsDiv.innerHTML = `<strong>Status:</strong><br>${status}`;
+    }
+    //Set the color based on the status
+
+    switch(status.toLowerCase()){
+        case  'delivered':
+        statusDetailsDiv.style.color = 'green';
+            break;
+        case 'shipped':
+        statusDetailsDiv.style.color = 'blue';
+            break;
+        case 'pending':
+            statusDetailsDiv.classList.add('pending-color')
+            break;
+        default:
+            console.log('');
+    }
+    console.log('Updating front-end with new status:', status);
+}
+
+</script>
+
+
+<%-include("../partials/end") %>

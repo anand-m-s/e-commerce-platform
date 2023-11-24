@@ -1,0 +1,49 @@
+<%-include("../partials/admin-header") %>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-12">
+            <div class="rounded">
+                <div class="table-responsive table-borderless">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Number</th>
+                                <th>Total</th>
+                                <th>status</th>
+                                <th>Date</th>
+                                <th>Method</th>
+                                <th>Action</th>
+                                
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body orderlist">
+                            <% orders.forEach(order=>{ %>
+                            <tr class="cell-1" >
+                                <td><%= order.user.username %></td>
+                                <td> <%= order.user.phone %></td>
+                                <td><%= order.totalPrice %></td>
+                                <td><%= order.orderStatus %></td>
+                                <td><%=order.orderDate.toLocaleDateString() %></td>
+                                <td><%= order.paymentMethod %></td>
+                                <td>
+                                    <a href="/admin/ordersdetails?orderId=<%= order._id %>">
+                                        <button class="btn btn-success" style="font-size: 10px; padding: 5px 10px;">Details</button>
+                                    </a>                                   
+                                </td>
+                                
+                                <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                            </tr>
+                            <% }) %>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-include("../partials/end") %>

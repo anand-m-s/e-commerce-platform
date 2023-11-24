@@ -8,21 +8,22 @@ const addToCart = async (req, res) => {
       if (req.session.userId) {
         const userId = req.session.userId;
         const users = await User.findById(userId);
-        const cart = await Cart.findOne({ user: userId }).populate({
+        let cart = await Cart.findOne({ user: userId }).populate({
           path: 'products.product',
           populate: {
             path: 'Category',
             model: 'Category'
           }
         });
-      
-  
+         // If the cart is not found, create a new one
+        if(!cart){
+          cart = new Cart ({user:userId,products:[]});
+          await cart.save();
+        }        
         const totalAmount = cart.products.reduce(
           (acc, item) => acc + item.product.Price * item.quantity,
           0
         );
-
-  
         if (req.xhr) {
           // If it's an AJAX request, send the totalAmount as JSON
           res.json({ username: users.username, cart, totalAmount});

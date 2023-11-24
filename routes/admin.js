@@ -14,13 +14,16 @@ router.get("/useractions",adminController.useraction);
 router.get('/editproduct/:productId', adminController.editProduct);
 router.get("/deleteproduct",adminController.deleteProduct);
 router.get('/editcategory', adminController.loadEditCategory);
+router.get("/orders",adminController.orders);
+router.get("/ordersdetails",adminController.orderdetails);
 
 
-router.post("/adminlogin",adminController.adminLogin)
-router.post("/addcategory",adminController.addcategory)
+router.post("/adminlogin",adminController.adminLogin);
+router.post("/addcategory",adminController.addcategory);
 router.post("/addproduct",adminController.addproduct);
-router.post("/updateproduct",adminController.updateProduct)
-router.post("/updatecategory",adminController.updatecategory)
+router.post("/updateproduct",adminController.updateProduct);
+router.post("/updatecategory",adminController.updatecategory);
+router.post('/updateOrderStatus',adminController.updateOrderStatus);
   
 
 module.exports = router;

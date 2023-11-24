@@ -12,7 +12,6 @@ router.get('/home',userController.homelogin);
 router.get("/about",userController.about);
 router.get("/contact",userController.contact);
 router.get("/logout",userController.logout);
-router.get("/forgotpassword",)
 router.get("/products",userController.displayProduct);
 router.get("/userprofile",userController.loadUserProfile);
 router.get("/userAddressEdit",userController.editUserAddress);
@@ -21,19 +20,26 @@ router.get("/userprofileedit",userController.userProfileEdit);
 router.get("/addproductstocart",userController.addProductsToCart);
 router.get("/addtocart",cartController.addToCart);
 router.get("/checkout",userController.loadCheckOutPage);
-router.post("/signupVerify",userController.signupVerify);
 router.get("/orderlist",userController.loadOrderList);
-router.get("/orderdetails",userController.OrderDetails)
+router.get("/orderdetails",userController.OrderDetails);
+router.get("/forgotpassword",userController.loadForgotPassword);
 
 
+
+
+
+
+
+router.post('/passwordreset', userController.forgotReset);
+router.post('/resetpassword',userController.resetpassword);
 router.post("/login",userController.login);
 router.post("/signup",userController.register);
-router.post("/forgotpassword",userController.forgotpassword);
 router.post("/addaddress",userController.addaddress);
 router.post("/updateaddress",userController.updateAddress);
 router.post("/updateuser",userController.updateUser);
 router.post('/removeFromCart',cartController.removeFromCart);
 router.post('/updateQuantity',cartController.updateQuantity);
+router.post("/signupVerify",userController.signupVerify);
 router.post('/checkout',userController.checkOut);
   
 

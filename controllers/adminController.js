@@ -1,9 +1,14 @@
 const session = require("express-session");
+const mongoose = require('mongoose');
 const Admin = require("../model/adminModel");
 const Product = require("../model/productModel");
 const User = require("../model/userModel");
+const Order = require("../model/order");
+const Address = require("../model/address");
 const bcrypt = require("bcrypt");
 const Category = require("../model/category");
+const Path = require("path");
+const sharp= require("sharp")
 const { upload } = require('../helpers/multerFunc'); 
 //Admin Login
 const adminLogin = async (req, res) => {
@@ -148,13 +153,30 @@ const addproduct = async (req, res) => {
       }
       const { Name, Category, Brand, Description, Price,Storage,RAM,OS,Color,Processor,Stock,SalePrice} = req.body;
       // const files = req.files;
-      const files = req.files; // Access uploaded files
+      const files = req.files;
+      const imageData = []; // Access uploaded files
 
       // Create an array of ProductImage objects
-      const ProductImage = files.map((file) => ({
-        filename: file.filename,
-        path: file.path
-      }));
+      // const ProductImage = files.map((file) => ({
+      //   filename: file.filename,
+      //   path: file.path
+      // }));
+      for (const file of files) {
+        console.log(file, "File received");
+        const randomInteger = Math.floor(Math.random() * 20000001);
+        const imageDirectory = Path.join('public','images','uploads');
+        const imgFileName = "cropped" + randomInteger + ".jpg";
+        const imagePath = Path.join(imageDirectory, imgFileName);
+        console.log(imagePath, "Image path");
+        const croppedImage = await sharp(file.path)
+          .resize(280, 280, {
+            fit: "cover",
+          })
+          .toFile(imagePath);          
+        if (croppedImage) {
+          imageData.push({filename:imgFileName,path:imagePath});
+        }
+      }
       const newProduct = new Product({
         Name,
         Category,
@@ -170,7 +192,7 @@ const addproduct = async (req, res) => {
         }],
         SalePrice,
         Stock,
-        ProductImage: ProductImage, // Update the field name to match your model
+        ProductImage: imageData, // Update the field name to match your model
       });
       await newProduct.save();
       res.redirect('/admin/addproduct');
@@ -335,6 +357,53 @@ const useraction =async (req,res)=>{
   }
 }
 
+const orders = async(req,res)=>{
+  try {
+    const orders= await Order.find().populate('user');
+    res.render("admin/orderlist-admin",{orders,email:req.session.email});
+  } catch (error) {
+    
+  }
+}
+
+
+const orderdetails = async(req,res)=>{
+  const orderId = req.query.orderId;
+  const order = await Order.findById({_id:orderId})
+  .populate({path:"address",model:Address})
+    .populate("products.product")
+    .populate("user")
+  res.render("admin/ordersdetails-admin",{order,email:req.session.email})
+}
+
+
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    console.log("inside::::::::orderstatus");
+      const {orderId,status } = req.body;
+  
+      console.log('orderID::::'+orderId);
+      console.log("status "+ status);
+      // console.log(status,orderId);
+      if (!status || !orderId) {
+          return res.status(400).json({ error: 'Invalid input parameters' });
+      }
+      const updatedOrder = await Order.findByIdAndUpdate(
+        { _id: orderId},
+        { $set: { orderStatus: status } },
+        { new: true }
+    );
+      console.log(updatedOrder);
+      if (!updatedOrder) {
+          return res.status(404).json({ error: 'Order not found' });
+      }
+      res.json({ success: true });
+  } catch (error) {
+      console.error('Error updating order status:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 
 
@@ -354,5 +423,7 @@ module.exports={
     useraction,
     updateProduct,
     loadEditCategory,
-    updatecategory
+    updatecategory,
+    orders,
+    orderdetails,updateOrderStatus
 }

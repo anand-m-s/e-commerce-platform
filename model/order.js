@@ -56,7 +56,7 @@ const orderSchema= new mongoose.Schema({
   cancelReason:{
     type:String
   },
-})
+},{timestamps:true});
 const Order=mongoose.model('Order',orderSchema);
 
 module.exports=Order;

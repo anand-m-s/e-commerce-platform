@@ -115,7 +115,7 @@ if (errorMessages.length > 0) {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(userData)
     })
-    alert(response.status)
+    // alert(response.status)
     if(response.status===200){
       const mobilenumber = '+91' + loginform.phone.value;
       const appVerifier = window.recaptchaVerifier;

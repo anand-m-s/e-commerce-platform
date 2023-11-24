@@ -180,20 +180,56 @@ const contact = (req,res)=>{
 }
 
 //reset password
-const forgotpassword = async (req, res) => {
+const loadForgotPassword =(req,res)=>{
     try {
-        const email = req.body.email;
-        const userData = await User.findOne({ email: email });
-        if (userData) {
-            const randomString = randomstring.generate();
-        } else {
-            const errorMessage = "user email is incorrect"
-            render("forgotpassword", { errorMessage })
-        }
+        res.render("forgotpassword")
+        
     } catch (error) {
         console.log(error);
     }
 }
+
+const forgotReset =  async (req, res) => {
+    try {
+        console.log('Request received at /passwordreset');
+      const { email } = req.body;
+      // Find the user by email
+      const user = await User.findOne({ email });        
+      if (!user) {
+        
+        return res.status(404).json({ error: 'User not found' });
+      }  
+      // Extract the phone number from the user object
+      const phoneNumber = user.phone;  
+      // You can also perform additional checks or validations here  
+      // Send the phone number as a response
+      res.status(200).json({ phoneNumber });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+const resetpassword = async (req, res) => {
+    console.log("inside reset password");
+    const { email, newPassword } = req.body;    
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+        console.log("Password reset successful");
+        // Redirect to the login page with a success message
+        res.redirect("/login");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 
 const displayProduct = async(req,res)=>{
     try {   
@@ -476,12 +512,8 @@ const OrderDetails= async(req,res)=>{
     if(req.session.userId){
         const orderId = req.query.orderId;
         const order = await Order.findById({_id:orderId}).populate({path:"products.product"});
-        const address = await Address.findById({_id:order.address});      
-        console.log(order.products);
-        console.log(address);
-        
+        const address = await Address.findById({_id:order.address});              
         res.render("orderdetails",{order,address,username:req.session.username});
-
     }else{
         res.redirect("/login");
     }
@@ -496,7 +528,8 @@ module.exports = {
     signuplogin,
     userLogin,
     logout,
-    forgotpassword,
+    loadForgotPassword,
+    // forgotpassword,
     displayProduct,
     about,
     contact,
@@ -512,6 +545,8 @@ module.exports = {
     checkOut,
     signupVerify,
     loadOrderList,
-    OrderDetails
+    OrderDetails,
+    forgotReset,
+    resetpassword
  
 }
