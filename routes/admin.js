@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require("../controllers/adminController");
-const User = require('../model/userModel');
+
 
 router.get('/',adminController.adminLog)
 router.get('/admindashboard',adminController.admindashboard)

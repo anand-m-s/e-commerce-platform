@@ -31,8 +31,9 @@
                         </figcaption>
                     </figure>
                     <div class="order-control-btn mt-3 ">
-                        <a  href=""><button class="p-1">Return</button></a>
-                        <a href=""><button class="p-1">Cancel</button></a>
+                       <button class="p-1">Return</button>
+                       <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
+
                     </div>
                 </li>
                 <%}) %>
@@ -46,6 +47,51 @@
     </article>
 </div>
 
-
 <%-include('./partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+document.querySelectorAll('.cancel-button').forEach(button => {
+    button.addEventListener('click', function () {
+        const orderId = this.getAttribute('data-order-id');
+        const productId = this.getAttribute('data-product-id');
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Confirm cancellation for this product",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, cancel it!"
+        }).then(result => {
+            if (result.isConfirmed) {                
+                fetch(`/cancelproduct?orderId=${orderId}&productId=${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',                        
+                    },                    
+                })
+                .then(response => response.json())
+                .then(data => {                        
+                        console.log(data);
+                        if (data.success) {                            
+                            if (data.message === 'Order removed successfully') {
+                                window.location.href = '/orderlist';
+                            } else {                                
+                                window.location.reload();
+                            }
+                        }
+                    })
+                .catch(error => {                    
+                    console.error(error);
+                });
+            }
+        });
+    });
+});
+
+
+</script>    
+
 <%- include("./partials/end") %>

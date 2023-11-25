@@ -76,13 +76,13 @@
 
               <div class="form-floating mb-3 text-center col-md-5">
                 <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
-                <label for="productprice">Product Price</label>
+                <label for="productprice">Sale Price</label>
                 <div class="invalid-feedback">Product Price Can't Be Empty</div>
               </div>
             
               <div class="form-floating mb-3 text-center col-md-5">
                 <input type="number" class="form-control" id="saleprice" name="SalePrice" placeholder="Enter Sale Price">
-                <label for="saleprice">Sale Price</label>
+                <label for="saleprice"> Price</label>
               </div>
               </div>
 
@@ -149,7 +149,7 @@
               <td><%= product.Name %></td>
               <td><%= product.Brand %></td>
               <td>₹<%= product.Price %></td>
-              <td><%= product.Category %></td>
+              <td><%= product.Category.categoryName %></td>
               <td>
                 <div class="product-images">
                   <% if (product.ProductImage && product.ProductImage.length > 0) { %>
@@ -169,6 +169,33 @@
         <% }); %>
       </tbody>
     </table>
+    <div class="pagination-container">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <% if (currentPage > 1) { %>
+            <li class="page-item">
+              <a class="page-link" href="/admin/addproduct?page=<%= currentPage - 1 %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          <% } %>
+    
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="/admin/addproduct?page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+    
+          <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+              <a class="page-link" href="/admin/addproduct?page=<%= currentPage + 1 %>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
 </div>
 
 
@@ -200,6 +227,7 @@ productPriceInput.addEventListener('input', (event) => {
 <script>
   const productPriceInput = document.getElementById('productprice');
 const productImageInput = document.getElementById('productimage');
+const salePriceInput = document.getElementById('saleprice');
 const submitButton = document.querySelector('.btn-success');
 
 productPriceInput.addEventListener('input', (event) => {
@@ -219,6 +247,24 @@ productPriceInput.addEventListener('input', (event) => {
     submitButton.disabled = false;
   }
 });
+
+salePriceInput.addEventListener('input', (event) => {
+    const salePrice = parseFloat(event.target.value);
+
+    if (salePrice < 0) {
+      salePriceInput.classList.add('is-invalid');
+      salePriceInput.nextElementSibling.textContent = 'Sale price cannot be negative';
+    } else {
+      salePriceInput.classList.remove('is-invalid');
+      salePriceInput.nextElementSibling.textContent = '';
+    }
+
+    if (salePrice < 0) {
+      submitButton.disabled = true;
+    } else {
+      submitButton.disabled = false;
+    }
+  });
 
 productImageInput.addEventListener('change', (event) => {
   const file = event.target.files[0];

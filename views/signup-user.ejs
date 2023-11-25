@@ -1,16 +1,16 @@
 <%-include("./partials/header") %>
 <%-include("./partials/navigation") %>
 
-<section class="signup__sec" id="login-section">
-  <div class="container h-100">
+<section class="signup__sec " id="login-section">
+  <div class="container">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-lg-12 col-xl-11">
-        <div class="card signupcard text-black" >
+        <div class=" signupcard text-black" >
           <div class="card-body p-md-5">
             <div class="row justify-content-center">
               <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                 
-                <p class="text-center h1 fw-bold mb-5 text-white mx-1 mx-md-4 ">Sign up</p>
+                <p class="text-center h1 fw-bold mb-5  mx-1 mx-md-4 ">Sign up</p>
                 
                 <form class="mx-1 mx-md-4" name="submission" id="signup-form" action="/signup" method="post">
                   
@@ -23,52 +23,53 @@
                       <div class="otperr" id="otperror">
                         <h6 class="message"></h6>
                       </div>
-                      <div class="d-flex flex-row align-items-center ">
-                        <div class="form-floating flex-fill  mb-0">
-                          <span class="nameerr inperr" ><p></p></span>
+                  
+                           <span class="nameerr inperr" ><p></p></span>
+                        <div class="form-floating ">
                           <input type="text" id="userName" class="form-control signupstyle form-control-lg" name="username" placeholder=" " required />
-                          <label class="form-label signuplabel " for="userName">Name</label>
+                          <label class="form-label signuplabel" for="userName">Name</label>
                         </div>
-                      </div>
+                      
 
-                      <div class="d-flex flex-row align-items-center ">                      
-                        <div class="form-floating flex-fill mb-0">
-                          <span class="emailerr inperr" ><p></p></span>
+                                        
+                        <span class="emailerr inperr" ><p></p></span>
+                        <div class="form-floating">
                           <input type="email" id="email" class="form-control signupstyle form-control-lg" name="email" placeholder=" " required />
-                          <label class="form-label signuplabel " for="email">Email</label>
+                          <label class="form-label signuplabel" for="email">Email</label>
                         </div>
-                      </div>
-
-                      <div class="d-flex flex-row align-items-center ">                        
-                        <div class="form-floating flex-fill mb-0">
-                          <span class="passworderr inperr"><p></p></span>
+                 
+                        
+                        <span class="passworderr inperr"><p></p></span>
+                        <div class="form-floating ">
                           <input type="password" id="password" class="form-control signupstyle form-control-lg" name="password" placeholder="" required />
-                          <label class="form-label signuplabel " for="password">Password</label>
+                          <label class="form-label signuplabel" for="password">Password</label>
                         </div>
-                      </div>
+               
 
-                      <div class="d-flex flex-row align-items-center ">                        
-                        <div class="form-floating flex-fill mb-0">
-                          <span class="passworderror inperr" ><p></p></span>
-                          <input type="password" id="confirmPassword" class="form-control signupstyle form-control-lg" name="confirmPassword" placeholder=""  required />
-                          <label class="form-label signuplabel " for="confirmPassword">Confirm Password</label>
+                                   
+                        <span class="passworderror inperr" ><p></p></span>
+                        <div class="form-floating ">
+                          <input type="password" id="confirmPassword" class="form-control signupstyle form-control-lg" name="confirmPassword" placeholder=""   required />
+                          <label  class="form-label signuplabel" for="confirmPassword">Confirm Password</label>
                         </div>
-                      </div>
 
-                      <div class="d-flex flex-row align-items-center mb-3">                        
-                        <div class="form-floating flex-fill mb-0">
-                          <span class="phoneerr inperr" ><p></p></span>
+                
+
+                                   
+                        <span class="phoneerr inperr" ><p></p></span>
+                        <div class="form-floating mb-3">
                           <input type="text" id="phone" class="form-control signupstyle  form-control-lg" name="phone" placeholder=" " required />
                           <label class="form-label  signuplabel" for="phone">Phone</label>                          
                         </div>
-                      </div>
-
-                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+              
+                        <p>
+                          After clicking on 'Sign Up,' a One-Time Password (OTP) will be sent to the provided mobile number for secure and seamless account verification.</p>
+                      <div class="d-flex justify-content-center mx-4 mt-3 mb-3 mb-lg-4">
                         <button type="submit" class="btn signloginbtn btn-lg"id="submitBtn">Sign Up </button>
                       </div>
                       <div class="redirect-login">
 
-                        <p class="text-white"> If u already have an account?<a style="text-decoration: none; " href="/login">Login</a></p>
+                        <h6 class=""> If you already have an account ? <a style="text-decoration: none; " href="/login"> Login </a></h6>
                       </div>
                       <div id="recaptcha-container"></div>
 
@@ -79,7 +80,7 @@
                   </div>
                   <div class="col-md-8 col-lg-4 col-xl-5 d-flex align-items-center order-1 order-lg-2">
 
-                    <img class="login-img" src="/images/OIG.pADkWilL5driuq.webp"
+                    <img class="login-img" src="/images/login4.jfif"
                       class="img-fluid" alt="Sample image">
 
                   </div>

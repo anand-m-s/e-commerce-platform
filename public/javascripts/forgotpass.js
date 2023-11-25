@@ -26,8 +26,8 @@ let responseData
 const app = initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
 const auth = getAuth();
-const loginform = document.querySelector('#forgot-form')
 const loginsection = document.querySelector('#forgot-section')
+const loginform = document.querySelector('#forgot-form')
 const otpsection = document.querySelector('#otp-section')
 const otpform = document.querySelector('#otp-form')
 const errorP = document.querySelector('.errorP')
@@ -96,9 +96,15 @@ if (currentURL.includes('/forgotpassword')) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: userData.Email }),
             });
-
+            if(response.status===202){
+                responseData= await response.json()
+                console.log(responseData);
+                 // Display the error message on the frontend
+            const errorMessageElement = document.getElementById('errorMessage');
+            errorMessageElement.textContent = responseData.error;
+            }
             // alert(response.status)
-            if (response.status === 200) {
+            if(response.status === 200) {
                 responseData = await response.json();
                 console.log(responseData);
                 const mobilenumber = responseData.phoneNumber;
@@ -108,6 +114,7 @@ if (currentURL.includes('/forgotpassword')) {
                         // SMS sent. Prompt user to type the code from the message, then sign the
                         // user in with confirmationResult.confirm(code).
                         window.confirmationResult = confirmationResult;
+
                         loginsection.style.display = 'none';
                         otpsection.style.display = 'block';
 
@@ -118,35 +125,15 @@ if (currentURL.includes('/forgotpassword')) {
                             const otp_number = otpform.otp.value;
                             // Assuming confirmationResult is available globally
                             const result = await confirmationResult.confirm(otp_number).then(async (result) => {
-                                console.log(result);
+                                // console.log(result);
                                 if (result.user.phoneNumber) {
+                                    const successMessageElement = document.getElementById('success-message');
+                                    successMessageElement.textContent = 'OTP verification successful. You can proceed.';
 
-                                    otpsection.style.display = 'none';
+                                    // otpsection.style.display = 'none';
                                     otpsection.style.display = 'none';
                                     resetForm.style.display = 'block';
-                                    console.log(resetForm);
-                                    
-                                    // resetform.addEventListener('submit', (e) => {
-                                    //     e.preventDefault();
-                                    //     const formData = new FormData(resetform)
-                                    //     formData.append('userData', userData)
-                                    //     console.log(formData);
-                                    //     fetch('/resetpassword', {
-                                    //         method: 'POST',
-                                    //         headers: {
-                                    //             'Content-Type': 'application/json',
-                                    //         },
-                                    //         body: JSON.stringify({ formData }),
-                                    //     }).then(res=>console.log(res))
-                                    
-                                    // })
-                                    // await fetch('/resetpassword', {
-                                    //     method: 'POST',
-                                    //     headers: {
-                                    //         'Content-Type': 'application/json',
-                                    //     },
-                                    //     body: JSON.stringify({ formData }),
-                                    // })
+                                    // console.log(resetForm);                        
                                 }
 
                             }).catch((error) => {
@@ -163,25 +150,7 @@ if (currentURL.includes('/forgotpassword')) {
                             window.location.reload();
                         }, 1000);
                     });
-            }
-            // ---------------------------res.status(200).json({status:true})----------------------
-            // No errors, clear error message container
-            // errorP.innerHTML = "";
-            // Continue with the rest of your code for the successful case
-            // (code related to sending the request and handling responses)
-
-            //   resendOTPButton.addEventListener('click', async () => {
-            //     clearInterval(timerInterval)
-            //     signInWithPhoneNumber(auth, responseData.phoneNumber, appVerifier)
-            //         .then((confirmationResult) => {
-            //           // SMS sent. Prompt user to type the code from the message, then sign the
-            //           // user in with confirmationResult.confirm(code).
-            //           window.confirmationResult = confirmationResult;
-            //           startTimer();
-            //         })
-
-            //   });
-
+            }        
         }
     });
 

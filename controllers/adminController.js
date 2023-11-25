@@ -124,22 +124,43 @@ const isListedtoggle =async(req,res)=>{
   }
 }
 
-const loadAddProduct = async(req,res)=>{
+// const loadAddProduct = async(req,res)=>{
+//   try {
+//     // const categories = await Category.find({})
+//     const categories = await Category.find({ isListed: true });
+//     const products = await Product.find({})
+//     if(req.session.adminId){
+//         res.render('admin/addproduct',
+//         {email:req.session.email,
+//           categories,
+//           products
+//         })
+//     }else{
+//         res.redirect("/admin")
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// }
+
+const loadAddProduct =async (req, res) => {
   try {
-    // const categories = await Category.find({})
-    const categories = await Category.find({ isListed: true });
-    const products = await Product.find({})
     if(req.session.adminId){
-        res.render('admin/addproduct',
-        {email:req.session.email,
-          categories,
-          products
-        })
+      const { page = 1, itemsPerPage = 8 } = req.query;
+      const skip = (page - 1) * itemsPerPage;
+      const categories = await Category.find({ isListed: true });
+      const products = await Product.find({}).populate('Category')
+        .skip(skip)
+        .limit(itemsPerPage);  
+      const totalProducts = await Product.countDocuments();
+      const totalPages = Math.ceil(totalProducts / itemsPerPage);  
+      res.render('admin/addproduct', { categories,products, email: req.session.email, currentPage: parseInt(page), totalPages });
     }else{
-        res.redirect("/admin")
+      res.redirect("/admin");
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
@@ -153,14 +174,13 @@ const addproduct = async (req, res) => {
       }
       const { Name, Category, Brand, Description, Price,Storage,RAM,OS,Color,Processor,Stock,SalePrice} = req.body;
       // const files = req.files;
-      const files = req.files;
-      const imageData = []; // Access uploaded files
-
       // Create an array of ProductImage objects
       // const ProductImage = files.map((file) => ({
       //   filename: file.filename,
       //   path: file.path
       // }));
+      const files = req.files;
+      const imageData = []; // Access uploaded files
       for (const file of files) {
         console.log(file, "File received");
         const randomInteger = Math.floor(Math.random() * 20000001);
@@ -203,6 +223,49 @@ const addproduct = async (req, res) => {
   }
 };
 
+// const updateProduct = async (req, res) => {
+//   try {
+//     upload.array('ProductImage', 5)(req, res, async (err) => {
+//       if (err) {
+//         console.error(err);
+//         return res.status(500).json({ error: 'Image upload failed' });
+//       }
+//       const productId = req.query.id;
+//       const product = await Product.findById(productId);
+//       if (!product) {
+//         return res.status(404).json({ error: 'Product not found' });
+//       }
+//       const { Name, Category, Brand, Description, Price,Storage,Ram,Os,Color,Processor,Stock,SalePrice } = req.body;
+//       product.Name = Name;
+//       product.Category = Category;
+//       product.Brand = Brand;
+//       product.Description = Description;
+//       product.Price = Price;
+//       product.Features = [{
+//         Processor: Processor,
+//         Ram: Ram,
+//         Storage: Storage,
+//         Os: Os,
+//         Color: Color
+//       }];
+//       product.SalePrice=SalePrice,
+//       product.Stock=Stock
+//       if (req.files && req.files.length > 0) {
+//         const productImage = req.files.map(file => ({
+//           filename: file.filename,
+//           path: file.path
+//         }));
+//         product.ProductImage = productImage;
+//       }
+//       await product.save();
+//       res.redirect(`/admin/addproduct`);
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
 const updateProduct = async (req, res) => {
   try {
     upload.array('ProductImage', 5)(req, res, async (err) => {
@@ -215,19 +278,50 @@ const updateProduct = async (req, res) => {
       if (!product) {
         return res.status(404).json({ error: 'Product not found' });
       }
-      const { Name, Category, Brand, Description, Price } = req.body;
+      const {Name, Category, Brand, Description, Price,Storage,Ram,Os,Color,Processor,Stock,SalePrice } = req.body;
+
+      // Update individual properties
       product.Name = Name;
       product.Category = Category;
       product.Brand = Brand;
       product.Description = Description;
       product.Price = Price;
-      if (req.files && req.files.length > 0) {
-        const productImage = req.files.map(file => ({
-          filename: file.filename,
-          path: file.path
-        }));
-        product.ProductImage = productImage;
+      product.SalePrice = SalePrice;
+      product.Stock = Stock;
+
+      // Update Features field
+      product.Features = [{
+        Processor: Processor,
+        Ram: Ram,
+        Storage: Storage,
+        Os: Os,
+        Color: Color
+      }];
+
+      // Image cropping logic
+      const files = req.files;
+      const imageData = [];
+      for (const file of files) {
+        const randomInteger = Math.floor(Math.random() * 20000001);
+        const imageDirectory = Path.join('public', 'images', 'uploads');
+        const imgFileName = "cropped" + randomInteger + ".jpg";
+        const imagePath = Path.join(imageDirectory, imgFileName);
+        const croppedImage = await sharp(file.path)
+          .resize(400, 400, {
+            fit: "cover",
+          })
+          .toFile(imagePath);
+
+        if (croppedImage) {
+          imageData.push({ filename: imgFileName, path: imagePath });
+        }
       }
+
+      // Update product images
+      if (imageData.length > 0) {
+        product.ProductImage = imageData;
+      }
+
       await product.save();
       res.redirect(`/admin/addproduct`);
     });
@@ -237,24 +331,38 @@ const updateProduct = async (req, res) => {
   }
 };
 
+
 const usermanage = async (req, res) => {
   const ITEMS_PER_PAGE = 4; // Adjust as needed
   try {
     if (req.session.adminId) {
-      const page = req.query.page || 1;
-
-      const users = await User.find({})
-        .skip((page - 1) * ITEMS_PER_PAGE)
-        .limit(ITEMS_PER_PAGE);
-      const totalUsers = await User.countDocuments({});
-      const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
-
-      res.render('admin/usermanagement', 
-      {email: req.session.email,
-        users,
-        currentPage: page,
-        totalPages,
+      const { page = 1, search = '' } = req.query;
+      // Set the number of items per page and calculate skip value
+      const itemsPerPage = 4;
+      const skip = (page - 1) * itemsPerPage;
+      // Construct a regex pattern for case-insensitive search
+      const searchPattern = new RegExp(search, 'i');
+      // Fetch users based on the search pattern
+      const users = await User.find({
+        $or: [
+          { username: { $regex: searchPattern } },
+          { email: { $regex: searchPattern } },
+          { phone: { $regex: searchPattern } },
+        ],
+      })
+        .skip(skip)
+        .limit(itemsPerPage);
+      // Count the total number of users for pagination
+      const totalUsers = await User.countDocuments({
+        $or: [
+          { username: { $regex: searchPattern } },
+          { email: { $regex: searchPattern } },
+          { phone: { $regex: searchPattern } },
+        ],
       });
+      // Calculate total pages
+      const totalPages = Math.ceil(totalUsers / itemsPerPage);
+      res.render('admin/usermanagement', { email: req.session.email,users, currentPage: parseInt(page), totalPages, search });  
     } else {
       res.redirect('/admin');
     }
@@ -324,6 +432,7 @@ const editProduct = async(req,res)=>{
       return res.status(400).json({error: "Product ID is missing in the query parameteres"});
     }
     const products = await Product.findById(productId);
+    // console.log(products);
     if(req.session.adminId){
 
       res.render("admin/edit-product",{products,categories,email:req.session.email})   
@@ -357,23 +466,52 @@ const useraction =async (req,res)=>{
   }
 }
 
-const orders = async(req,res)=>{
-  try {
-    const orders= await Order.find().populate('user');
-    res.render("admin/orderlist-admin",{orders,email:req.session.email});
-  } catch (error) {
+// const orders = async(req,res)=>{
+//   try {
+//     const orders= await Order.find().populate('user');
+//     res.render("admin/orderlist-admin",{orders,email:req.session.email});
+//   } catch (error) {
     
+//   }
+// }
+
+const orders =async (req, res) => {
+  try {
+    if(req.session.adminId){
+      const { page = 1, itemsPerPage = 8 } = req.query;
+      const skip = (page - 1) * itemsPerPage;
+  
+      const orders = await Order.find().populate('user')
+        .skip(skip)
+        .limit(itemsPerPage);
+  
+      const totalOrders = await Order.countDocuments();
+      const totalPages = Math.ceil(totalOrders / itemsPerPage);
+  
+      res.render('admin/orderlist-admin', { orders, email: req.session.email, currentPage: parseInt(page), totalPages });
+
+    }else{
+      res.redirect("/admin")
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
 
 const orderdetails = async(req,res)=>{
-  const orderId = req.query.orderId;
-  const order = await Order.findById({_id:orderId})
-  .populate({path:"address",model:Address})
-    .populate("products.product")
-    .populate("user")
-  res.render("admin/ordersdetails-admin",{order,email:req.session.email})
+  if(req.session.adminId){
+
+    const orderId = req.query.orderId;
+    const order = await Order.findById({_id:orderId})
+    .populate({path:"address",model:Address})
+      .populate("products.product")
+      .populate("user")
+    res.render("admin/ordersdetails-admin",{order,email:req.session.email})
+  }else{
+    res.redirect("/admin")
+  }
 }
 
 

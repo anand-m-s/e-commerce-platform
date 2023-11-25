@@ -26,21 +26,19 @@ router.get("/forgotpassword",userController.loadForgotPassword);
 
 
 
-
-
-
-
 router.post('/passwordreset', userController.forgotReset);
 router.post('/resetpassword',userController.resetpassword);
 router.post("/login",userController.login);
 router.post("/signup",userController.register);
 router.post("/addaddress",userController.addaddress);
+router.post("/addresscheckout",userController.addressCheckout);
 router.post("/updateaddress",userController.updateAddress);
 router.post("/updateuser",userController.updateUser);
 router.post('/removeFromCart',cartController.removeFromCart);
 router.post('/updateQuantity',cartController.updateQuantity);
 router.post("/signupVerify",userController.signupVerify);
 router.post('/checkout',userController.checkOut);
+router.post('/cancelproduct',userController.cancelProduct);
   
 
 module.exports = router;

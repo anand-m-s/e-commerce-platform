@@ -19,7 +19,8 @@ const addToCart = async (req, res) => {
         if(!cart){
           cart = new Cart ({user:userId,products:[]});
           await cart.save();
-        }        
+        }  
+      
         const totalAmount = cart.products.reduce(
           (acc, item) => acc + item.product.Price * item.quantity,
           0
@@ -85,8 +86,15 @@ const updateQuantity = async (req, res) => {
         { $set: { 'products.$.quantity': newQuantity } },
         { new: true }
       );
+      console.log(newQuantity);
       if (updatedCart) {
         const updatedProduct = await Product.findById(productId);
+        // console.log(updatedProduct);
+          // Check if the new quantity exceeds the product stock
+      if (newQuantity > updatedProduct.Stock) {
+        return res.status(400).json({ error: 'Not enough stock available.' });
+      }
+
         const updatedPrice = updatedProduct.Price * newQuantity;
         const updatedCartItem = updatedCart.products.find(item => item._id.equals(itemId));
         updatedCartItem.product.Price = updatedPrice;
@@ -94,13 +102,13 @@ const updateQuantity = async (req, res) => {
         await updatedCart.save();
         // Populate the cart with product details
         const populatedCart = await Cart.findById(cartId).populate('products.product');
-        // Include the cart and totalAmount in the response
+      
         res.status(200).json({
           message: 'Quantity updated successfully.',
           updatedCart,
-          updatedPrice: updatedCartItem.product.Price,
-         
-          cart: populatedCart, // Include the populated cart in the response
+          updatedPrice: updatedCartItem.product.Price,         
+          cart: populatedCart,// Include the populated cart in the response
+          
         });
       } else {
         res.status(404).json({ error: 'Cart item not found.' });

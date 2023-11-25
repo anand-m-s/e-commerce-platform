@@ -1,7 +1,7 @@
 const session = require("express-session");
+const mongoose = require('mongoose')
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
-const randomstring = require("randomstring")
 const Product = require("../model/productModel");
 const Category = require("../model/category");
 const Address = require("../model/address");
@@ -146,7 +146,8 @@ const userLogin = (req, res) => {
         if (req.session.userId) {
             res.redirect("/home")
         } else {
-            res.render("login-user", { title: "login" })
+            const msg='';
+            res.render("login-user",{msg})
         }
     } catch (error) {
         console.log(error);
@@ -197,7 +198,7 @@ const forgotReset =  async (req, res) => {
       const user = await User.findOne({ email });        
       if (!user) {
         
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(202).json({ error: 'User not found' });
       }  
       // Extract the phone number from the user object
       const phoneNumber = user.phone;  
@@ -222,8 +223,8 @@ const resetpassword = async (req, res) => {
         user.password = hashedPassword;
         await user.save();
         console.log("Password reset successful");
-        // Redirect to the login page with a success message
-        res.redirect("/login");
+        const msg ='Password reset successful';
+        res.render("login-user",{msg});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -287,6 +288,32 @@ const addaddress =async(req,res)=>{
         users.address.push(savedAddress._id); // Add the new address's ID to the user's address array
         await users.save();     
         res.redirect("/userprofile")
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+
+}
+const addressCheckout =async(req,res)=>{
+    try {
+        const{fullName,addressline,city,state,landmark,pincode,country,phone,altphone}=req.body;
+        const newaddress = new Address({
+            fullName,
+            addressline,
+            city,
+            state,
+            landmark,
+            pincode,
+            country,
+            phone,
+            altphone
+        });
+         const savedAddress = await newaddress.save();
+
+        const users = await User.findById(req.session.userId); // Assuming you have the user ID in req.userId
+        users.address.push(savedAddress._id); // Add the new address's ID to the user's address array
+        await users.save();     
+        res.redirect("/checkout")
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -385,6 +412,9 @@ const addProductsToCart = async(req,res)=>{
         const userId = req.session.userId
         // const user = await User.findById(req.session.userId);
         const product = await Product.findById(productId);
+        if (product.Stock === 0) {
+            return res.status(400).send('This product is out of stock.');
+          }
         let userCart = await Cart.findOne({user:userId});
         if (!userCart) {
             // If the cart doesn't exist, create a new one
@@ -481,6 +511,16 @@ const checkOut = async (req, res) => {
       });
   
       await newOrder.save();
+
+         // Update stock for each product in the order
+    for (const item of cart.products) {
+        const productId = item.product._id;
+        const orderedQuantity = item.quantity;
+        // Update product stock by subtracting ordered quantity
+        await Product.findByIdAndUpdate(productId, {
+          $inc: { Stock: -orderedQuantity },
+        });
+      }
   
       // Clear the user's cart after the order is placed
       cart.products = [];
@@ -518,6 +558,74 @@ const OrderDetails= async(req,res)=>{
         res.redirect("/login");
     }
 }
+
+// const cancelProduct = async (req, res) => {
+//     try {
+//         const productId = req.query.productId;
+//         const orderId = req.query.orderId; // Assuming you have the orderId in the route
+//         console.log(productId);
+//         console.log(orderId);
+//         // Assuming you have a method to cancel the product in your Order model
+//         // Update this with the actual method you use in your application
+//         const cancelledProduct = await Order.findByIdAndUpdate(orderId, {
+//             $pull: { products: { product: productId } }
+//         });
+        
+//           // Check if the order has no more products, and if so, remove the order
+//           const updatedOrder = await Order.findById(orderId);
+//           console.log(updatedOrder);
+//           if (!updatedOrder || !updatedOrder.products || updatedOrder.products.length === 0) {
+//               // Remove the order
+//               console.log("inside order collection remove");
+//               await Order.findByIdAndRemove(orderId);
+//               console.log('Order removed successfully');
+//           }
+
+//         console.log('Product cancelled successfully');
+
+//         // Optionally, you can send a response back to the client
+//         res.status(200).json({ success: true, message: 'Product cancelled successfully' });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ success: false, message: 'Internal server error' });
+//     }
+// };
+
+const cancelProduct = async (req, res) => {
+    try {
+        const productId = req.query.productId;
+        const orderId = req.query.orderId;        
+        const cancelledProduct = await Order.findByIdAndUpdate(orderId, {
+            $pull: { products: { product: productId } }
+        });
+        const cancelledProductDetails = cancelledProduct.products.find(
+            (product) => product.product.toString() === productId
+        );
+        if (cancelledProductDetails) {
+            const cancelledQuantity = cancelledProductDetails.quantity;
+            console.log(`Cancelled Quantity: ${cancelledQuantity}`);
+        } else {
+            console.log('Product not found in the order');
+        }          
+          await Product.findByIdAndUpdate(productId, {
+            $inc: { Stock: cancelledProductDetails.quantity }
+        });
+        const updatedOrder = await Order.findById(orderId);
+        if (!updatedOrder || !updatedOrder.products || updatedOrder.products.length === 0) {
+            // Remove the order
+            await Order.findByIdAndRemove(orderId);
+            console.log('Order removed successfully');            
+            return res.status(201).json({ success: true, message: 'Order removed successfully' });
+        }
+        console.log('Product cancelled successfully');        
+        res.status(200).json({ success: true, message: 'Product cancelled successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
+
   
 
 module.exports = {
@@ -547,6 +655,8 @@ module.exports = {
     loadOrderList,
     OrderDetails,
     forgotReset,
-    resetpassword
+    resetpassword,
+    cancelProduct,
+    addressCheckout
  
 }

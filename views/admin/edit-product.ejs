@@ -1,7 +1,7 @@
 <!-- edit-product.ejs -->
 <%- include("../partials/admin-header") %>
 
-<section class="py-5">
+<section class="">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8 col-md-10 mx-auto">
@@ -11,9 +11,64 @@
           </div>
           <div class="card-body">
             <form action="/admin/updateproduct?id=<%= products._id %>" method="POST" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="productname">Product Name</label>
-                <input type="text" class="form-control" id="productname" name="Name" value="<%= products.Name %>" required>
+              <div class="d-flex justify-content-around">
+
+                <div class="form-group col-md-5">
+                  <label for="productname">Product Name</label>
+                  <input type="text" class="form-control" id="productname" name="Name" value="<%= products.Name %>" required>
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="brand">Brand</label>
+                  <input type="text" class="form-control" id="brand" name="Brand" value="<%= products.Brand %>" required>
+                </div>
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="form-group col-md-5">
+                  <label for="productprice">Sale Price:</label>
+                  <input type="number" class="form-control" id="productprice" name="Price" value="<%= products.Price %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="productprice">Price:</label>
+                  <input type="number" class="form-control" id="productprice" name="SalePrice" value="<%= products.SalePrice %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="form-group col-md-5">
+                  <label for="Processor">Processor:</label>
+                  <input type="text" class="form-control" id="Processor" name="Processor" value="<%=  products.Features[0].Processor %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="Os">OS</label>
+                  <input type="text" class="form-control" id="Os" name="Os" value="<%= products.Features[0].Os %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="form-group col-md-5">
+                  <label for="Ram">RAM:</label>
+                  <input type="text" class="form-control" id="Ram" name="Ram" value="<%= products.Features[0].Ram %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="Storage">Storage</label>
+                  <input type="text" class="form-control" id="Storage" name="Storage" value="<%= products.Features[0].Storage %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+              </div>
+              <div class="d-flex justify-content-around">
+                <div class="form-group col-md-5">
+                  <label for="Color">Color:</label>
+                  <input type="text" class="form-control" id="Color" name="Color" value="<%= products.Features[0].Color %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
+                <div class="form-group col-md-5">
+                  <label for="Stock">Stock</label>
+                  <input type="number" class="form-control" id="Stock" name="Stock" value="<%= products.Stock %>" required>
+                  <span><p id="producterr"></p> </span>
+                </div>
               </div>
               <!-- Add form fields to edit other product details (Category, Brand, Description, Price, and Product Image) -->
               <!-- For example: -->
@@ -30,17 +85,8 @@
                 </select>
               </div>
               <div class="form-group">
-                <label for="brand">Brand</label>
-                <input type="text" class="form-control" id="brand" name="Brand" value="<%= products.Brand %>" required>
-              </div>
-              <div class="form-group">
                 <label for="description">Description</label>
                 <textarea class="form-control" id="description" name="Description" rows="4" required><%= products.Description %></textarea>
-              </div>
-              <div class="form-group">
-                <label for="productprice">Product Price:</label>
-                <input type="number" class="form-control" id="productprice" name="Price" value="<%= products.Price %>" required>
-                <span><p id="producterr"></p> </span>
               </div>
               <div class="form-group">
                 <label for="productimage">Product Image:</label>
