@@ -5,7 +5,7 @@ const Cart = require("../model/cart");
 
 const addToCart = async (req, res) => {
     try {
-      if (req.session.userId) {
+     
         const userId = req.session.userId;
         const users = await User.findById(userId);
         let cart = await Cart.findOne({ user: userId }).populate({
@@ -32,9 +32,7 @@ const addToCart = async (req, res) => {
           // If it's a regular request, render the addtocart page
           res.render('addtocart', { username: users.username, cart,totalAmount});
         }
-      } else {
-        res.redirect('/login');
-      }
+     
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Internal Server Error' });

@@ -75,17 +75,14 @@ const homelogin = async (req, res) => {
         });
         // Filter out products where Category is null (not populated)
         const products = filteredproducts.filter(product => product.Category !== null);
-        if (req.session.userId) {
+       
             const user = await User.findById(req.session.userId);
             if(user && user.Isblocked){
                 req.session.userId=null;
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
                 res.render("home", { username: req.session.username, products })
-            }
-        } else {
-            res.redirect("/login")
-        }
+            }     
     } catch (error) {
         console.log(error);
     }
@@ -253,15 +250,10 @@ const displayProduct = async(req,res)=>{
 }
 
 const loadUserProfile = async(req,res)=>{
-    try {
-        if(req.session.userId){
-            // const users = await User.findById(req.session.userId);
+    try {               
             const users = await User.findById(req.session.userId).populate('address');
             const address = users.address;  // Assuming you want the latest added address            
-            res.render("user-profile",{username:req.session.username,users,address});
-        }else{
-            res.redirect("/login");
-        }
+            res.render("user-profile",{username:req.session.username,users,address});      
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred");
@@ -382,8 +374,8 @@ const deleteAddress = async (req, res) => {
 const userProfileEdit = async(req,res)=>{
     try {
         
-        const user = req.session.userId;
-        const users = await User.findById(user);
+        const userID = req.session.userId;
+        const users = await User.findById(userID);
         res.render("userdetails",{users}); 
     } catch (error) {
         console.log(error);
@@ -406,8 +398,7 @@ const updateUser = async(req,res)=>{
 }
 
 const addProductsToCart = async(req,res)=>{
-    try {
-        
+    try {        
         const productId = req.query.productId;
         const userId = req.session.userId
         // const user = await User.findById(req.session.userId);
@@ -439,7 +430,7 @@ const addProductsToCart = async(req,res)=>{
 
   const loadCheckOutPage = async(req,res)=>{
     try {
-        if(req.session.userId){
+       
             const userId = req.session.userId
             const user = await User.findById(userId)
               .populate('address');
@@ -459,9 +450,7 @@ const addProductsToCart = async(req,res)=>{
                 return res.redirect("/addtocart")
               }                   
             res.render("checkOutPage",{user,address,cart,totalAmount,username:req.session.username});
-        }else{
-            res.redirect("/login")
-        }
+      
         
     } catch (error) {
         
@@ -536,27 +525,23 @@ const checkOut = async (req, res) => {
 
   const loadOrderList =async(req,res)=>{
     try {        
-        if(req.session.userId){
+      
             const userId = req.session.userId;
             const orders = await Order.find({user:userId})            
             res.render("orderlist",{orders,username:req.session.username});
-        }else{
-            res.redirect("/login");
-        }
+     
     } catch (error) {
         
     }
 }
 
 const OrderDetails= async(req,res)=>{
-    if(req.session.userId){
+   
         const orderId = req.query.orderId;
         const order = await Order.findById({_id:orderId}).populate({path:"products.product"});
         const address = await Address.findById({_id:order.address});              
         res.render("orderdetails",{order,address,username:req.session.username});
-    }else{
-        res.redirect("/login");
-    }
+ 
 }
 
 // const cancelProduct = async (req, res) => {

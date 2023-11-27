@@ -50,12 +50,7 @@ const adminLog = (req, res)=> {
 
 const admindashboard = (req, res) =>{
   try {
-    if(req.session.adminId){
         res.render("admin/admin-dashboard",{email:req.session.email})
-      }else{
-        res.redirect("/admin")
-      }
-    
   } catch (error) {
     console.log(error);
   }  
@@ -75,13 +70,9 @@ const adminlogout = (req, res) => {
 
 const loadcategory = async(req,res)=>{
   try {
-      if(req.session.adminId){
       //fetch category data from the database
       const categories = await Category.find();
       res.render('admin/addcategory',{email:req.session.email,categories})
-    }else{
-      res.redirect("/admin")
-  }
     } catch (error) {
       console.log(error);
       res.status(500).send("Error fetching category data");
@@ -146,7 +137,6 @@ const isListedtoggle =async(req,res)=>{
 
 const loadAddProduct =async (req, res) => {
   try {
-    if(req.session.adminId){
       const { page = 1, itemsPerPage = 8 } = req.query;
       const skip = (page - 1) * itemsPerPage;
       const categories = await Category.find({ isListed: true });
@@ -155,10 +145,7 @@ const loadAddProduct =async (req, res) => {
         .limit(itemsPerPage);  
       const totalProducts = await Product.countDocuments();
       const totalPages = Math.ceil(totalProducts / itemsPerPage);  
-      res.render('admin/addproduct', { categories,products, email: req.session.email, currentPage: parseInt(page), totalPages });
-    }else{
-      res.redirect("/admin");
-    }
+      res.render('admin/addproduct', { categories,products, email: req.session.email, currentPage: parseInt(page), totalPages });   
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -335,7 +322,7 @@ const updateProduct = async (req, res) => {
 const usermanage = async (req, res) => {
   const ITEMS_PER_PAGE = 4; // Adjust as needed
   try {
-    if (req.session.adminId) {
+  
       const { page = 1, search = '' } = req.query;
       // Set the number of items per page and calculate skip value
       const itemsPerPage = 4;
@@ -363,9 +350,7 @@ const usermanage = async (req, res) => {
       // Calculate total pages
       const totalPages = Math.ceil(totalUsers / itemsPerPage);
       res.render('admin/usermanagement', { email: req.session.email,users, currentPage: parseInt(page), totalPages, search });  
-    } else {
-      res.redirect('/admin');
-    }
+
   } catch (error) {
     console.log(error);
   }
@@ -374,13 +359,11 @@ const usermanage = async (req, res) => {
 
 const loadEditCategory = async(req,res)=>{
   try {
-    if(req.session.adminId){
+  
       categoryID =req.query.id
       const category = await Category.findById(categoryID)
       res.render("admin/editcategory",{email:req.session.email,category})
-    }else[
-      res.redirect("/admin")
-    ]
+ 
     
   } catch (error) {
     console.log(error);
@@ -477,7 +460,7 @@ const useraction =async (req,res)=>{
 
 const orders =async (req, res) => {
   try {
-    if(req.session.adminId){
+    
       const { page = 1, itemsPerPage = 8 } = req.query;
       const skip = (page - 1) * itemsPerPage;
   
@@ -490,9 +473,7 @@ const orders =async (req, res) => {
   
       res.render('admin/orderlist-admin', { orders, email: req.session.email, currentPage: parseInt(page), totalPages });
 
-    }else{
-      res.redirect("/admin")
-    }
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -501,7 +482,7 @@ const orders =async (req, res) => {
 
 
 const orderdetails = async(req,res)=>{
-  if(req.session.adminId){
+
 
     const orderId = req.query.orderId;
     const order = await Order.findById({_id:orderId})
@@ -509,9 +490,7 @@ const orderdetails = async(req,res)=>{
       .populate("products.product")
       .populate("user")
     res.render("admin/ordersdetails-admin",{order,email:req.session.email})
-  }else{
-    res.redirect("/admin")
-  }
+
 }
 
 
