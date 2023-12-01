@@ -110,6 +110,21 @@ body {
  .add-product{
   margin-right: 2rem;
  }
+
+/* product mangemenent starts */
+.product-management{
+ 
+        background-color: #c3eb9a;
+        display: flex;
+        padding: .5rem;
+        justify-content: center;
+        align-items: center;
+        /* font-family: monospace; */
+        margin-bottom: 1rem;
+  
+}
+/* product mangemenr ends */
+
  /* Modify the specificity to ensure the style is applied */
 
   
@@ -558,7 +573,7 @@ img{
     padding: .5rem;
     justify-content: space-around;
     align-items: center;
-    font-family: monospace;
+    /* font-family: monospace; */
     margin-bottom: 1rem;
 }
 
@@ -592,6 +607,16 @@ img{
     border: 2px solid greenyellow;
     border-radius: 1rem;
 }
+
+.user-action-button{
+    background-color: rgb(56, 182, 224);
+    color: #fff;
+    width: 4rem;
+    border: 0;
+    height: 1.6rem;
+    border-radius: 1rem;
+
+}
 /* usermanagement */
 
 /* category err */
@@ -599,6 +624,18 @@ img{
     display: flex;
     justify-content: center;
    color: #000;
+}
+
+.category-management{
+    
+        background-color: #c3eb9a;
+        display: flex;
+        padding: .5rem;
+        justify-content: center;
+        align-items: center;
+        /* font-family: monospace; */
+        margin-bottom: 1rem;
+ 
 }
 /* category err */
 
@@ -762,7 +799,15 @@ body{background-color: #eeeeee;}.container{margin-top:50px;margin-bottom: 50px}.
 .orderlist td{
     border-bottom: 1px solid #ddd; 
     padding: 15px; 
-
+}
+.order-management{
+    background-color: #c3eb9a;
+    display: flex;
+    padding: .5rem;
+    justify-content: center;
+    align-items: center;
+    
+    margin-bottom: 1rem;
 }
 /* adminorderlist  */
 
@@ -780,6 +825,14 @@ body{background-color: #eeeeee;}.container{margin-top:50px;margin-bottom: 50px}.
 }
 /* order status color */
 
+
+/* crop images add product starts */  
+  .cropper-container img {
+    display: block;
+    max-width: 100%;
+  }
+  
+/* crop images add product ends */
 
 
 

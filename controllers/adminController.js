@@ -160,30 +160,12 @@ const addproduct = async (req, res) => {
         return res.status(500).json({ error: 'Image upload failed' });
       }
       const { Name, Category, Brand, Description, Price,Storage,RAM,OS,Color,Processor,Stock,SalePrice} = req.body;
-      // const files = req.files;
-      // Create an array of ProductImage objects
-      // const ProductImage = files.map((file) => ({
-      //   filename: file.filename,
-      //   path: file.path
-      // }));
       const files = req.files;
-      const imageData = []; // Access uploaded files
-      for (const file of files) {
-        console.log(file, "File received");
-        const randomInteger = Math.floor(Math.random() * 20000001);
-        const imageDirectory = Path.join('public','images','uploads');
-        const imgFileName = "cropped" + randomInteger + ".jpg";
-        const imagePath = Path.join(imageDirectory, imgFileName);
-        console.log(imagePath, "Image path");
-        const croppedImage = await sharp(file.path)
-          .resize(280, 280, {
-            fit: "cover",
-          })
-          .toFile(imagePath);          
-        if (croppedImage) {
-          imageData.push({filename:imgFileName,path:imagePath});
-        }
-      }
+      // Create an array of ProductImage objects
+      const ProductImage = files.map((file) => ({
+        filename: file.filename,
+        path: file.path
+      }));
       const newProduct = new Product({
         Name,
         Category,
@@ -199,7 +181,7 @@ const addproduct = async (req, res) => {
         }],
         SalePrice,
         Stock,
-        ProductImage: imageData, // Update the field name to match your model
+        ProductImage: ProductImage, // Update the field name to match your model
       });
       await newProduct.save();
       res.redirect('/admin/addproduct');
@@ -285,28 +267,35 @@ const updateProduct = async (req, res) => {
         Color: Color
       }];
 
-      // Image cropping logic
-      const files = req.files;
-      const imageData = [];
-      for (const file of files) {
-        const randomInteger = Math.floor(Math.random() * 20000001);
-        const imageDirectory = Path.join('public', 'images', 'uploads');
-        const imgFileName = "cropped" + randomInteger + ".jpg";
-        const imagePath = Path.join(imageDirectory, imgFileName);
-        const croppedImage = await sharp(file.path)
-          .resize(400, 400, {
-            fit: "cover",
-          })
-          .toFile(imagePath);
+      // // Image cropping logic
+      // const files = req.files;
+      // const imageData = [];
+      // for (const file of files) {
+      //   const randomInteger = Math.floor(Math.random() * 20000001);
+      //   const imageDirectory = Path.join('public', 'images', 'uploads');
+      //   const imgFileName = "cropped" + randomInteger + ".jpg";
+      //   const imagePath = Path.join(imageDirectory, imgFileName);
+      //   const croppedImage = await sharp(file.path)
+      //     .resize(400, 400, {
+      //       fit: "cover",
+      //     })
+      //     .toFile(imagePath);
 
-        if (croppedImage) {
-          imageData.push({ filename: imgFileName, path: imagePath });
-        }
-      }
+      //   if (croppedImage) {
+      //     imageData.push({ filename: imgFileName, path: imagePath });
+      //   }
+      // }
 
       // Update product images
-      if (imageData.length > 0) {
-        product.ProductImage = imageData;
+      // if (imageData.length > 0) {
+      //   product.ProductImage = imageData;
+      // }
+      if (req.files && req.files.length > 0) {
+        const productImage = req.files.map(file => ({
+          filename: file.filename,
+          path: file.path
+        }));
+        product.ProductImage = productImage;
       }
 
       await product.save();
@@ -429,10 +418,9 @@ const editProduct = async(req,res)=>{
 }
 
 const useraction =async (req,res)=>{
-  const userID = req.query.id;
-  const action = req.query.action;
+  const {userId,action}=req.body;
   try {
-      const user = await User.findById(userID);
+      const user = await User.findById(userId);
       if(!user){
           return res.status(400).send("user not found");
       }
@@ -441,27 +429,21 @@ const useraction =async (req,res)=>{
       } else if (action === "unblock") {
         user.Isblocked = false;
       }      
-        await user.save()
-        res.redirect("/admin/usermanagement")
+        await user.save();
+        res.status(200).json({success:true,user:user});
+        
   } catch (error) {
     console.error(error);
-    res.status(500).send("An error occurred");
+    res.status(500).json({ error: 'An error occurred' });
   }
 }
 
-// const orders = async(req,res)=>{
-//   try {
-//     const orders= await Order.find().populate('user');
-//     res.render("admin/orderlist-admin",{orders,email:req.session.email});
-//   } catch (error) {
-    
-//   }
-// }
+
 
 const orders =async (req, res) => {
   try {
     
-      const { page = 1, itemsPerPage = 8 } = req.query;
+      const { page = 1, itemsPerPage = 7 } = req.query;
       const skip = (page - 1) * itemsPerPage;
   
       const orders = await Order.find().populate('user')

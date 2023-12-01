@@ -28,18 +28,14 @@
                     <td><%= user.email %></td>
                     <td><%= user.phone %></td>
                     <td>
-                        <% if (user.Isblocked) { %>
-                            <span class="badge bg-danger">Blocked</span>
-                        <% } else { %>
-                            <span class="badge bg-success">Active</span>
-                        <% } %>
+                      <span id="status-<%=user._id %>" class="<%= user.Isblocked? 'badge bg-danger' : 'badge bg-success' %>">
+                      <%= user.Isblocked? "Blocked" : "Active" %>
+                      </span>
                     </td>
                     <td>
-                        <% if (user.Isblocked) { %>
-                            <a href="/admin/useractions?id=<%= user._id %>&action=unblock" class="btn btn-success btn-sm">Unblock</a>
-                          <% } else { %>
-                            <a href="/admin/useractions?id=<%= user._id %>&action=block" class="btn btn-danger btn-sm">Block</a>
-                          <% } %>
+                       <button data-user-id ="<%=user._id %>" data-action="<%= user.Isblocked ? 'unblock' : 'block' %>"  class=" user-action-button">
+                      <%= user.Isblocked? 'unblock' : 'block' %>
+                      </button>
                        
                     </td>
                 </tr>
@@ -77,7 +73,55 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  
+  document.querySelectorAll('.user-action-button').forEach(button=>{
+    button.addEventListener('click',function (){
+      const userId =this.getAttribute('data-user-id');
+      const action = this.getAttribute('data-action');      
+      const requestData = {
+        userId : userId,
+        action : action
+      }
+      let confirmationTitle, confirmationButtonText, confirmationIcon;
+
+      if (action === 'block') {
+        confirmationTitle = 'Are you sure?';
+        confirmationButtonText = 'Yes, Block!';
+        confirmationIcon = 'warning';
+      } else if (action === 'unblock') {
+        confirmationTitle = 'Are you sure?';
+        confirmationButtonText = 'Yes, Unblock!';
+        confirmationIcon = 'success';
+      }
+
+      Swal.fire({
+        title: confirmationTitle,
+        text: `${action.charAt(0).toUpperCase() + action.slice(1)} this user`,
+        icon: confirmationIcon,
+        showCancelButton: true,
+        confirmButtonColor: action === 'block' ? "#d33" : "#3085d6",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: confirmationButtonText
+        }).then(result => {
+            if (result.isConfirmed) {     
+      fetch('/admin/useractions',{
+        method : 'POST',
+        headers : {
+          'Content-Type' : 'application/json',          
+        },
+        body:JSON.stringify(requestData),
+      })
+      .then(response=>response.json())
+      .then(data => {            
+            console.log(data.user);            
+            window.location.reload(); 
+        })
+        .catch(error => {            
+            console.error(error);
+        });
+      }
+    })
+    })
+  })
 </script>
 <%-include("../partials/end") %>
 

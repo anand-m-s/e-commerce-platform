@@ -81,16 +81,16 @@
                   <input type="radio" name="paymentMethod" value="cod" style="display: none;">
                   <label for="creditCard">Cash on delivery</label>
               </div>
-              <div class="paymentMethod" data-method="creditCard" onclick="selectPaymentMethod('creditCard')">
-                  <input type="radio" name="paymentMethod" value="creditCard" style="display: none;">
-                  <label for="creditCard">Credit Card</label>
+              <div class="paymentMethod" data-method="Razorpay" onclick="selectPaymentMethod('Razorpay')">
+                  <input type="radio" name="paymentMethod" value="Razorpay" style="display: none;">
+                  <label for="Razorpay">Razorpay</label>
               </div>
       
               <div class="paymentMethod" data-method="paypal" onclick="selectPaymentMethod('paypal')">
                   <input type="radio" name="paymentMethod" value="paypal" style="display: none;">
                   <label for="paypal">PayPal</label>
               </div>
-          </div>
+            </div>
 
         <button style="width: 22rem; color: #fff;" id="checkoutButton" class="btn btn-success m-2 p-3"> <!-- Add a submit button -->
           Checkout
@@ -160,6 +160,7 @@
 <%- include("./partials/footer") %>
 <script src="/javascripts/addressValidation.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   function selectPaymentMethod(method) {
   // Unselect all payment methods
@@ -170,6 +171,7 @@
   // Select the clicked payment method
   const selectedInput = document.querySelector(`.paymentMethod[data-method="${method}"] input[type="radio"]`);
   selectedInput.checked = true;
+
 }
 
 document.getElementById('checkoutButton').addEventListener('click', function () {
@@ -206,24 +208,62 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
             billingAddress: billingAddressIndex,
             paymentMethod: paymentMethod,
           }),
+        }).then(async response => {  // Fix: Change 'data' to 'response'
+    console.log(response.status);
+    if (response.status === 200) {
+        console.log('Success:', response);
+        await Swal.fire({
+            title: "Confirmed",
+            text: "Your Order is confirmed.",
+            icon: "success"
+        });
+        window.location.href = "/home";
+    } else if (response.status === 201) {
+        console.log('razorpay');
+        response.json().then((res) => {
+            if (res.order) {                             
+                console.log(res.order);
+                var options = {
+                    key: 'rzp_test_S1qqFuHam7RlxX',
+                    amount: res.order.amount,                    
+                    currency: res.order.currency,
+                    name: 'Electronics',
+                    description: 'description',
+                    order_id: res.order.id,
+                    handler: async function (razorpayResponse) {
+                        await fetch('/updatePayment', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                payment_details: razorpayResponse,
+                                billingAddress: billingAddressIndex,
+                                paymentMethod: paymentMethod,                                                            
+                            }),
+                        });
+                      
+                        window.location.href = '/home';
+                    },
+                };
+
+                var rzp = new Razorpay(options);
+                rzp.open();
+            }
+        });
+    } else if (response.status === 501) {
+        await Swal.fire('Couldnt place order!', 'Insufficient Balance.', 'warning');
+    } else {
+        console.error('Failed to complete the order. Status code:', response.status);
+    }
+})
+           
+          }
         })
-          .then(response => response.json())
-          .then(async(data) => {
-            // Handle success
-            console.log('Success:', data);
-            await Swal.fire({
-              title: "Confirmed",
-              text: "Your Order is confirmed.",
-              icon: "success"
-            });
-            window.location.href = "/home";
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-            // Handle errors, display an alert, or other actions
-          });
-      }
-    });
+        .catch((error) => {
+          console.error('Error:', error);
+          // Handle errors, display an alert, or other actions
+        });
 });
 
 </script>

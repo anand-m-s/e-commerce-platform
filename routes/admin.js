@@ -11,7 +11,6 @@ router.get("/addcategory",isAuth,adminController.loadcategory)
 router.get("/categoryIsListed/:categoryId",adminController.isListedtoggle)
 router.get("/addproduct",isAuth,adminController.loadAddProduct)
 router.get("/usermanagement",isAuth,adminController.usermanage)
-router.get("/useractions",adminController.useraction);
 router.get('/editproduct/:productId', adminController.editProduct);
 router.get("/deleteproduct",adminController.deleteProduct);
 router.get('/editcategory', adminController.loadEditCategory);
@@ -19,6 +18,7 @@ router.get("/orders",isAuth,adminController.orders);
 router.get("/ordersdetails",adminController.orderdetails);
 
 
+router.post("/useractions",adminController.useraction);
 router.post("/adminlogin",adminController.adminLogin);
 router.post("/addcategory",adminController.addcategory);
 router.post("/addproduct",adminController.addproduct);

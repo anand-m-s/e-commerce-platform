@@ -7,7 +7,7 @@
 </div>
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" >
+    <div class="modal-dialog modal-lg" >
       <div class="modal-content" >
         <div class="modal-header" style="text-align: center; background-color: black; color: aliceblue;">
           <h1 class="modal-title fs-5 " id="exampleModalLabel">Add Product</h1>
@@ -82,7 +82,7 @@
             
               <div class="form-floating mb-3 text-center col-md-5">
                 <input type="number" class="form-control" id="saleprice" name="SalePrice" placeholder="Enter Sale Price">
-                <label for="saleprice"> Price</label>
+                <label for="saleprice">Price</label>
               </div>
               </div>
 
@@ -105,7 +105,7 @@
                 <div class="invalid-feedback">Description Can't Be Empty</div>
               </div>
           
-            <div class="form-group text-center">
+            <!-- <div class="form-group text-center">
               <p>Product Image:</p>
               <div class="custom-file">
                 <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
@@ -114,7 +114,27 @@
               </div>
             </div>
           
-            <div class="form-group " id="product-image"></div>
+            <div class="form-group " id="product-image"></div> -->
+
+            <div class="form-group text-center">
+              <p>Product Image:</p>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
+                <label class="custom-file-label" for="productimage"></label>
+                <div class="invalid-feedback">File Format Not Supported</div>
+              </div>
+              <button id="cropAndSaveBtn" class="btn btn-primary">Crop and Save</button>
+            </div>
+
+            <!-- Container to display the cropped image -->
+            <div id="outputContainer"></div>
+            
+            <!-- Container to hold the Cropper instances -->
+            <div class="form-group" id="product-image">
+              <!-- Cropper instances will be dynamically added here -->
+            </div>
+
+            
           
             <div class="text-center">
               <button class="btn btn-success btn-block mt-3" type="submit">Add Product</button>
@@ -130,7 +150,10 @@
 
 <!-- display products -->
 <div class="container mt-4">
+  <div class="product-management">
+
     <h3>Product List</h3>
+  </div>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -224,6 +247,7 @@ productPriceInput.addEventListener('input', (event) => {
   }
 });
 </script> -->
+
 <script>
   const productPriceInput = document.getElementById('productprice');
 const productImageInput = document.getElementById('productimage');
@@ -279,6 +303,53 @@ productImageInput.addEventListener('change', (event) => {
       productImageInput.classList.remove('is-invalid');
       productImageInput.nextElementSibling.textContent = '';
       submitButton.disabled = false;
+    }
+  }
+});
+
+</script>
+<!-- <script type="module" src="/javascripts/cropper.js/cropper.js"></script> -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.js"></script>
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inputElement = document.getElementById('productimage');
+  const containerElement = document.getElementById('product-image');
+
+  inputElement.addEventListener('change', handleFileSelection);
+
+  function handleFileSelection(event) {
+    const files = event.target.files;
+
+    // Clear previous Cropper instances
+    containerElement.innerHTML = '';
+
+    // Create Cropper instances for each selected file
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const imageElement = document.createElement('img');
+      imageElement.src = URL.createObjectURL(file);
+
+      const cropperContainer = document.createElement('div');
+      cropperContainer.classList.add('cropper-container');
+
+      cropperContainer.appendChild(imageElement);
+      containerElement.appendChild(cropperContainer);
+
+      // Initialize Cropper for the current image
+      const cropper = new Cropper(imageElement, {
+        aspectRatio: 2 /3 ,
+        crop(event) {
+          console.log(event.detail.x);
+          console.log(event.detail.y);
+          console.log(event.detail.width);
+          console.log(event.detail.height);
+          // Add logic to store cropped values or update the form data
+        },
+      });
     }
   }
 });
