@@ -7,142 +7,125 @@
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Dashboard</h1>
       </div>
-
-      <!-- <h2>Section title</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum</td>
-              <td>dolor</td>
-              <td>sit</td>
-            </tr>
-            <tr>
-              <td>1,002</td>
-              <td>amet</td>
-              <td>consectetur</td>
-              <td>adipiscing</td>
-              <td>elit</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>Integer</td>
-              <td>nec</td>
-              <td>odio</td>
-              <td>Praesent</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>libero</td>
-              <td>Sed</td>
-              <td>cursus</td>
-              <td>ante</td>
-            </tr>
-            <tr>
-              <td>1,004</td>
-              <td>dapibus</td>
-              <td>diam</td>
-              <td>Sed</td>
-              <td>nisi</td>
-            </tr>
-            <tr>
-              <td>1,005</td>
-              <td>Nulla</td>
-              <td>quis</td>
-              <td>sem</td>
-              <td>at</td>
-            </tr>
-            <tr>
-              <td>1,006</td>
-              <td>nibh</td>
-              <td>elementum</td>
-              <td>imperdiet</td>
-              <td>Duis</td>
-            </tr>
-            <tr>
-              <td>1,007</td>
-              <td>sagittis</td>
-              <td>ipsum</td>
-              <td>Praesent</td>
-              <td>mauris</td>
-            </tr>
-            <tr>
-              <td>1,008</td>
-              <td>Fusce</td>
-              <td>nec</td>
-              <td>tellus</td>
-              <td>sed</td>
-            </tr>
-            <tr>
-              <td>1,009</td>
-              <td>augue</td>
-              <td>semper</td>
-              <td>porta</td>
-              <td>Mauris</td>
-            </tr>
-            <tr>
-              <td>1,010</td>
-              <td>massa</td>
-              <td>Vestibulum</td>
-              <td>lacinia</td>
-              <td>arcu</td>
-            </tr>
-            <tr>
-              <td>1,011</td>
-              <td>eget</td>
-              <td>nulla</td>
-              <td>Class</td>
-              <td>aptent</td>
-            </tr>
-            <tr>
-              <td>1,012</td>
-              <td>taciti</td>
-              <td>sociosqu</td>
-              <td>ad</td>
-              <td>litora</td>
-            </tr>
-            <tr>
-              <td>1,013</td>
-              <td>torquent</td>
-              <td>per</td>
-              <td>conubia</td>
-              <td>nostra</td>
-            </tr>
-            <tr>
-              <td>1,014</td>
-              <td>per</td>
-              <td>inceptos</td>
-              <td>himenaeos</td>
-              <td>Curabitur</td>
-            </tr>
-            <tr>
-              <td>1,015</td>
-              <td>sodales</td>
-              <td>ligula</td>
-              <td>in</td>
-              <td>libero</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-</div> -->
-<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            
+        <div class="screen-overlay"></div>
       
-        <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.9.0/dist/feather.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.min.js"></script>
-      -->
-
+        <main class="main-wrap">      
+          <section class="content-main">
+            <div class="content-header">
+              <div>
+               
+                <p>Whole data about your business here</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                  <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-primary-light"
+                      ><i class="text-primary material-icons md-monetization_on"></i
+                    ></span>
+                    <div class="text">
+                      <h6 class="mb-1 card-title">Revenue</h6>
+                      <span>₹<%= totalRevenue %></span>
+                      <span class="text-sm"> Shipping fees are not included </span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                  <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-success-light"
+                      ><i class="text-success material-icons md-local_shipping"></i
+                    ></span>
+                    <div class="text">
+                      <h6 class="mb-1 card-title">Orders</h6>
+                      <span><%= orderCount %></span>
+                      <span class="text-sm"> Excluding orders in transit </span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="card card-body mb-4">
+                  <article class="icontext">
+                    <span class="icon icon-sm rounded-circle bg-warning-light"
+                      ><i class="text-warning material-icons md-qr_code"></i
+                    ></span>
+                    <div class="text">
+                      <h6 class="mb-1 card-title">Products</h6>
+                      <span><%= productCount %></span>
+                      <span class="text-sm"> In 19 Categories </span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="card mb-4">
+                  <article class="card-body">
+                    <h5 class="card-title">Sale statistics</h5>
+                    <input
+                      type="text"
+                      value="<%= monthlySalesArray %>"
+                      hidden
+                      id="monthlySalesArray"
+                    />
+                    <input
+                      type="text"
+                      value="<%= productsPerMonth %>"
+                      hidden
+                      id="productsPerMonth"
+                    />
+                    <canvas id="myChart" height="120px"></canvas>
+                  </article>
+                </div>
+              </div>
+      
+              <div class="col-4">
+                <div class="card mb-4">
+                  <article class="card-body">
+                    <h5 class="card-title">Order Status</h5>
+                    <input
+                      type="text"
+                      value="<%= orderStatusArray %>"
+                      hidden
+                      id="orderStatusArray"
+                    />
+                    <canvas id="myChart2" height="217"></canvas>
+                  </article>
+                </div>
+              </div>
+            </div>
+      
+            <div class="card mb-4">
+              <header class="card-header">
+                <h4 class="card-title">Latest orders</h4>
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-12 me-auto mb-md-0 mb-3"></div>
+      
+                  <div class="col-md-2 col-6">
+                    <div class="custom_select">
+                      <select class="form-select select-nice">
+                        <option selected>Status</option>
+                        <option>All</option>
+                        <option>Paid</option>
+                        <option>Chargeback</option>
+                        <option>Refund</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </header>
+      
+              
+            </div>
+     
+          </section>
+          <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+      <script src="/javascripts/custom-chart.js"></script>
     <%-include("../partials/end") %>

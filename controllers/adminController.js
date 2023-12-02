@@ -48,16 +48,6 @@ const adminLog = (req, res)=> {
   }
   };
 
-const admindashboard = (req, res) =>{
-  try {
-        res.render("admin/admin-dashboard",{email:req.session.email})
-  } catch (error) {
-    console.log(error);
-  }  
-  };
-
-
-
 const adminlogout = (req, res) => {
   try {
     req.session.adminId = null;
@@ -537,8 +527,8 @@ const updateOrderStatus = async (req, res) => {
     console.log("inside::::::::orderstatus");
       const {orderId,status } = req.body;
   
-      console.log('orderID::::'+orderId);
-      console.log("status "+ status);
+      // console.log('orderID::::'+orderId);
+      // console.log("status "+ status);
       // console.log(status,orderId);
       if (!status || !orderId) {
           return res.status(400).json({ error: 'Invalid input parameters' });
@@ -548,7 +538,7 @@ const updateOrderStatus = async (req, res) => {
         { $set: { orderStatus: status } },
         { new: true }
     );
-      console.log(updatedOrder);
+      // console.log(updatedOrder);
       if (!updatedOrder) {
           return res.status(404).json({ error: 'Order not found' });
       }
@@ -560,6 +550,105 @@ const updateOrderStatus = async (req, res) => {
 };
 
 
+const admindashboard = async(req, res) =>{
+  try {
+    const orderCount = await Order.find({}).count();
+    const productCount = await Product.find({}).count();
+    const order = await Order.find({})
+    .sort({ _id: -1 })
+    .limit(10)
+    .populate("user");
+    const orders = await Order.find({}).populate("user");
+    const products = await Product.find();
+    const aggregationResult = await Order.aggregate([
+      { $match: { orderStatus: "delivered" } },
+      { $group: { _id: null, totalPrice: { $sum: "$totalPrice" } } },
+    ]);
+        // monthly sale
+        const monthlySales = await Order.aggregate([
+          {
+            $match: {
+              orderStatus: "Delivered", // Filter by status
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $month: "$createdAt",
+              },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+        ]);
+        const monthlySalesArray = Array.from({ length: 12 }, (_, index) => {
+          const monthData = monthlySales.find((item) => item._id === index + 1);
+          return monthData ? monthData.count : 0;
+        });
+        // monthly sale end
+        const orderStatus = await Order.aggregate([
+          {
+              $match: {
+                orderStatus: {
+                      $in: ['Delivered', 'Pending', 'Cancel Order', 'Out of delivery']
+                  }
+              },
+          },
+          {
+              $group: {
+                  _id: '$orderStatus', // Group by status instead of month
+                  count: { $sum: 1 },
+              },
+          },
+          {
+              $sort: {
+                  '_id': 1,
+              },
+          },
+      ]);
+      const orderStatusArray = Array.from({ length: 4 }, (_, index) => {
+        const status = ['Delivered', 'Pending', 'Cancel Order', 'Out of delivery'][index];
+        const statusData = orderStatus.find((item) => item._id === status);
+        return statusData ? statusData.count : 0;
+    });
+    
+  console.log(orderStatusArray);
+  //-----------end order status
+  
+      //---------product graph---------------
+      const productsPerMonth = Array(12).fill(0);
+      products.forEach((product) => {
+        const creationMonth = product.createdAt.getMonth();
+        productsPerMonth[creationMonth]++;
+      });
+      const totalRevenue =
+        aggregationResult.length > 0 ? aggregationResult[0].totalPrice : 0;
+
+
+        res.render("admin/admin-dashboard",{
+          email:req.session.email,
+          title: "Admin dashboard",
+      errorMessage: "",
+      orderCount,
+      productCount,
+      order,
+      products,
+      monthlySalesArray,
+      productsPerMonth,
+      totalRevenue,
+      orders,
+      orderStatusArray,
+  
+        })
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An error occurred" });
+  }  
+  };
 
 module.exports={
     adminLogin,
