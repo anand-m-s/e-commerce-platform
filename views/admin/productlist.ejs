@@ -1,0 +1,85 @@
+<%-include("../partials/admin-header") %>
+<!-- Button trigger modal -->
+<div class="modal-addproduct">
+  <a href="/admin/productadd">
+
+    <button type="button" class="btn add-products" >
+      Add product
+      </button>  
+  </a>
+</div>
+
+<!-- display products -->
+<div class="container mt-4">
+  <div class="product-management">
+
+    <h3>Product List</h3>
+  </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+
+            <th scope="col">Product Name</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Price</th>
+            <th scope="col">Category</th>
+            <th scope="col">images</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(product => { %>
+          <tr>
+              <td><%= product.Name %></td>
+              <td><%= product.Brand %></td>
+              <td>₹<%= product.Price %></td>
+              <td><%= product.Category.categoryName %></td>
+              <td>
+                <div class="product-images">
+                  <% if (product.ProductImage && product.ProductImage.length > 0) { %>
+                    <img style="width: 50px;" src="/images/uploads/<%= product.ProductImage[0].filename %>" class="product-image" alt="<%= product.Name %>" />
+                
+                  <% } else { %>
+                    <p>No images available for this product</p>
+                  <% } %>
+                </div>
+              </td>
+              
+            <td>
+              <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary btn-sm">Edit</a>
+              <a href="/admin/deleteproduct?productId=<%= product._id %>" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <div class="pagination-container">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <% if (currentPage > 1) { %>
+            <li class="page-item">
+              <a class="page-link" href="/admin/addproduct?page=<%= currentPage - 1 %>" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          <% } %>
+    
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="/admin/addproduct?page=<%= i %>"><%= i %></a>
+            </li>
+          <% } %>
+    
+          <% if (currentPage < totalPages) { %>
+            <li class="page-item">
+              <a class="page-link" href="/admin/addproduct?page=<%= currentPage + 1 %>" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+</div>
+
+  <%-include("../partials/end") %>

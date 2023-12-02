@@ -8,7 +8,7 @@ const logger = require('morgan');
 const db = require("./config/connection")
 const indexRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
-const cors = require('cors')
+// const cors = require('cors')
 
 const app = express();
 const sessionSecret = uuid();
@@ -18,8 +18,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Enable CORS for all routes
-app.use(cors());
+// // Enable CORS for all routes
+// app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({

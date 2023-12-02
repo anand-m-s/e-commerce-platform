@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const isAuth = require('../middleware/adminAuth')
+const { upload } = require('../helpers/multerFunc'); 
 
 
 router.get('/',adminController.adminLog)
@@ -16,15 +17,16 @@ router.get("/deleteproduct",adminController.deleteProduct);
 router.get('/editcategory', adminController.loadEditCategory);
 router.get("/orders",isAuth,adminController.orders);
 router.get("/ordersdetails",adminController.orderdetails);
+router.get("/productadd",isAuth,adminController.productAdd)
 
 
 router.post("/useractions",adminController.useraction);
 router.post("/adminlogin",adminController.adminLogin);
 router.post("/addcategory",adminController.addcategory);
-router.post("/addproduct",adminController.addproduct);
 router.post("/updateproduct",adminController.updateProduct);
 router.post("/updatecategory",adminController.updatecategory);
 router.post('/updateOrderStatus',adminController.updateOrderStatus);
+router.post("/addproduct", upload.array('ProductImage', 5),adminController.addproduct);
   
 
 module.exports = router;

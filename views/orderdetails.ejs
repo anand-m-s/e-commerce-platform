@@ -31,9 +31,13 @@
                         </figcaption>
                     </figure>
                     <div class="order-control-btn mt-3 ">
+                        <% if(order.orderStatus==="Delivered") {%>
                        <button class="p-1">Return</button>
-                       <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
-
+                       <% } %>
+                      
+                       <% if (order.orderStatus !== "Delivered") { %>
+                        <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
+                    <% } %>
                     </div>
                 </li>
                 <%}) %>

@@ -827,11 +827,22 @@ body{background-color: #eeeeee;}.container{margin-top:50px;margin-bottom: 50px}.
 
 
 /* crop images add product starts */  
-  .cropper-container img {
+  /* .cropper-container img {
     display: block;
     max-width: 100%;
   }
-  
+   */
+
+   .cropoutput{
+   width:30%;
+   
+   }
+   .outputcropcontainer{
+    width: 100%;
+    display: flex;
+   justify-content: center;
+   /* align-items: center ; */
+   }
 /* crop images add product ends */
 
 

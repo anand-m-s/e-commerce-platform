@@ -145,27 +145,32 @@ const loadAddProduct =async (req, res) => {
         .limit(itemsPerPage);  
       const totalProducts = await Product.countDocuments();
       const totalPages = Math.ceil(totalProducts / itemsPerPage);  
-      res.render('admin/addproduct', { categories,products, email: req.session.email, currentPage: parseInt(page), totalPages });   
+      res.render('admin/productlist', { categories,products, email: req.session.email, currentPage: parseInt(page), totalPages });   
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
 
+const productAdd = async(req,res)=>{
+  const categories = await Category.find({ isListed: true });
+      const products = await Product.find({}).populate('Category')
+
+  res.render("admin/addProducts",{categories,products, email: req.session.email})
+}
+
 const addproduct = async (req, res) => {
   try {
-    upload.array('ProductImage', 5)(req, res, async (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Image upload failed' });
-      }
+    console.log(req.files);
       const { Name, Category, Brand, Description, Price,Storage,RAM,OS,Color,Processor,Stock,SalePrice} = req.body;
+      console.log(req.body);
       const files = req.files;
       // Create an array of ProductImage objects
       const ProductImage = files.map((file) => ({
         filename: file.filename,
         path: file.path
       }));
+   
       const newProduct = new Product({
         Name,
         Category,
@@ -181,16 +186,66 @@ const addproduct = async (req, res) => {
         }],
         SalePrice,
         Stock,
-        ProductImage: ProductImage, // Update the field name to match your model
+        ProductImage:ProductImage, // Update the field name to match your model
       });
       await newProduct.save();
-      res.redirect('/admin/addproduct');
-    });
+      res.status(200).json({ message: 'Product added successfully' });
+      // res.redirect('/admin/addproduct');
+  
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// const addproduct = async (req, res) => {
+//   try {
+//     const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
+//     const croppedImageData = req.body.CroppedImageData;
+//     console.log(croppedImageData);
+//     if (!croppedImageData) {
+//       return res.status(400).json({ error: 'CroppedImageData is required' });
+//     }
+//     // Use upload.single() instead of upload.array()
+//     upload.single('CroppedImage')(req, res, async (err) => {
+//       if (err) {
+//         console.error(err);
+//         return res.status(500).json({ error: 'Cropped image upload failed' });
+//       }
+
+//       const croppedImage = req.file;
+//       // Now 'croppedImage' contains the cropped image file data
+
+//       // ... (your existing code)
+
+//       const newProduct = new Product({
+//         Name,
+//                 Category,
+//                 Brand,
+//                 Description,
+//                 Price,
+//                 Features:[{
+//                   Processor:Processor,
+//                   Ram:RAM,
+//                   Storage:Storage,
+//                   Os:OS,
+//                   Color:Color
+//                 }],
+//                 SalePrice,
+//                 Stock,
+        
+//         ProductImage: [{ filename: croppedImage.originalname, path: croppedImage.path }], // Update the field name to match your model
+//       });
+
+//       await newProduct.save();
+//       res.redirect('/admin/addproduct');
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
 
 // const updateProduct = async (req, res) => {
 //   try {
@@ -515,6 +570,7 @@ module.exports={
     loadcategory,
     isListedtoggle,
     loadAddProduct,
+    productAdd,
     addproduct,
     usermanage,
     deleteProduct,
