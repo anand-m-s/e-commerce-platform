@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require("../controllers/adminController");
+const salesController = require("../controllers/salesController");
 const isAuth = require('../middleware/adminAuth')
 const { upload } = require('../helpers/multerFunc'); 
 
@@ -17,8 +18,10 @@ router.get("/deleteproduct",adminController.deleteProduct);
 router.get('/editcategory', adminController.loadEditCategory);
 router.get("/orders",isAuth,adminController.orders);
 router.get("/ordersdetails",adminController.orderdetails);
-router.get("/productadd",isAuth,adminController.productAdd)
-
+router.get("/productadd",isAuth,adminController.productAdd);
+router.get("/salesreport",isAuth,  salesController.getSalesReport);
+router.get('/salesreport/:payment',salesController.getFilterSalesReport);
+router.get('/dated-sales-report',  salesController.getDatedReport);
 
 router.post("/useractions",adminController.useraction);
 router.post("/adminlogin",adminController.adminLogin);

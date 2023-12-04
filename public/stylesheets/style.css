@@ -246,8 +246,12 @@ img{
     padding: 20px;
 }
 .img-container img{
-    width: 300px;
-    margin: 0 auto;
+    /* width: 300px;
+
+    /* width: 384px;
+    height: 576px; */
+    object-fit: cover;
+         /* margin: 0 auto; */
 }
 .hover-container{
     display: flex;
@@ -260,7 +264,7 @@ img{
     border: 2px solid rgba(252, 160, 175, 0.7);
     padding: 1rem;
     border-radius: 3px;
-    margin: 0 4px 8px 4px;
+    margin: 0 4px 8px 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -420,8 +424,9 @@ img{
     width: 4rem
 }
 .main__img{
-    width: 10rem;
-    height: 20rem;
+  
+    width: 261px;
+    height: 391px;
 }
 
 /* add to cart page */

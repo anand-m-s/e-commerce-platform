@@ -1,7 +1,7 @@
 <%-include("../partials/admin-header") %>
 
 <div class="col-md-12">
-    <h3 class="d-flex justify-content-center p-5">Add product</h3>
+    <h3 class="d-flex justify-content-center p-3">Add product</h3>
     <form id="productForm" enctype="multipart/form-data">
       <input type="hidden" id="croppedCanvas" name="CroppedImageData">
       <div class="form-row d-flex justify-content-evenly">
@@ -103,7 +103,7 @@
               <div class="invalid-feedback">File Format Not Supported</div>
             </div>
             
-            <button type="button" class="btn btn-md bg-black text-white rounded font-sm hover-up m-3" onclick="cropImages()">Crop</button>              
+            <button type="button" class="btn btn-md bg-black text-white rounded font-sm hover-up m-3 btnsuccess" onclick="cropImages()">Crop and Add product</button>              
           </div>
           <!-- Container to display the cropped image -->
           <div class="outputcropcontainer">
@@ -114,9 +114,9 @@
               </div>
           </div>
 
-      <div class="text-center p-2">
+      <!-- <div class="text-center p-2">
         <button class="btn btn-success btn-block mt-1 " type="button" onclick="addProduct()">Add Product</button>
-      </div>
+      </div> -->
     </form>
     
 
@@ -129,7 +129,7 @@
     const productPriceInput = document.getElementById('productprice');
   const productImageInput = document.getElementById('productimage');
   const salePriceInput = document.getElementById('saleprice');
-  const submitButton = document.querySelector('.btn-success');
+  const submitButton = document.querySelector('.btnsuccess');
   
   productPriceInput.addEventListener('input', (event) => {
     const productPrice = parseFloat(event.target.value);
@@ -274,6 +274,10 @@
     // Handle the response as needed (e.g., redirect or display a message)
     if (response.ok) {
       console.log('Product added successfully');
+
+          
+          window.location.href="/admin/addproduct"
+   
       // Optionally, redirect to a new page or update the UI
     } else {
       console.error('Failed to add product');

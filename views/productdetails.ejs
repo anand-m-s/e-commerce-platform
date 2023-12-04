@@ -46,11 +46,14 @@
                         <p class = " capitalize shadow-lg p-1 text-center product-spec">Color : <%= products.Features[0].Color %></p>
                 
                     <div class = "btn-groups">
+                        <% if(products.Stock===0){ %>
+                            <p class="text-danger">Out of Stock</p>
+                            <% }else{ %>
                         <a href="/addtocart">
                             <button  type = "button" class = "add-cart-btn">Add to cart</button>
-                        </a>
-                            
+                        </a>                            
                         <button  type = "button" class = "buy-now-btn">Buy Now</button>
+                        <% } %>
                     
                     </div>
                 </div>
