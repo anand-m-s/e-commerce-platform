@@ -67,7 +67,7 @@
                 <% salesReport.forEach(order => { %>
                   <tr>
                     <td><%= order.orderDate %></td>
-                    <td><%= order._id %></td>
+                    <td>ODR<%= order._id.toString().slice(-4) %></td>
                     <td><%= order.userDetails.username %></td>
                     <td><%= order.productDetails.Name %></td>
                     <td><%= order.productDetailsCategory.categoryName %></td>

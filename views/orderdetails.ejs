@@ -15,11 +15,21 @@
                 </div>
             </article>
             <div class="track">
-                <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order confirmed</span> </div>
-                <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Picked by courier</span> </div>
-                <div class="step "> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the way </span> </div>
-                <div class="step "> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Ready for pickup</span> </div>
+                <div class="step <%= order.orderStatus === 'Pending' || order.orderStatus === 'Shipped' || order.orderStatus === 'Out of delivery' || order.orderStatus === 'Delivered' ? 'active' : '' %>">
+                    <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Pending</span>
+                </div>
+                <div class="step <%= order.orderStatus === 'Shipped' || order.orderStatus === 'Out of delivery' || order.orderStatus === 'Delivered' ? 'active' : '' %>">
+                    <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text">Shipped</span>
+                </div>
+                <div class="step <%= order.orderStatus === 'Out of delivery' || order.orderStatus === 'Delivered' ? 'active' : '' %>">
+                    <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text">Out of delivery</span>
+                </div>
+                <div class="step <%= order.orderStatus === 'Delivered' ? 'active' : '' %>">
+                    <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Delivered</span>
+                </div>
             </div>
+            
+            
             <hr>
             <ul class="row">
                 <% order.products.forEach(item=>{%>                
@@ -28,14 +38,17 @@
                         <div class="aside"><img src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="img-sm border"></div>
                         <figcaption class="info align-self-center">
                             <p class="title"> <%= item.product.Name %> <br> </p> <span class="text-muted">Price: <%= item.product.Price %> <br>Quantity: <%= item.quantity %> <br> Item Status: <%= item.itemStatus %>  </span>
+                                <% if(item.itemStatus==="cancelled"){ %>
+                                    <p><span class="text-muted">Cancel Date:<%= order.cancelDate.toLocaleDateString() %></span></p>
+                                    <% } %>
                         </figcaption>
                     </figure>
                     <div class="order-control-btn mt-3 ">
                         <% if(order.orderStatus==="Delivered") {%>
                        <button class="p-1">Return</button>
-                       <% } %>
+                       <% }  %>
                       
-                       <% if (order.orderStatus !== "Delivered") { %>
+                       <% if (order.orderStatus !== "Delivered" && order.orderStatus!=="Cancel Order") { %>
                         <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
                     <% } %>
                     </div>

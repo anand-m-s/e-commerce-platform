@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require("../controllers/userController")
 const cartController = require("../controllers/cartController")
-// const paymentControll = require('../controllers/paymentController')
+const paymentController = require('../controllers/paymentController')
 const isAuth = require('../middleware/isAuth')
 const setErrorMessage = require('../middleware/errormsg');
 
@@ -40,9 +40,9 @@ router.post("/updateuser",userController.updateUser);
 router.post('/removeFromCart',cartController.removeFromCart);
 router.post('/updateQuantity',cartController.updateQuantity);
 router.post("/signupVerify",userController.signupVerify);
-router.post('/checkout',userController.checkOut);
 router.post('/cancelproduct',userController.cancelProduct);
-router.post('/updatePayment',userController.updatePayment)
+router.post('/checkout',paymentController.checkOut);
+router.post('/updatePayment',paymentController.updatePayment)
   
 
 module.exports = router;

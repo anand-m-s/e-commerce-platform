@@ -11,7 +11,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Order ID</th>
                                 <th>Number</th>
                                 <th>Total</th>
                                 <th>status</th>
@@ -25,7 +25,7 @@
                         <tbody class="table-body orderlist">
                             <% orders.forEach(order=>{ %>
                             <tr class="cell-1" >
-                                <td><%= order.user.username %></td>
+                              <td>ODR<%= order._id.toString().slice(-4) %></td>
                                 <td> <%= order.user.phone %></td>
                                 <td><%= order.totalPrice %></td>
                                 <td><%= order.orderStatus %></td>

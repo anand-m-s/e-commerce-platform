@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const salesController = require("../controllers/salesController");
+const productController = require("../controllers/productController")
 const isAuth = require('../middleware/adminAuth')
 const { upload } = require('../helpers/multerFunc'); 
 
@@ -23,13 +24,15 @@ router.get("/salesreport",isAuth,  salesController.getSalesReport);
 router.get('/salesreport/:payment',salesController.getFilterSalesReport);
 router.get('/dated-sales-report',  salesController.getDatedReport);
 
+
+
 router.post("/useractions",adminController.useraction);
 router.post("/adminlogin",adminController.adminLogin);
 router.post("/addcategory",adminController.addcategory);
-router.post("/updateproduct",adminController.updateProduct);
+router.post("/addproduct", upload.array('ProductImage', 5),productController.addproduct);
+router.post("/updateproduct",upload.array('ProductImage',5),productController.updateProduct);
 router.post("/updatecategory",adminController.updatecategory);
 router.post('/updateOrderStatus',adminController.updateOrderStatus);
-router.post("/addproduct", upload.array('ProductImage', 5),adminController.addproduct);
   
 
 module.exports = router;

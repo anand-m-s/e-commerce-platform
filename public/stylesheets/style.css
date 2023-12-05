@@ -239,25 +239,20 @@ img{
     border-radius: 3px;
     column-gap: 10px;
 }
-.product-div-left{
+/* .product-div-left{
     padding: 20px;
-}
+} */
 .product-div-right{
     padding: 20px;
 }
-.img-container img{
-    /* width: 300px;
-
-    /* width: 384px;
-    height: 576px; */
-    object-fit: cover;
-         /* margin: 0 auto; */
+.img-container img{ 
+    object-fit: contain;                                                   ;
 }
 .hover-container{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+     display: flex; 
+     flex-wrap: wrap; 
+     align-items: center; 
+
     margin-top: 32px;
 }
 .hover-container div{

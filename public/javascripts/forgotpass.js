@@ -150,7 +150,19 @@ if (currentURL.includes('/forgotpassword')) {
                             window.location.reload();
                         }, 1000);
                     });
-            }        
+                
+            resendOTPButton.addEventListener('click', async () => {
+                clearInterval(timerInterval)
+                signInWithPhoneNumber(auth, mobilenumber, appVerifier)
+                    .then((confirmationResult) => {
+                      // SMS sent. Prompt user to type the code from the message, then sign the
+                      // user in with confirmationResult.confirm(code).
+                      window.confirmationResult = confirmationResult;
+                      startTimer();
+                    })
+                
+              });   
+            }
         }
     });
 

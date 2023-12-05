@@ -149,112 +149,64 @@ const productAdd = async (req, res) => {
   res.render("admin/addProducts", { categories, products, email: req.session.email })
 }
 
-const addproduct = async (req, res) => {
-  try {
-    console.log(req.files);
-    const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
-    console.log(req.body);
-    const files = req.files;
-    // Create an array of ProductImage objects
-    const ProductImage = files.map((file) => ({
-      filename: file.filename,
-      path: file.path
-    }));
-
-    const newProduct = new Product({
-      Name,
-      Category,
-      Brand,
-      Description,
-      Price,
-      Features: [{
-        Processor: Processor,
-        Ram: RAM,
-        Storage: Storage,
-        Os: OS,
-        Color: Color
-      }],
-      SalePrice,
-      Stock,
-      ProductImage: ProductImage, // Update the field name to match your model
-    });
-    await newProduct.save();
-    res.status(200).json({ message: 'Product added successfully' });
-    // res.redirect('/admin/addproduct');
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
 // const addproduct = async (req, res) => {
 //   try {
+//     console.log(req.files);
 //     const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
-//     const croppedImageData = req.body.CroppedImageData;
-//     console.log(croppedImageData);
-//     if (!croppedImageData) {
-//       return res.status(400).json({ error: 'CroppedImageData is required' });
-//     }
-//     // Use upload.single() instead of upload.array()
-//     upload.single('CroppedImage')(req, res, async (err) => {
-//       if (err) {
-//         console.error(err);
-//         return res.status(500).json({ error: 'Cropped image upload failed' });
-//       }
+//     console.log(req.body);
+//     const files = req.files;
+//     // Create an array of ProductImage objects
+//     const ProductImage = files.map((file) => ({
+//       filename: file.filename,
+//       path: file.path
+//     }));
 
-//       const croppedImage = req.file;
-//       // Now 'croppedImage' contains the cropped image file data
-
-//       // ... (your existing code)
-
-//       const newProduct = new Product({
-//         Name,
-//                 Category,
-//                 Brand,
-//                 Description,
-//                 Price,
-//                 Features:[{
-//                   Processor:Processor,
-//                   Ram:RAM,
-//                   Storage:Storage,
-//                   Os:OS,
-//                   Color:Color
-//                 }],
-//                 SalePrice,
-//                 Stock,
-
-//         ProductImage: [{ filename: croppedImage.originalname, path: croppedImage.path }], // Update the field name to match your model
-//       });
-
-//       await newProduct.save();
-//       res.redirect('/admin/addproduct');
+//     const newProduct = new Product({
+//       Name,
+//       Category,
+//       Brand,
+//       Description,
+//       Price,
+//       Features: [{
+//         Processor: Processor,
+//         Ram: RAM,
+//         Storage: Storage,
+//         Os: OS,
+//         Color: Color
+//       }],
+//       SalePrice,
+//       Stock,
+//       ProductImage: ProductImage, // Update the field name to match your model
 //     });
+//     await newProduct.save();
+//     res.status(200).json({ message: 'Product added successfully' });
+//     // res.redirect('/admin/addproduct');
+
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ error: 'Internal server error' });
 //   }
 // };
 
-
 // const updateProduct = async (req, res) => {
 //   try {
-//     upload.array('ProductImage', 5)(req, res, async (err) => {
-//       if (err) {
-//         console.error(err);
-//         return res.status(500).json({ error: 'Image upload failed' });
-//       }
 //       const productId = req.query.id;
 //       const product = await Product.findById(productId);
 //       if (!product) {
 //         return res.status(404).json({ error: 'Product not found' });
 //       }
-//       const { Name, Category, Brand, Description, Price,Storage,Ram,Os,Color,Processor,Stock,SalePrice } = req.body;
+//       const { Name, Category, Brand, Description, Price, Storage, Ram, Os, Color, Processor, Stock, SalePrice } = req.body;
+
+//       // Update individual properties
 //       product.Name = Name;
 //       product.Category = Category;
 //       product.Brand = Brand;
 //       product.Description = Description;
 //       product.Price = Price;
+//       product.SalePrice = SalePrice;
+//       product.Stock = Stock;
+
+//       // Update Features field
 //       product.Features = [{
 //         Processor: Processor,
 //         Ram: Ram,
@@ -262,8 +214,6 @@ const addproduct = async (req, res) => {
 //         Os: Os,
 //         Color: Color
 //       }];
-//       product.SalePrice=SalePrice,
-//       product.Stock=Stock
 //       if (req.files && req.files.length > 0) {
 //         const productImage = req.files.map(file => ({
 //           filename: file.filename,
@@ -271,86 +221,15 @@ const addproduct = async (req, res) => {
 //         }));
 //         product.ProductImage = productImage;
 //       }
+
 //       await product.save();
 //       res.redirect(`/admin/addproduct`);
-//     });
+    
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ error: 'Internal server error' });
 //   }
 // };
-
-const updateProduct = async (req, res) => {
-  try {
-    upload.array('ProductImage', 5)(req, res, async (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: 'Image upload failed' });
-      }
-      const productId = req.query.id;
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-      }
-      const { Name, Category, Brand, Description, Price, Storage, Ram, Os, Color, Processor, Stock, SalePrice } = req.body;
-
-      // Update individual properties
-      product.Name = Name;
-      product.Category = Category;
-      product.Brand = Brand;
-      product.Description = Description;
-      product.Price = Price;
-      product.SalePrice = SalePrice;
-      product.Stock = Stock;
-
-      // Update Features field
-      product.Features = [{
-        Processor: Processor,
-        Ram: Ram,
-        Storage: Storage,
-        Os: Os,
-        Color: Color
-      }];
-
-      // // Image cropping logic
-      // const files = req.files;
-      // const imageData = [];
-      // for (const file of files) {
-      //   const randomInteger = Math.floor(Math.random() * 20000001);
-      //   const imageDirectory = Path.join('public', 'images', 'uploads');
-      //   const imgFileName = "cropped" + randomInteger + ".jpg";
-      //   const imagePath = Path.join(imageDirectory, imgFileName);
-      //   const croppedImage = await sharp(file.path)
-      //     .resize(400, 400, {
-      //       fit: "cover",
-      //     })
-      //     .toFile(imagePath);
-
-      //   if (croppedImage) {
-      //     imageData.push({ filename: imgFileName, path: imagePath });
-      //   }
-      // }
-
-      // Update product images
-      // if (imageData.length > 0) {
-      //   product.ProductImage = imageData;
-      // }
-      if (req.files && req.files.length > 0) {
-        const productImage = req.files.map(file => ({
-          filename: file.filename,
-          path: file.path
-        }));
-        product.ProductImage = productImage;
-      }
-
-      await product.save();
-      res.redirect(`/admin/addproduct`);
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
 
 
 const usermanage = async (req, res) => {
@@ -668,14 +547,14 @@ module.exports = {
   isListedtoggle,
   loadAddProduct,
   productAdd,
-  addproduct,
   usermanage,
   deleteProduct,
   editProduct,
   useraction,
-  updateProduct,
   loadEditCategory,
   updatecategory,
   orders,
   orderdetails, updateOrderStatus,
+  // addproduct,
+  // updateProduct,
 }

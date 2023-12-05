@@ -21,7 +21,7 @@
                         <tbody class="table-body">
                             <% orders.forEach(order=>{ %>
                             <tr class="cell-1">
-                                <td><%=order._id  %></td>
+                                <td>ODR<%= order._id.toString().slice(-4) %></td>
                                 <td><%= order.totalPrice %></td>
                                 <td><%=order.orderDate.toLocaleDateString() %></td>
                                 <td><%= order.orderStatus %></td>
@@ -41,9 +41,39 @@
                     </table>
                 </div>
             </div>
+            
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/orderlist?page=<%= currentPage - 1 %>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        <% } %>
+            
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="/orderlist?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+            
+                        <% if (currentPage < totalPages) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/orderlist?page=<%= currentPage + 1 %>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
+
 
 
 <%-include('./partials/footer') %>

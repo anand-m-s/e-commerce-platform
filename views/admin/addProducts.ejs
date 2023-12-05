@@ -218,7 +218,7 @@
   
         // Initialize Cropper for the current image
         const cropper = new Cropper(imageElement, {
-          aspectRatio: 2 /3 ,
+          aspectRatio: 1/1 ,
           crop(event) {
             console.log(event.detail.x);
             console.log(event.detail.y);
@@ -286,8 +286,6 @@
     console.error('Error during fetch request:', error);
   }
 };
-
-
   });
   </script>
 

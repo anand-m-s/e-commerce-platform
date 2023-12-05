@@ -30,7 +30,7 @@
                 </div>
                 <div class="form-group col-md-5">
                   <label for="productprice">Price:</label>
-                  <input type="number" class="form-control" id="productprice" name="SalePrice" value="<%= products.SalePrice %>" required>
+                  <input type="number" class="form-control" id="saleprice" name="SalePrice" value="<%= products.SalePrice %>" required>
                   <span><p id="producterr"></p> </span>
                 </div>
               </div>
@@ -93,11 +93,17 @@
                 <input type="file" class="form-control-file" id="productimage" name="ProductImage" multiple>
                 <!-- Display current product image -->
                 <div class="product-images">
-                  <% products.ProductImage.forEach(image => { %>
-                    <img  class="mt-2" style="max-width: 100px;" " src="/images/uploads/<%= image.filename %>" class="product-image" alt="<%= products.Name %>" />
-                  <% }); %>
+                    <% for (let i = 0; i < products.ProductImage.length; i++) { %>
+                        <div class="image-container">
+                            <img class="mt-2" style="max-width: 100px;" src="/images/uploads/<%= products.ProductImage[i].filename %>" class="product-image" alt="<%= products.Name %>" />
+                            <input type="checkbox" id="delete-checkbox<%= i %>" name="deletecheckbox" value="<%= i %>">
+                            <label for="delete-checkbox<%= i %>">Delete</label>
+                        </div>
+                    <% } %>
                 </div>
-              </div>
+            </div>
+            
+            
               <button class="btn editsucess btn-outline-primary btn-block mt-3 success" type="submit">Save Changes</button>
             </form>
           </div>
@@ -135,13 +141,14 @@ productPriceInput.addEventListener('input', (event) => {
   const productPriceInput = document.getElementById('productprice');
 const productImageInput = document.getElementById('productimage');
 const submitButton = document.querySelector('.editsucess');
+const salePriceInput = document.getElementById('saleprice');
 
 productPriceInput.addEventListener('input', (event) => {
   const productPrice = parseFloat(event.target.value);
 
   if (productPrice < 0) {
     productPriceInput.classList.add('is-invalid');
-    productPriceInput.nextElementSibling.textContent = 'Product price cannot be negative';
+    productPriceInput.nextElementSibling.textContent = ' price cannot be negative';
   } else {
     productPriceInput.classList.remove('is-invalid');
     productPriceInput.nextElementSibling.textContent = '';
@@ -153,6 +160,24 @@ productPriceInput.addEventListener('input', (event) => {
     submitButton.disabled = false;
   }
 });
+
+salePriceInput.addEventListener('input', (event) => {
+      const salePrice = parseFloat(event.target.value);
+  
+      if (salePrice < 0) {
+        salePriceInput.classList.add('is-invalid');
+        salePriceInput.nextElementSibling.textContent = 'price cannot be negative';
+      } else {
+        salePriceInput.classList.remove('is-invalid');
+        salePriceInput.nextElementSibling.textContent = '';
+      }
+  
+      if (salePrice < 0) {
+        submitButton.disabled = true;
+      } else {
+        submitButton.disabled = false;
+      }
+    });
 
 productImageInput.addEventListener('change', (event) => {
   const file = event.target.files[0];
