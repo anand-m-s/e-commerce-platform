@@ -59,7 +59,7 @@
                       <label class="form-label" for="form1"></label>
                     </div>
                   
-                    <button class="btn m-3 btn-outline-success" style="height: 2em;" onclick="updateQuantity('<%= item._id %>', 1,'<%= item.product._id %>','<%=cart._id%>','<%=item.product.Stock%>')">
+                    <button id="plus-btn" class="btn m-3 btn-outline-success" style="height: 2em;" onclick="updateQuantity('<%= item._id %>', 1,'<%= item.product._id %>','<%=cart._id%>','<%=item.product.Stock%>')">
                       <p>+</p>
                     </button>
                   </div>
@@ -156,30 +156,20 @@
 <script>
 const totprice = document.querySelector("#totalAmoutFrontend");
 const checkoutButton = document.querySelector('.checkoutbtn');
+const totalAmountElement = document.querySelector('.total');
+const errorMessage = document.getElementById('qerrormsg');
+const plusbutton = document.getElementById('plus-btn');
+
+
 function updateQuantity(itemId, newQuantity, productId,cartId,maxStock) {
   const quantityInput = document.querySelector(`#form_${itemId}`);
   const priceElement = document.querySelector(`.price_${itemId}`);
   const currentQuantity = parseInt(quantityInput.value);
   const updatedQuantity = currentQuantity + parseInt(newQuantity);
-  const totalAmountElement = document.querySelector('.total');
-  const errorMessage = document.getElementById('qerrormsg');
-
   if (updatedQuantity >= 1 && updatedQuantity <= 10 && updatedQuantity <= maxStock) {
     console.log(maxStock);
     console.log(updatedQuantity);
-    if (updatedQuantity === maxStock ){
-      console.log('errorMessage');
-      // Display an error message or handle the out-of-stock scenario
-      errorMessage.innerHTML = 'Product is out of stock.';
-      // You can also style the error message or take other actions as needed
 
-      // Clear the error message after a certain period (e.g., 3 seconds)
-      setTimeout(() => {
-        errorMessage.innerHTML = '';
-        console.log('Error message cleared.');
-      }, 3000); // 3000 milliseconds (3 seconds)
-      
-    } else {
 
     quantityInput.value = updatedQuantity;
     fetch('/updateQuantity', {
@@ -215,8 +205,21 @@ function updateQuantity(itemId, newQuantity, productId,cartId,maxStock) {
       // Handle network error if needed
       console.error('Network error:', error);
     });
-  }
+  
 }
+else {                
+        if (updatedQuantity < 1) {
+      // Display an error message when attempting to reduce quantity below 1
+      errorMessage.innerHTML = 'Quantity cannot be less than 1.';
+    } else {
+      // Display an error message when attempting to increase quantity beyond stock limit
+      errorMessage.innerHTML = "Sorry, you've reached the maximum available stock for this product. Please contact support for assistance.";
+    }
+        setTimeout(() => {
+          errorMessage.innerHTML = '';
+          console.log('Error message cleared.');
+        }, 2000); // 3000 milliseconds (3 seconds)
+    }
 }
 
 //removefromcart

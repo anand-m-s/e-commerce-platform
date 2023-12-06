@@ -11,7 +11,7 @@
                     <div class="col"> <strong>Deliver to:</strong> <br><%= address.fullName%> <br> <%= address.addressline %><br><%= address.city,%> ,<%= address.pincode %>  </div>
                     <div class="col"> <strong>Shipping BY:</strong> <br> BLUEDART, | <i class="fa fa-phone"></i> +1598675986 </div>
                     <div class="col"> <strong>Status:</strong> <br> <%= order.orderStatus %></div>
-                    <div class="col"> <strong>Tracking #:</strong> <br> <%= order._id %> </div>
+                    <div class="col"> <strong>Payment Method</strong> <br> <%= order.paymentMethod %> </div>
                 </div>
             </article>
             <div class="track">
@@ -39,16 +39,16 @@
                         <figcaption class="info align-self-center">
                             <p class="title"> <%= item.product.Name %> <br> </p> <span class="text-muted">Price: <%= item.product.Price %> <br>Quantity: <%= item.quantity %> <br> Item Status: <%= item.itemStatus %>  </span>
                                 <% if(item.itemStatus==="cancelled"){ %>
-                                    <p><span class="text-muted">Cancel Date:<%= order.cancelDate.toLocaleDateString() %></span></p>
+                                    <p><span class="text-muted">Cancel Date:<%= item.cancelDate.toLocaleDateString() %></span></p>
                                     <% } %>
                         </figcaption>
                     </figure>
                     <div class="order-control-btn mt-3 ">
-                        <% if(order.orderStatus==="Delivered") {%>
-                       <button class="p-1">Return</button>
+                        <% if(order.orderStatus==="Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned") {%>
+                       <button class="p-1 return-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Return</button>
                        <% }  %>
                       
-                       <% if (order.orderStatus !== "Delivered" && order.orderStatus!=="Cancel Order") { %>
+                       <% if (order.orderStatus !== "Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned") { %>
                         <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
                     <% } %>
                     </div>
@@ -93,11 +93,9 @@ document.querySelectorAll('.cancel-button').forEach(button => {
                 .then(data => {                        
                         console.log(data);
                         if (data.success) {                            
-                            if (data.message === 'Order removed successfully') {
-                                window.location.href = '/orderlist';
-                            } else {                                
+                                                         
                                 window.location.reload();
-                            }
+                          
                         }
                     })
                 .catch(error => {                    
@@ -107,6 +105,56 @@ document.querySelectorAll('.cancel-button').forEach(button => {
         });
     });
 });
+
+document.querySelectorAll('.return-button').forEach(button => {
+    button.addEventListener('click', async function () {
+        const orderId = this.getAttribute('data-order-id');
+        const productId = this.getAttribute('data-product-id');
+
+        // Show SweetAlert to get the reason for returning
+        const { value: reason } = await Swal.fire({
+            title: 'Enter the reason for returning the product',
+            input: 'text',
+            inputLabel: 'Reason',
+            inputValue: '',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Please enter a reason for returning.';
+                }
+            },
+        });
+        if (reason) {
+            // Make a fetch call to handle the return logic
+            fetch('/return', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId, productId, reason }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        // Update UI or show a success message
+                        Swal.fire('Success!', 'Item returned successfully.', 'success')
+                            .then(() => {
+                                window.location.reload();
+                            });
+                    } else {
+                        // Handle failure, e.g., show an error message
+                        Swal.fire('Error!', 'Failed to return item. Please try again.', 'error');
+                    }
+                })
+                .catch(error => {
+                    // Handle network error if needed
+                    console.error('Network error:', error);
+                });
+        }
+    });
+});
+
 
 
 </script>    

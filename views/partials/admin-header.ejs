@@ -26,22 +26,25 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        
-          <li>
-            <a class="nav-link active"style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/addcategory">Category</a>
-          </li>
-          <li>
-            <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/addproduct">Products</a>
-          </li>
-          <li>
-            <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/usermanagement">User Management</a>
-          </li>
-          <li>
-            <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/orders">Orders</a>
-          </li>
-          <li>
-            <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/salesreport">Sales Report</a>
-          </li>
+          <% if (typeof email !=="undefined") { %>
+           
+            <li>
+              <a class="nav-link active"style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/addcategory">Category</a>
+            </li>
+            <li>
+              <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/addproduct">Products</a>
+            </li>
+            <li>
+              <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/usermanagement">User Management</a>
+            </li>
+            <li>
+              <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/orders">Orders</a>
+            </li>
+            <li>
+              <a class="nav-link active" style="color: #000; font-size:1.2rem;" aria-current="page" href="/admin/salesreport">Sales Report</a>
+            </li>
+          <% } %>
+       
         </ul>
         <!-- <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -55,18 +58,12 @@
               Admin :(
             <% } %>      
           </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <!-- <li><a class="dropdown-item" href="/login">Login</a></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li> -->
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">     
             <% if (typeof email !== 'undefined') { %>
               <li><a class="dropdown-item" href="/admin/adminlogout">Logout</a></li>
             <% } else { %>
               <li><a class="dropdown-item" href="/admin">Login</a></li>
-            <% } %>
-            <!-- <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Contact</a></li> -->
-            
-  
+            <% } %>                     
           </ul>
         </div>
       </div>

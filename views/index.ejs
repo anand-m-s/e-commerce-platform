@@ -66,8 +66,7 @@
                       </div>
                     </div>
                     <div class="d-flex justify-content-around mt-1">
-                      <button class="btn addtocart"><a href="/addproductstocart?productId=<%= product._id %>">Add to cart</a></button>
-                      <button class="btn buynow ">Buy now</button>
+                      <button class="btn addtocart" onclick="addToCart()">Add to cart</button>                  
                     </div>
                   </div>
                 </div>
@@ -83,4 +82,11 @@
 
 
 <%-include("./partials/footer")  %> 
+<script>
+  const message = document.querySelector("#message-container");
+  function addToCart(){
+    window.location.href="/login"
+  }
+ 
+</script>
 <%-include("./partials/end")  %> 

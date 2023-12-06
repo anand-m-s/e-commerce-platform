@@ -7,6 +7,7 @@ const isAuth = require('../middleware/isAuth')
 const setErrorMessage = require('../middleware/errormsg');
 
 
+
 router.use(setErrorMessage);
 router.get('/',userController.indexlogin);
 router.get('/signup',userController.signuplogin);
@@ -21,14 +22,13 @@ router.get("/userprofile",isAuth,userController.loadUserProfile);
 router.get("/userAddressEdit",isAuth,userController.editUserAddress);
 router.get('/userAddressDelete',isAuth,userController.deleteAddress);
 router.get("/userprofileedit",isAuth,userController.userProfileEdit);
-router.get("/addproductstocart",isAuth,userController.addProductsToCart);
 router.get("/addtocart",isAuth,cartController.addToCart);
 router.get("/checkout",isAuth,userController.loadCheckOutPage);
 router.get("/orderlist",isAuth,userController.loadOrderList);
 router.get("/orderdetails",isAuth,userController.OrderDetails);
 
 
-
+router.post("/addproductstocart",userController.addProductsToCart);
 router.post('/passwordreset', userController.forgotReset);
 router.post('/resetpassword',userController.resetpassword);
 router.post("/login",userController.login);
@@ -42,7 +42,8 @@ router.post('/updateQuantity',cartController.updateQuantity);
 router.post("/signupVerify",userController.signupVerify);
 router.post('/cancelproduct',userController.cancelProduct);
 router.post('/checkout',paymentController.checkOut);
-router.post('/updatePayment',paymentController.updatePayment)
+router.post('/updatePayment',paymentController.updatePayment);
+router.post("/return",userController.returnProduct)
   
 
 module.exports = router;

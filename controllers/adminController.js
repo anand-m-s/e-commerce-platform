@@ -371,6 +371,7 @@ const orders = async (req, res) => {
     const skip = (page - 1) * itemsPerPage;
 
     const orders = await Order.find().populate('user')
+      .sort({_id:-1})
       .skip(skip)
       .limit(itemsPerPage);
 

@@ -26,7 +26,13 @@ const orderSchema= new mongoose.Schema({
     itemStatus:{
       type:String,
       default:'confirm'
-    }
+    },
+    returnReason:{
+      type:String
+    },
+    cancelDate:{
+      type:Date
+    },
   }],
   totalPrice:{
     type:Number,
@@ -35,18 +41,17 @@ const orderSchema= new mongoose.Schema({
   orderDate:{
     type:Date,
     default:Date.now
-  },
+  },                          
   shippedDate:{
     type:Date,
   },
   deliveredDate:{
     type:Date,
   },
-  cancelDate:{
-    type:Date
-  },
+
   paymentMethod:{
     type:String,
+    enum:['cod','Razorpay'],
     require:true
   },
   orderStatus:{
@@ -54,9 +59,7 @@ const orderSchema= new mongoose.Schema({
     enum: ['Delivered', 'Pending', 'Cancel Order', 'Out of delivery'],
     require:true
   },
-  cancelReason:{
-    type:String
-  },
+
 },{timestamps:true});
 const Order=mongoose.model('Order',orderSchema);
 

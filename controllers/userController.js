@@ -8,6 +8,7 @@ const Address = require("../model/address");
 const Cart = require("../model/cart");
 const Order = require("../model/order");
 const calc = require("../helpers/Calculate");
+const {setGlobalMessage,getAndClearGlobalMessages} =require('../helpers/globalFunc')
 
 
 
@@ -81,7 +82,8 @@ const homelogin = async (req, res) => {
                 req.session.userId=null;
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
-                res.render("home", { username: req.session.username, products })
+                // const messages = getAndClearGlobalMessages(req);
+                res.render("home", { username: req.session.username, products})
             }     
     } catch (error) {
         console.log(error);
@@ -231,18 +233,22 @@ const resetpassword = async (req, res) => {
 
 const displayProduct = async(req,res)=>{
     try {   
-        const user = await User.findById(req.session.userId);
-        if(user && user.Isblocked){
-            const errorMessage = "Your account is blocked";
-            req.session.userId =null;
-            res.render("login-user",{title:"login",errorMessage});
-        }
         const productId = req.query.productId;
         const products = await Product.findById(productId);
         if(!products){
             res.status(404).json({ error: "Product not found" });
         }
-        res.render("productdetails",{products,username:req.session.username});
+        if(req.session.userId){
+            const user = await User.findById(req.session.userId);
+            if(user && user.Isblocked){
+                const errorMessage = "Your account is blocked";
+                req.session.userId =null;
+                res.render("login-user",{title:"login",errorMessage});
+            }
+            res.render("productdetails",{products,username:req.session.username});
+        }else{
+            res.render("productdetails",{products})
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred");
@@ -402,10 +408,8 @@ const addProductsToCart = async(req,res)=>{
         const productId = req.query.productId;
         const userId = req.session.userId
         // const user = await User.findById(req.session.userId);
-        const product = await Product.findById(productId);
-        if (product.Stock === 0) {
-            return res.status(400).send('This product is out of stock.');
-          }
+  
+     
         let userCart = await Cart.findOne({user:userId});
         if (!userCart) {
             // If the cart doesn't exist, create a new one
@@ -415,16 +419,18 @@ const addProductsToCart = async(req,res)=>{
             (cartProduct)=> cartProduct.product.toString()===productId
         );
         if(existingProduct){
-            existingProduct.quantity+=1;
+            // existingProduct.quantity+=1;
+            return res.status(208).json({sucess:true});
         }else{
 
             userCart.products.push({ product: productId, quantity: 1 });
         }
-        await userCart.save();
-        res.redirect("/home");
+        await userCart.save();    
+        return res.status(200).json({sucess:true,message:"Product added to the cart"})    
+        
     } catch (error) {
         console.error(error);
-        res.status(500).send('An error occurred while adding to the cart');
+        res.status(500).json({ success: false, message: 'An error occurred while adding to the cart' });
     }
 }
 
@@ -669,7 +675,7 @@ const cancelProduct = async (req, res) => {
                 {
                     $set: {
                         'products.$.itemStatus': 'cancelled',
-                        cancelDate: new Date()
+                        'products.$.cancelDate': new Date()
                     }
                 },
                 { new: true } // Return the updated document
@@ -710,6 +716,63 @@ const cancelProduct = async (req, res) => {
     }
 };
 
+const returnProduct = async(req,res)=>{
+    try {
+        const {orderId,productId,reason}= req.body;
+        console.log(reason);   
+        const returnedProduct = await Order.findOneAndUpdate(
+            {_id:orderId,'products.product':productId},
+            {
+                $set: {
+                    'products.$.itemStatus': 'returned',
+                    'products.$.returnReason': reason,                    
+                }
+            },
+            { new: true }
+        );
+        if (!returnedProduct) {
+            console.log('Product not found in the order');
+            return res.status(404).json({ success: false, message: 'Product not found in the order' });
+        }
+        const returnedProductDetails = returnedProduct.products.find(
+            (product) => product.product.toString() === productId
+        );
+        if (returnedProductDetails) {
+            const returnQuantity = returnedProductDetails.quantity;
+            console.log(`returned Quantity: ${returnQuantity}`);
+        } else {
+            console.log('Product not found in the order');
+        }  
+        // Find the original order document by orderId
+        const originalOrder = await Order.findById(orderId);
+
+        // Check if all products in the original order are cancelled or returned
+        const allProductsCancelledOrReturned = originalOrder.products.every(
+            (product) => ['cancelled', 'returned'].includes(product.itemStatus)
+        );
+
+        console.log(allProductsCancelledOrReturned);
+
+        // Update order status based on the cancellation or return
+        if (allProductsCancelledOrReturned) {
+            // Set orderStatus to 'Returned', depending on your requirement
+            await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
+        }
+
+        await Product.findByIdAndUpdate(productId, {
+            $inc: { Stock: returnedProductDetails.quantity }
+        });
+        const updatedOrder = await Order.findById(orderId);
+        console.log('Product returned successfully');        
+        res.status(200).json({ success: true, message: 'Product returned successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });        
+    }
+}
+
+
+
 
 module.exports = {
     register,
@@ -739,7 +802,6 @@ module.exports = {
     resetpassword,
     cancelProduct,
     addressCheckout,
-    // updatePayment,
-    // checkOut,    
+    returnProduct  
  
 }

@@ -13,6 +13,13 @@ const getSalesReport = async (req, res) => {
           $unwind: '$products'
         },
         {
+          $match: {
+              'products.itemStatus': {
+                  $nin: ['cancelled', 'returned']
+              }
+          }
+      },
+        {
           $lookup: {
             from: 'products',
             localField: 'products.product',

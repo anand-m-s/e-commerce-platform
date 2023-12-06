@@ -54,14 +54,21 @@
                 <% order.products.forEach(item=>{%>                
                 <li class="col-md-4">
                     <figure class="itemside mb-3">
-                        <div class="aside"><img src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="img-sm border"></div>
+                        <div style="position: relative;"
+                      
+                        
+                        class="aside"><img   <% if (item.itemStatus==='cancelled') { %>
+                            style="filter: grayscale(100%);"
+                        <% } %> src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="img-sm border">
+                            <% if (item.itemStatus === 'cancelled') { %>
+                                <p><span class="text-muted">Cancel Date:<%= item.cancelDate.toLocaleDateString() %></span></p>
+                                <div  class="rounded px-2 text-uppercase" style="position: absolute;  background-color: red; color: white; ">Cancelled</div>
+                            <% } %>
+                        </div>
                         <figcaption class="info align-self-center">
                             <p class="title"> <%= item.product.Name %> <br> </p> <span class="text-muted">Price: <%= item.product.Price %> <br>Quantity: <%= item.quantity %> <br> Item status : <%= item.itemStatus %> </span>
                             <p>Total amount : <%= item.product.Price*item.quantity %></p>
-                            <% if (item.itemStatus === 'cancelled') { %>
-                                <p><span class="text-muted">Cancel Date:<%= order.cancelDate.toLocaleDateString() %></span></p>
-                                <div style="position: absolute; top: 0; left: 0; transform: rotate(-45deg); background-color: red; color: white; padding: 1px;">Cancelled</div>
-                            <% } %>
+                           
                             
 
                             

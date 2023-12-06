@@ -36,7 +36,7 @@ body {
 
 .nav-head{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     transition: 0.3s ease-in;
     
 }
@@ -375,11 +375,10 @@ img{
     }
 }
 
-/* home page carousel 
-.carousel_style{
-    margin-top: 1rem;
-} */
-/* home page carousel  */
+/* home page  
+
+
+/* home page   */
 
 /* product details */
 .addtocart{

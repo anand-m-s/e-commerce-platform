@@ -52,7 +52,7 @@
                         <a href="/addtocart">
                             <button  type = "button" class = "add-cart-btn">Add to cart</button>
                         </a>                            
-                        <button  type = "button" class = "buy-now-btn">Buy Now</button>
+                        <!-- <button  type = "button" class = "buy-now-btn">Buy Now</button> -->
                         <% } %>
                     
                     </div>
@@ -61,15 +61,5 @@
         </div>
     </div>
     <%-include("./partials/footer")  %> 
-    <script src="/javascripts/productDetail.js"></script>
-    <script>
-        let options ={
-            width : 400,
-            height: 250,
-            zoomWidth:500,
-            offset:{vertical : 0,horizondal : 10},
-            scale:1.5
-        }
-        new ImageZoom(document.getElementById("img-container"),options);
-    </script>
+    <script src="/javascripts/productDetail.js"></script>   
     <%-include("./partials/end")  %> 
