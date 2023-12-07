@@ -10,8 +10,11 @@
                 Payment Method
               </button>
               <ul class="dropdown-menu">
-                <li><button id="cod" class="dropdown-item" href="#">COD</button></li>
-                <li><button id="online" class="dropdown-item" href="#">online</button></li>
+                <!-- <li><button id="cod" class="dropdown-item" href="#">COD</button></li>
+                <li><button id="online" class="dropdown-item" href="#">online</button></li> -->
+                <button id="cod" class="dropdown-item payment-method-btn" href="#">COD</button>
+                <button id="Razorpay" class="dropdown-item payment-method-btn" href="#">Online</button>
+
                 <li><a id="all" class="dropdown-item" href="/admin/salesreport">All</a></li>
               </ul>
             </div>
@@ -32,7 +35,7 @@
                   Select Date
                 </button>
                 <ul class="dropdown-menu">
-                  <form action="" id="dateForm">
+                  <form action="#" id="dateForm">
                     <li class="dropdown-item text-muted" href="#">From</li>
                     <li> <input type="date" name="startDate" id="EndDate" class="mb-3 dropdown-item"></li>
                     <li class="dropdown-item text-muted" href="#">To</li>

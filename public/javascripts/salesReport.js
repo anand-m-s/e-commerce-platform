@@ -1,10 +1,11 @@
 const codBtn = document.getElementById('cod');
-const onlineBtn = document.getElementById('online');
+const onlineBtn = document.getElementById('Razorpay');
 const dailyBtn = document.getElementById('today');
 const weeklyBtn = document.getElementById('week')
 const monthlyBtn = document.getElementById('month');
 const yearlyBtn = document.getElementById('year')
 const dateForm = document.getElementById('dateForm')
+const paymentMethodBtns = document.querySelectorAll('.payment-method-btn');
 window.jsPDF = window.jspdf.jsPDF;
 let doc = new jsPDF();
 
@@ -64,6 +65,16 @@ $(document).ready(() => {
   dataTable = new DataTable('#salesReport');
 });
 
+paymentMethodBtns.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    // Remove 'active' class from all buttons
+    paymentMethodBtns.forEach(b => b.classList.remove('active'));
+
+    // Add 'active' class to the clicked button
+    e.currentTarget.classList.add('active');
+  });
+});
+
 
 codBtn.addEventListener('click', (e) => {
   fetch('/admin/salesreport/cod', { method: 'get' })
@@ -82,7 +93,7 @@ onlineBtn.addEventListener('click', (e) => {
 })
 
 dailyBtn.addEventListener('click', (e) => {
-  const startDate = new Date()
+  const startDate = findStartDate(1)
   fetch(`/admin/dated-sales-report?startDate=${startDate}&endDate=${new Date()}`, {
     method: 'get'
   })
@@ -129,6 +140,15 @@ dateForm.addEventListener('submit', (e) => {
   e.preventDefault()
   let startDate = dateForm.startDate.value
   let endDate = dateForm.endDate.value
+  const selectedPaymentMethodBtn = document.querySelector('.payment-method-btn.active');
+  let selectedPaymentMethod = '';
+
+  if (selectedPaymentMethodBtn) {
+    selectedPaymentMethod = selectedPaymentMethodBtn.id;
+  }
+
+  console.log(selectedPaymentMethod);
+
   if (startDate == '' || endDate == '') {
     document.querySelector('#dateErr').innerHTML = 'Please select Date'
   } else {
@@ -137,13 +157,19 @@ dateForm.addEventListener('submit', (e) => {
     if (startDate >= endDate) {
       document.querySelector('#dateErr').innerHTML = 'Please check your selected Date'
     } else {
-      fetch(`/admin/dated-sales-report?startDate=${startDate}&endDate=${new Date()}`, {
+      let fetchURL = `/admin/dated-sales-report?startDate=${startDate}&endDate=${new Date()}`;
+
+      if (selectedPaymentMethod) {
+        fetchURL += `&paymentMethod=${selectedPaymentMethod}`;
+      }
+
+      fetch(fetchURL, {
         method: 'get'
       })
         .then((response) => {
           response.json()
-            .then(response => generateTemplate(response))
-        })
+            .then(response => generateTemplate(response));
+        });
     }
 
   }
