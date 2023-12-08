@@ -190,11 +190,28 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"> </script>
   
   <script>
+
+
+    /*
+
+      TODOs
+
+      - Clean your code;
+      - change all the dynamicially added syles to css.
+      - margin and dimensions of cropper containers not accurate.
+      - avoid onClicks; refer https://stackoverflow.com/questions/6348494/addeventlistener-vs-onclick
+      - only show 'crop and add product button' after adding photos, or handle the click event, when no images are inserted. gracefully. 
+
+
+
+    */
+
   document.addEventListener('DOMContentLoaded', () => {
     const inputElement = document.getElementById('productimage');
     const containerElement = document.getElementById('outputContainer');
     const croppedCanvasInput = document.getElementById('croppedCanvas');  
     let croppers = [];
+    const croppedCanvases = [];
     inputElement.addEventListener('change', handleFileSelection);
   
     function handleFileSelection(event) {
@@ -208,16 +225,72 @@
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const imageElement = document.createElement('img');
+        
+        imageElement.classList.add('m-2');
+
+        
+        
         imageElement.src = URL.createObjectURL(file);
   
         const cropperContainer = document.createElement('div');
         cropperContainer.classList.add('cropper-container');
+        cropperContainer.style.position = 'relative';
   
+        
         cropperContainer.appendChild(imageElement);
         containerElement.appendChild(cropperContainer);
+
+
+
+
+
+
+
+
+        const overlayDiv = document.createElement('div');
+        overlayDiv.classList.add('cropper-overlay')
+        overlayDiv.style.width = '100%'
+        overlayDiv.style.height = '100%'
+        overlayDiv.style.top = '0'
+        overlayDiv.style.left = '0'
+        overlayDiv.style.zIndex = '1'
+        overlayDiv.style.backgroundColor = '#00000084'
+        overlayDiv.style.position = 'absolute'
+        overlayDiv.style.display = 'none'
+
+
+        const cropButton = document.createElement('button');
+        cropButton.textContent = 'Crop';
+        cropButton.style.position = 'absolute';
+        cropButton.style.top = '50%';
+        cropButton.style.left = '50%';
+        cropButton.classList.add('btn')
+        cropButton.classList.add('btn-info')
+        cropButton.style.transform = 'translate(-50%, -50%)';
+        cropButton.setAttribute('type','button')
+        overlayDiv.appendChild(cropButton);
+
+
+
+        cropButton.addEventListener('click',()=>{
+
   
-        // Initialize Cropper for the current image
-        const cropper = new Cropper(imageElement, {
+          cropperContainer.removeChild(cropperContainer.querySelector('.cropper-overlay'));
+  
+  
+          const saveCrop = document.createElement('button');
+          saveCrop.classList.add('btn');
+          saveCrop.classList.add('btn-success');
+          saveCrop.setAttribute('type','button')
+          saveCrop.innerText = 'Crop';
+          saveCrop.style.position = 'absolute';
+          saveCrop.style.right = '-20%';
+          saveCrop.style.top = '50%';
+          cropperContainer.appendChild(saveCrop);
+
+  
+  
+          const cropper = new Cropper(imageElement, {
           aspectRatio: 1/1 ,
           crop(event) {
             console.log(event.detail.x);
@@ -227,19 +300,55 @@
             // Add logic to store cropped values or update the form data
           },
         });
-        croppers.push(cropper);
+
+          saveCrop.addEventListener('click',()=>{
+            const croppedCanvas = cropper.getCroppedCanvas();
+            cropperContainer.innerHTML = '';
+            croppedCanvas.style.width = '100%'
+            croppedCanvas.style.height = '100%'
+            console.log(croppedCanvas)
+            croppedCanvases.push(croppedCanvas);
+            cropperContainer.appendChild(croppedCanvas);
+
+          })
+
+
+        })
+
+
+        cropperContainer.appendChild(overlayDiv);
+
+
+        
+        cropperContainer.addEventListener('mouseenter',()=>{
+          overlayDiv.style.display = 'block'
+        })
+        cropperContainer.addEventListener('mouseleave',()=>{
+          overlayDiv.style.display = 'none'
+        })
+        
+  
+        // Initialize Cropper for the current image
+        // const cropper = new Cropper(imageElement, {
+        //   aspectRatio: 1/1 ,
+        //   crop(event) {
+        //     console.log(event.detail.x);
+        //     console.log(event.detail.y);
+        //     console.log(event.detail.width);
+        //     console.log(event.detail.height);
+        //     // Add logic to store cropped values or update the form data
+        //   },
+        // });
+        // croppers.push(cropper);
       }
     }
     window.cropImages = async function () {
   const formData = new FormData();
 
   // Trigger the crop for each Cropper instance
-  for (let index = 0; index < croppers.length; index++) {
-    const cropper = croppers[index];
-    const croppedCanvas = cropper.getCroppedCanvas();
+  for (let index = 0; index < croppedCanvases.length; index++) {
+    const croppedCanvas = croppedCanvases[index];
 
-    // Display the cropped image in the container
-    containerElement.appendChild(croppedCanvas);
 
     // Convert the canvas data to a Blob (binary data)
     const blob = await new Promise(resolve => croppedCanvas.toBlob(resolve));
@@ -265,26 +374,26 @@
   console.log(formData);
 
   // Make a single fetch request to the backend
-  try {
-    const response = await fetch('/admin/addproduct', {
-      method: 'POST',
-      body: formData,
-    });
+  // try {
+  //   const response = await fetch('/admin/addproduct', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
 
-    // Handle the response as needed (e.g., redirect or display a message)
-    if (response.ok) {
-      console.log('Product added successfully');
+  //   // Handle the response as needed (e.g., redirect or display a message)
+  //   if (response.ok) {
+  //     console.log('Product added successfully');
 
           
-          window.location.href="/admin/addproduct"
+  //         window.location.href="/admin/addproduct"
    
-      // Optionally, redirect to a new page or update the UI
-    } else {
-      console.error('Failed to add product');
-    }
-  } catch (error) {
-    console.error('Error during fetch request:', error);
-  }
+  //     // Optionally, redirect to a new page or update the UI
+  //   } else {
+  //     console.error('Failed to add product');
+  //   }
+  // } catch (error) {
+  //   console.error('Error during fetch request:', error);
+  // }
 };
   });
   </script>
