@@ -1,124 +1,130 @@
-<%-include("../partials/admin-header") %>
+<%-include(".. /partials/admin-header") %>
 
-<div class="col-md-12">
+  <div class="col-md-12">
     <h3 class="d-flex justify-content-center p-3">Add product</h3>
     <form id="productForm" enctype="multipart/form-data">
       <input type="hidden" id="croppedCanvas" name="CroppedImageData">
       <div class="form-row d-flex justify-content-evenly">
 
-      <div class="form-floating mb-3 text-center col-md-5">
-        <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name" required>
-        <label for="productname">Product Name</label>
-        <div class="invalid-feedback">Product Name Can't Be Empty</div>
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="productname" name="Name" placeholder="Enter Product Name"
+            required>
+          <label for="productname">Product Name</label>
+          <div class="invalid-feedback">Product Name Can't Be Empty</div>
+        </div>
+
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
+          <label for="brand">Brand</label>
+          <div class="invalid-feedback">Brand Name Can't Be Empty</div>
+        </div>
       </div>
 
-      <div class="form-floating mb-3 text-center col-md-5">
-        <input type="text" class="form-control" id="brand" name="Brand" placeholder="Enter Brand" required>
-        <label for="brand">Brand</label>
-        <div class="invalid-feedback">Brand Name Can't Be Empty</div>
-      </div>
-      </div>
-    
 
       <div class="form-row d-flex justify-content-evenly">
-      <div class="form-floating mb-3 text-center col-md-5">
-        <input type="text" class="form-control" id="processor" name="Processor" placeholder="Enter Processor">
-        <label for="processor">Processor</label>
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="processor" name="Processor" placeholder="Enter Processor">
+          <label for="processor">Processor</label>
+        </div>
+
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="os" name="OS" placeholder="Enter OS">
+          <label for="os">OS</label>
+        </div>
       </div>
-    
-      <div class="form-floating mb-3 text-center col-md-5">
-        <input type="text" class="form-control" id="os" name="OS" placeholder="Enter OS">
-        <label for="os">OS</label>
+
+      <div class="form-row d-flex justify-content-evenly">
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="ram" name="RAM" placeholder="Enter RAM">
+          <label for="ram">RAM</label>
+        </div>
+        <div class="form-floating mb-3 text-center col-md-5">
+          <input type="text" class="form-control" id="storage" name="Storage" placeholder="Enter Storage">
+          <label for="storage">Storage</label>
+        </div>
       </div>
-      </div>
-    
-      <div class="form-row d-flex justify-content-evenly">           
-          <div class="form-floating mb-3 text-center col-md-5">
-            <input type="text" class="form-control" id="ram" name="RAM" placeholder="Enter RAM">
-            <label for="ram">RAM</label>
-        </div>                      
-          <div class="form-floating mb-3 text-center col-md-5">
-            <input type="text" class="form-control" id="storage" name="Storage" placeholder="Enter Storage">
-            <label for="storage">Storage</label>
-          </div>
-      </div>
-    
+
       <div class="form-row d-flex justify-content-evenly">
 
         <div class="form-floating mb-3 text-center col-md-5">
           <input type="text" class="form-control" id="color" name="Color" placeholder="Enter Color">
           <label for="color">Color</label>
         </div>
-      
+
         <div class="form-floating mb-3 text-center col-md-5">
           <input type="number" class="form-control" id="stock" name="Stock" placeholder="Enter Stock">
           <label for="stock">Stock</label>
         </div>
       </div>
-    
+
       <div class="form-row d-flex justify-content-evenly">
 
         <div class="form-floating mb-3 text-center col-md-5">
-          <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price" required>
+          <input type="number" class="form-control" id="productprice" name="Price" placeholder="Enter Product Price"
+            required>
           <label for="productprice">Sale Price</label>
           <div class="invalid-feedback">Product Price Can't Be Empty</div>
         </div>
-      
+
         <div class="form-floating mb-3 text-center col-md-5">
           <input type="number" class="form-control" id="saleprice" name="SalePrice" placeholder="Enter Sale Price">
           <label for="saleprice">Price</label>
         </div>
-        </div>
+      </div>
 
 
 
-        <div class="form-row d-flex justify-content-evenly">
+      <div class="form-row d-flex justify-content-evenly">
         <div class="form-floating mb-3 text-center col-md-5">
           <select class="form-control" id="category" name="Category" required>
             <option value="" disabled selected> Select Category</option>
-            <% categories.forEach(category => { %>
-            <option value="<%= category._id %>"><%= category.categoryName %></option>
-            <% }); %>
+            <% categories.forEach(category=> { %>
+              <option value="<%= category._id %>">
+                <%= category.categoryName %>
+              </option>
+              <% }); %>
           </select>
           <label for="category">Category</label>
           <div class="invalid-feedback">Please select a category</div>
         </div>
-      
-              
+
+
         <div class="form-floating mb-3 text-center col-md-5">
-          <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description" required></textarea>
+          <textarea class="form-control" id="description" name="Description" rows="4" placeholder="Enter Description"
+            required></textarea>
           <label for="description">Description</label>
           <div class="invalid-feedback">Description Can't Be Empty</div>
         </div>
-    </div>
-    
- 
-        
+      </div>
 
-          <div class="form-group text-center">
-            <p>Product Image:</p>
-            <div class="custom-file">
-              <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
-              <label class="custom-file-label" for="productimage"></label>
-              <div class="invalid-feedback">File Format Not Supported</div>
-            </div>
-            
-            <button type="button" class="btn btn-md bg-black text-white rounded font-sm hover-up m-3 btnsuccess" onclick="cropImages()">Crop and Add product</button>              
-          </div>
-          <!-- Container to display the cropped image -->
-          <div class="outputcropcontainer">
 
-              <div class="cropoutput">
-    
-                  <div id="outputContainer" style="display: block;max-width: 100%; "></div> 
-              </div>
-          </div>
+
+
+      <div class="form-group text-center">
+        <p>Product Image:</p>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="productimage" name="ProductImage" multiple required>
+          <label class="custom-file-label" for="productimage"></label>
+          <div class="invalid-feedback">File Format Not Supported</div>
+        </div>
+
+        <button type="button" class="btn btn-md bg-black text-white rounded font-sm hover-up m-3 btnsuccess"
+          onclick="cropImages()">Crop and Add product</button>
+      </div>
+      <!-- Container to display the cropped image -->
+      <div class="outputcropcontainer">
+
+        <div class="cropoutput">
+
+          <div id="outputContainer" style="display: block;max-width: 100%; "></div>
+        </div>
+      </div>
 
       <!-- <div class="text-center p-2">
         <button class="btn btn-success btn-block mt-1 " type="button" onclick="addProduct()">Add Product</button>
       </div> -->
     </form>
-    
+
 
   </div>
 
@@ -127,31 +133,31 @@
 
   <script>
     const productPriceInput = document.getElementById('productprice');
-  const productImageInput = document.getElementById('productimage');
-  const salePriceInput = document.getElementById('saleprice');
-  const submitButton = document.querySelector('.btnsuccess');
-  
-  productPriceInput.addEventListener('input', (event) => {
-    const productPrice = parseFloat(event.target.value);
-  
-    if (productPrice < 0) {
-      productPriceInput.classList.add('is-invalid');
-      productPriceInput.nextElementSibling.textContent = 'Product price cannot be negative';
-    } else {
-      productPriceInput.classList.remove('is-invalid');
-      productPriceInput.nextElementSibling.textContent = '';
-    }
-  
-    if (productPrice < 0) {
-      submitButton.disabled = true;
-    } else {
-      submitButton.disabled = false;
-    }
-  });
-  
-  salePriceInput.addEventListener('input', (event) => {
+    const productImageInput = document.getElementById('productimage');
+    const salePriceInput = document.getElementById('saleprice');
+    const submitButton = document.querySelector('.btnsuccess');
+
+    productPriceInput.addEventListener('input', (event) => {
+      const productPrice = parseFloat(event.target.value);
+
+      if (productPrice < 0) {
+        productPriceInput.classList.add('is-invalid');
+        productPriceInput.nextElementSibling.textContent = 'Product price cannot be negative';
+      } else {
+        productPriceInput.classList.remove('is-invalid');
+        productPriceInput.nextElementSibling.textContent = '';
+      }
+
+      if (productPrice < 0) {
+        submitButton.disabled = true;
+      } else {
+        submitButton.disabled = false;
+      }
+    });
+
+    salePriceInput.addEventListener('input', (event) => {
       const salePrice = parseFloat(event.target.value);
-  
+
       if (salePrice < 0) {
         salePriceInput.classList.add('is-invalid');
         salePriceInput.nextElementSibling.textContent = 'Sale price cannot be negative';
@@ -159,36 +165,36 @@
         salePriceInput.classList.remove('is-invalid');
         salePriceInput.nextElementSibling.textContent = '';
       }
-  
+
       if (salePrice < 0) {
         submitButton.disabled = true;
       } else {
         submitButton.disabled = false;
       }
     });
-  
-  productImageInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    const allowedFormats = ['image/jpeg', 'image/png', 'image/gif',"image/webp"]; // Add more formats if needed
-  
-    if (file) {
-      if (!allowedFormats.includes(file.type)) {
-        productImageInput.classList.add('is-invalid');
-        productImageInput.nextElementSibling.textContent = 'File format not supported';
-        submitButton.disabled = true;
-      } else {
-        productImageInput.classList.remove('is-invalid');
-        productImageInput.nextElementSibling.textContent = '';
-        submitButton.disabled = false;
+
+    productImageInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', "image/webp"]; // Add more formats if needed
+
+      if (file) {
+        if (!allowedFormats.includes(file.type)) {
+          productImageInput.classList.add('is-invalid');
+          productImageInput.nextElementSibling.textContent = 'File format not supported';
+          submitButton.disabled = true;
+        } else {
+          productImageInput.classList.remove('is-invalid');
+          productImageInput.nextElementSibling.textContent = '';
+          submitButton.disabled = false;
+        }
       }
-    }
-  });
-  
+    });
+
   </script>
   <!-- <script type="module" src="/javascripts/cropper.js/cropper.js"></script> -->
   <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"> </script>
-  
+
   <script>
 
 
@@ -205,197 +211,209 @@
 
 
     */
+    let files;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const inputElement = document.getElementById('productimage');
-    const containerElement = document.getElementById('outputContainer');
-    const croppedCanvasInput = document.getElementById('croppedCanvas');  
-    let croppers = [];
-    const croppedCanvases = [];
-    inputElement.addEventListener('change', handleFileSelection);
-  
-    function handleFileSelection(event) {
-      const files = event.target.files;
-  
-      // Clear previous Cropper instances
-      containerElement.innerHTML = '';
-      croppers = [];
-  
-      // Create Cropper instances for each selected file
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const imageElement = document.createElement('img');
-        
-        imageElement.classList.add('m-2');
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputElement = document.getElementById('productimage');
+      const containerElement = document.getElementById('outputContainer');
+      const croppedCanvasInput = document.getElementById('croppedCanvas');
+      let croppers = [];
+      const croppedCanvases = [];
+      inputElement.addEventListener('change', handleFileSelection);
 
-        
-        
-        imageElement.src = URL.createObjectURL(file);
-  
-        const cropperContainer = document.createElement('div');
-        cropperContainer.classList.add('cropper-container');
-        cropperContainer.style.position = 'relative';
-  
-        
-        cropperContainer.appendChild(imageElement);
-        containerElement.appendChild(cropperContainer);
+      function handleFileSelection(event) {
+        files = event.target.files;
+        files = Array.from(files)
+        // Clear previous Cropper instances
+        containerElement.innerHTML = '';
+        croppers = [];
+
+        // Create Cropper instances for each selected file
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const imageElement = document.createElement('img');
+
+          imageElement.classList.add('m-2');
 
 
 
+          imageElement.src = URL.createObjectURL(file);
+
+          const cropperContainer = document.createElement('div');
+          cropperContainer.classList.add('cropper-container');
+          cropperContainer.style.position = 'relative';
+
+
+          cropperContainer.appendChild(imageElement);
+          containerElement.appendChild(cropperContainer);
 
 
 
 
 
-        const overlayDiv = document.createElement('div');
-        overlayDiv.classList.add('cropper-overlay')
-        overlayDiv.style.width = '100%'
-        overlayDiv.style.height = '100%'
-        overlayDiv.style.top = '0'
-        overlayDiv.style.left = '0'
-        overlayDiv.style.zIndex = '1'
-        overlayDiv.style.backgroundColor = '#00000084'
-        overlayDiv.style.position = 'absolute'
-        overlayDiv.style.display = 'none'
-
-
-        const cropButton = document.createElement('button');
-        cropButton.textContent = 'Crop';
-        cropButton.style.position = 'absolute';
-        cropButton.style.top = '50%';
-        cropButton.style.left = '50%';
-        cropButton.classList.add('btn')
-        cropButton.classList.add('btn-info')
-        cropButton.style.transform = 'translate(-50%, -50%)';
-        cropButton.setAttribute('type','button')
-        overlayDiv.appendChild(cropButton);
 
 
 
-        cropButton.addEventListener('click',()=>{
+          const overlayDiv = document.createElement('div');
+          overlayDiv.classList.add('cropper-overlay')
+          overlayDiv.style.width = '100%'
+          overlayDiv.style.height = '100%'
+          overlayDiv.style.top = '0'
+          overlayDiv.style.left = '0'
+          overlayDiv.style.zIndex = '1'
+          overlayDiv.style.backgroundColor = '#00000084'
+          overlayDiv.style.position = 'absolute'
+          overlayDiv.style.display = 'none'
 
-  
-          cropperContainer.removeChild(cropperContainer.querySelector('.cropper-overlay'));
-  
-  
-          const saveCrop = document.createElement('button');
-          saveCrop.classList.add('btn');
-          saveCrop.classList.add('btn-success');
-          saveCrop.setAttribute('type','button')
-          saveCrop.innerText = 'Crop';
-          saveCrop.style.position = 'absolute';
-          saveCrop.style.right = '-20%';
-          saveCrop.style.top = '50%';
-          cropperContainer.appendChild(saveCrop);
 
-  
-  
-          const cropper = new Cropper(imageElement, {
-          aspectRatio: 1/1 ,
-          crop(event) {
-            console.log(event.detail.x);
-            console.log(event.detail.y);
-            console.log(event.detail.width);
-            console.log(event.detail.height);
-            // Add logic to store cropped values or update the form data
-          },
-        });
+          const cropButton = document.createElement('button');
+          cropButton.textContent = 'Crop';
+          cropButton.style.position = 'absolute';
+          cropButton.style.top = '50%';
+          cropButton.style.left = '50%';
+          cropButton.classList.add('btn')
+          cropButton.classList.add('btn-info')
+          cropButton.style.transform = 'translate(-50%, -50%)';
+          cropButton.setAttribute('type', 'button')
+          overlayDiv.appendChild(cropButton);
 
-          saveCrop.addEventListener('click',()=>{
-            const croppedCanvas = cropper.getCroppedCanvas();
-            cropperContainer.innerHTML = '';
-            croppedCanvas.style.width = '100%'
-            croppedCanvas.style.height = '100%'
-            console.log(croppedCanvas)
-            croppedCanvases.push(croppedCanvas);
-            cropperContainer.appendChild(croppedCanvas);
+
+
+          cropButton.addEventListener('click', () => {
+
+
+            cropperContainer.removeChild(cropperContainer.querySelector('.cropper-overlay'));
+
+
+            const saveCrop = document.createElement('button');
+            saveCrop.classList.add('btn');
+            saveCrop.classList.add('btn-success');
+            saveCrop.setAttribute('type', 'button')
+            saveCrop.innerText = 'Crop';
+            saveCrop.style.position = 'absolute';
+            saveCrop.style.right = '-20%';
+            saveCrop.style.top = '50%';
+            cropperContainer.appendChild(saveCrop);
+
+
+
+            const cropper = new Cropper(imageElement, {
+              aspectRatio: 1 / 1,
+              crop(event) {
+                console.log(event.detail.x);
+                console.log(event.detail.y);
+                console.log(event.detail.width);
+                console.log(event.detail.height);
+                // Add logic to store cropped values or update the form data
+              },
+            });
+
+            saveCrop.addEventListener('click', () => {
+              const croppedCanvas = cropper.getCroppedCanvas();
+              cropperContainer.innerHTML = '';
+              croppedCanvas.style.width = '100%'
+              croppedCanvas.style.height = '100%'
+              console.log(croppedCanvas);
+              croppedCanvases.push(croppedCanvas);
+              cropperContainer.appendChild(croppedCanvas);
+
+              files[files.indexOf(file)] = undefined;
+            })
+
 
           })
 
 
-        })
 
 
-        cropperContainer.appendChild(overlayDiv);
+          cropperContainer.appendChild(overlayDiv);
 
 
-        
-        cropperContainer.addEventListener('mouseenter',()=>{
-          overlayDiv.style.display = 'block'
-        })
-        cropperContainer.addEventListener('mouseleave',()=>{
-          overlayDiv.style.display = 'none'
-        })
-        
-  
-        // Initialize Cropper for the current image
-        // const cropper = new Cropper(imageElement, {
-        //   aspectRatio: 1/1 ,
-        //   crop(event) {
-        //     console.log(event.detail.x);
-        //     console.log(event.detail.y);
-        //     console.log(event.detail.width);
-        //     console.log(event.detail.height);
-        //     // Add logic to store cropped values or update the form data
-        //   },
-        // });
-        // croppers.push(cropper);
+
+          cropperContainer.addEventListener('mouseenter', () => {
+            overlayDiv.style.display = 'block'
+          })
+          cropperContainer.addEventListener('mouseleave', () => {
+            overlayDiv.style.display = 'none'
+          })
+
+
+          // Initialize Cropper for the current image
+          // const cropper = new Cropper(imageElement, {
+          //   aspectRatio: 1/1 ,
+          //   crop(event) {
+          //     console.log(event.detail.x);
+          //     console.log(event.detail.y);
+          //     console.log(event.detail.width);
+          //     console.log(event.detail.height);
+          //     // Add logic to store cropped values or update the form data
+          //   },
+          // });
+          // croppers.push(cropper);
+        }
       }
-    }
-    window.cropImages = async function () {
-  const formData = new FormData();
+      window.cropImages = async function () {
+        const formData = new FormData();
 
-  // Trigger the crop for each Cropper instance
-  for (let index = 0; index < croppedCanvases.length; index++) {
-    const croppedCanvas = croppedCanvases[index];
+        // Trigger the crop for each Cropper instance
+        console.log(files.length, croppedCanvases.length)
+        for (let index = 0; index < croppedCanvases.length; index++) {
 
 
-    // Convert the canvas data to a Blob (binary data)
-    const blob = await new Promise(resolve => croppedCanvas.toBlob(resolve));
+          const croppedCanvas = croppedCanvases[index];
 
-    // Append each cropped image to the FormData object with a unique key
-    formData.append(`ProductImage`, blob, `cropped_${index}.jpg`);
-  }
 
-  // Append other product-related data to the FormData object
-  formData.append('Name', document.getElementById('productname').value);
-  formData.append('Brand', document.getElementById('brand').value);
-  formData.append('Processor', document.getElementById('processor').value);
-  formData.append('OS', document.getElementById('os').value);
-  formData.append('RAM', document.getElementById('ram').value);
-  formData.append('Storage', document.getElementById('storage').value);
-  formData.append('Color', document.getElementById('color').value);
-  formData.append('Stock', document.getElementById('stock').value);
-  formData.append('Price', document.getElementById('productprice').value);
-  formData.append('SalePrice', document.getElementById('saleprice').value);
-  formData.append('Category', document.getElementById('category').value);
-  formData.append('Description', document.getElementById('description').value);
+          // Convert the canvas data to a Blob (binary data)
+          const blob = await new Promise(resolve => croppedCanvas.toBlob(resolve));
 
-  console.log(formData);
+          // Append each cropped image to the FormData object with a unique key
+          formData.append(`ProductImage`, blob, `cropped_${index}.jpg`);
+        }
 
-  // Make a single fetch request to the backend
-  // try {
-  //   const response = await fetch('/admin/addproduct', {
-  //     method: 'POST',
-  //     body: formData,
-  //   });
+        for (let index = 0; index < files.length; index++) {
+          if (files[index])
+            formData.append(`ProductImage`, files[index], `cropped_Og_${index}.jpg`);
+        }
 
-  //   // Handle the response as needed (e.g., redirect or display a message)
-  //   if (response.ok) {
-  //     console.log('Product added successfully');
+        // Append other product-related data to the FormData object
+        formData.append('Name', document.getElementById('productname').value);
+        formData.append('Brand', document.getElementById('brand').value);
+        formData.append('Processor', document.getElementById('processor').value);
+        formData.append('OS', document.getElementById('os').value);
+        formData.append('RAM', document.getElementById('ram').value);
+        formData.append('Storage', document.getElementById('storage').value);
+        formData.append('Color', document.getElementById('color').value);
+        formData.append('Stock', document.getElementById('stock').value);
+        formData.append('Price', document.getElementById('productprice').value);
+        formData.append('SalePrice', document.getElementById('saleprice').value);
+        formData.append('Category', document.getElementById('category').value);
+        formData.append('Description', document.getElementById('description').value);
 
-          
-  //         window.location.href="/admin/addproduct"
-   
-  //     // Optionally, redirect to a new page or update the UI
-  //   } else {
-  //     console.error('Failed to add product');
-  //   }
-  // } catch (error) {
-  //   console.error('Error during fetch request:', error);
-  // }
-};
-  });
+        console.log(formData);
+
+        // Make a single fetch request to the backend
+        // try {
+        //   const response = await fetch('/admin/addproduct', {
+        //     method: 'POST',
+        //     body: formData,
+        //   });
+
+        //   // Handle the response as needed (e.g., redirect or display a message)
+        //   if (response.ok) {
+        //     console.log('Product added successfully');
+
+
+        //         window.location.href="/admin/addproduct"
+
+        //     // Optionally, redirect to a new page or update the UI
+        //   } else {
+        //     console.error('Failed to add product');
+        //   }
+        // } catch (error) {
+        //   console.error('Error during fetch request:', error);
+        // }
+      };
+    });
   </script>
 
 
@@ -407,4 +425,4 @@
 
 
 
-<%-include("../partials/end") %>
+  <%-include(".. /partials/end") %>
