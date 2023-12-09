@@ -825,23 +825,51 @@ body{background-color: #eeeeee;}.container{margin-top:50px;margin-bottom: 50px}.
 /* order status color */
 
 
-/* crop images add product starts */  
-  /* .cropper-container img {
+/* crop images add product starts    */
+   .cropper-container img {
     display: block;
     max-width: 100%;
   }
-   */
+   
 
-   .cropoutput{
+    .cropoutput{
    width:30%;
    
    }
-   .outputcropcontainer{
+
+   
+
+   
+
+   /* .product-container {
+    display: inline-block;
+    width: calc(33.33% - 10px);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+
+  .product-container img {
     width: 100%;
-    display: flex;
-   justify-content: center;
-   /* align-items: center ; */
-   }
+    max-width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+  }
+
+  .cropper-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    z-index: 1000;
+  }
+
+  .cropper-container.active {
+    display: block;
+  }  */
 /* crop images add product ends */
 
 
