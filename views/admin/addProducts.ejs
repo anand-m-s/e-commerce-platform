@@ -109,7 +109,7 @@
         </div>
 
         <button type="button" class="btn btn-md bg-black text-white rounded font-sm hover-up m-3 btnsuccess"
-          onclick="cropImages()">Crop and Add product</button>
+          onclick="cropImages()">Add product</button>
       </div>
       <!-- Container to display the cropped image -->
       <div class="outputcropcontainer">
@@ -121,8 +121,8 @@
       </div>
 
       <!-- <div class="text-center p-2">
-        <button class="btn btn-success btn-block mt-1 " type="button" onclick="addProduct()">Add Product</button>
-      </div> -->
+<button class="btn btn-success btn-block mt-1 " type="button" onclick="addProduct()">Add Product</button>
+</div> -->
     </form>
 
 
@@ -199,19 +199,18 @@
 
 
     /*
-
-      TODOs
-
-      - Clean your code;
-      - change all the dynamicially added syles to css.
-      - margin and dimensions of cropper containers not accurate.
-      - avoid onClicks; refer https://stackoverflow.com/questions/6348494/addeventlistener-vs-onclick
-      - only show 'crop and add product button' after adding photos, or handle the click event, when no images are inserted. gracefully. 
-
-
-
+    
+    TODOs
+    
+    - Clean your code;
+    - change all the dynamicially added syles to css.
+    - margin and dimensions of cropper containers not accurate.
+    - avoid onClicks; refer https://stackoverflow.com/questions/6348494/addeventlistener-vs-onclick
+    - only show 'crop and add product button' after adding photos, or handle the click event, when no images are inserted. gracefully. 
+    
+    
+    
     */
-    let files;
 
     document.addEventListener('DOMContentLoaded', () => {
       const inputElement = document.getElementById('productimage');
@@ -219,11 +218,12 @@
       const croppedCanvasInput = document.getElementById('croppedCanvas');
       let croppers = [];
       const croppedCanvases = [];
+      
       inputElement.addEventListener('change', handleFileSelection);
 
       function handleFileSelection(event) {
-        files = event.target.files;
-        files = Array.from(files)
+        const files = event.target.files;
+
         // Clear previous Cropper instances
         containerElement.innerHTML = '';
         croppers = [];
@@ -235,9 +235,8 @@
 
           imageElement.classList.add('m-2');
 
-
-
           imageElement.src = URL.createObjectURL(file);
+     
 
           const cropperContainer = document.createElement('div');
           cropperContainer.classList.add('cropper-container');
@@ -246,13 +245,6 @@
 
           cropperContainer.appendChild(imageElement);
           containerElement.appendChild(cropperContainer);
-
-
-
-
-
-
-
 
           const overlayDiv = document.createElement('div');
           overlayDiv.classList.add('cropper-overlay')
@@ -278,13 +270,8 @@
           overlayDiv.appendChild(cropButton);
 
 
-
           cropButton.addEventListener('click', () => {
-
-
             cropperContainer.removeChild(cropperContainer.querySelector('.cropper-overlay'));
-
-
             const saveCrop = document.createElement('button');
             saveCrop.classList.add('btn');
             saveCrop.classList.add('btn-success');
@@ -294,9 +281,6 @@
             saveCrop.style.right = '-20%';
             saveCrop.style.top = '50%';
             cropperContainer.appendChild(saveCrop);
-
-
-
             const cropper = new Cropper(imageElement, {
               aspectRatio: 1 / 1,
               crop(event) {
@@ -307,59 +291,31 @@
                 // Add logic to store cropped values or update the form data
               },
             });
-
+           
             saveCrop.addEventListener('click', () => {
               const croppedCanvas = cropper.getCroppedCanvas();
               cropperContainer.innerHTML = '';
               croppedCanvas.style.width = '100%'
               croppedCanvas.style.height = '100%'
-              console.log(croppedCanvas);
+              console.log(croppedCanvas)
               croppedCanvases.push(croppedCanvas);
               cropperContainer.appendChild(croppedCanvas);
-
-              files[files.indexOf(file)] = undefined;
             })
-
-
           })
-
-
-
-
           cropperContainer.appendChild(overlayDiv);
-
-
-
           cropperContainer.addEventListener('mouseenter', () => {
             overlayDiv.style.display = 'block'
           })
           cropperContainer.addEventListener('mouseleave', () => {
             overlayDiv.style.display = 'none'
           })
-
-
-          // Initialize Cropper for the current image
-          // const cropper = new Cropper(imageElement, {
-          //   aspectRatio: 1/1 ,
-          //   crop(event) {
-          //     console.log(event.detail.x);
-          //     console.log(event.detail.y);
-          //     console.log(event.detail.width);
-          //     console.log(event.detail.height);
-          //     // Add logic to store cropped values or update the form data
-          //   },
-          // });
-          // croppers.push(cropper);
         }
       }
+
       window.cropImages = async function () {
         const formData = new FormData();
-
         // Trigger the crop for each Cropper instance
-        console.log(files.length, croppedCanvases.length)
         for (let index = 0; index < croppedCanvases.length; index++) {
-
-
           const croppedCanvas = croppedCanvases[index];
 
 
@@ -368,12 +324,21 @@
 
           // Append each cropped image to the FormData object with a unique key
           formData.append(`ProductImage`, blob, `cropped_${index}.jpg`);
-        }
 
-        for (let index = 0; index < files.length; index++) {
-          if (files[index])
-            formData.append(`ProductImage`, files[index], `cropped_Og_${index}.jpg`);
         }
+        const inputFiles = inputElement.files;
+
+          for (let i = 0; i < inputFiles.length; i++) {
+            const file = inputFiles[i];
+            
+            // Check if there is a corresponding cropped canvas for the current image
+            if (!croppedCanvases[i]) {
+              // If no canvas exists, add the original image to the form data
+              formData.append('ProductImage', file, `original_${i}.jpg`);
+            }
+          }
+
+
 
         // Append other product-related data to the FormData object
         formData.append('Name', document.getElementById('productname').value);
@@ -388,6 +353,8 @@
         formData.append('SalePrice', document.getElementById('saleprice').value);
         formData.append('Category', document.getElementById('category').value);
         formData.append('Description', document.getElementById('description').value);
+        // Append uncropped images to formData
+
 
         console.log(formData);
 
@@ -403,7 +370,7 @@
             console.log('Product added successfully');
 
 
-                window.location.href="/admin/addproduct"
+            window.location.href = "/admin/addproduct"
 
             // Optionally, redirect to a new page or update the UI
           } else {
