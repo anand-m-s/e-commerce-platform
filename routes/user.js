@@ -4,11 +4,10 @@ const userController = require("../controllers/userController")
 const cartController = require("../controllers/cartController")
 const paymentController = require('../controllers/paymentController')
 const isAuth = require('../middleware/isAuth')
-const setErrorMessage = require('../middleware/errormsg');
-
-
-
+const {setErrorMessage,locals} = require('../middleware/globalFunc');
 router.use(setErrorMessage);
+router.use(locals);
+
 router.get('/',userController.indexlogin);
 router.get('/signup',userController.signuplogin);
 router.get("/login",userController.userLogin);
@@ -26,6 +25,7 @@ router.get("/addtocart",isAuth,cartController.addToCart);
 router.get("/checkout",isAuth,userController.loadCheckOutPage);
 router.get("/orderlist",isAuth,userController.loadOrderList);
 router.get("/orderdetails",isAuth,userController.OrderDetails);
+router.get("/search",isAuth,userController.searchResults)
 
 
 router.post("/addproductstocart",userController.addProductsToCart);

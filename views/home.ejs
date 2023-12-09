@@ -33,11 +33,11 @@
 
   <section >
     <div class="container ">
-      <div class="row index-row">
+      <div class="row index-row" id="productRow">
         <% products.forEach(product => { %>
           <div class="col-md-8 col-lg-6 col-xl-3 card-main p-3">
             <div class="card card-div-product ">
-              <div class="imgdiv">
+              <div class="imgdiv mt-2">
                 <a href="/products?productId=<%= product._id %>">
                   <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
                 </a>
@@ -106,6 +106,24 @@
       console.error("error adding products to cart:",error)
     });
   }
- 
+//  search results
+  document.addEventListener('DOMContentLoaded', function() {
+      // Get the search button element
+      const searchButton = document.getElementById('searchButton');
+      const searchInput = document.getElementById('searchInput');
+      function performSearch() {
+        var searchTerm = searchInput.value.trim();
+        if (searchTerm !== '') {       
+          window.location.href = '/search?query=' + searchTerm;
+        }
+      }
+        
+        searchButton.addEventListener('click', performSearch);
+  searchInput.addEventListener('keypress', function(event) {
+    if (event.keyCode === 13) {
+      performSearch();
+    }
+  });
+    });
 </script>
 <%-include("./partials/end")  %> 

@@ -6,29 +6,26 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse " id="navbarSupportedContent">
-      <ul class="navbar-nav  me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav  me-auto mb-2  mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link nav-head  active" aria-current="page" href="/">Home</a>
+          <a class="nav-link nav-head  active " aria-current="page" href="/">Home</a>
         </li>
         <li>
-          <a class="nav-link nav-head  active" aria-current="page" href="/about">About</a>
+          <a class="nav-link nav-head  active " aria-current="page" href="/about">About</a>
         </li>
         <li>
-          <a class="nav-link nav-head  active" aria-current="page" href="/contact">Contact</a>
+          <a class="nav-link nav-head active " aria-current="page" href="/contact">Contact</a>
         </li>
       </ul>
-
-      <div style="margin-right: 20rem;">
-
-        <input style=" width: 10rem;" type="text" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="searchButton">
-      </div>
-     
-    
-
-        
- 
-     
       <% if (typeof username !== 'undefined') { %>
+        <% if(currentPath==='/home'){ %>
+          <div style="margin-right: 18rem; display: flex;">
+            <input type="text" class="form-control searchInp" placeholder="Search" aria-label="Search" aria-describedby="searchButton" id="searchInput">
+            <button class="btn search__btn" id="searchButton">Search</button>
+          </div>
+        <% } %>
+          
+  
         <div >
           <a class="cart-logo" href="/addtocart">            
             <img id="cartImage" src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/header_cart-eed150.svg" alt="Cart" class="" width="35" height="35">

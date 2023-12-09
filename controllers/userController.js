@@ -8,7 +8,8 @@ const Address = require("../model/address");
 const Cart = require("../model/cart");
 const Order = require("../model/order");
 const calc = require("../helpers/Calculate");
-const {setGlobalMessage,getAndClearGlobalMessages} =require('../helpers/globalFunc')
+const {setGlobalMessage,getAndClearGlobalMessages} =require('../helpers/globalFunc');
+const { log } = require("debug/src/node");
 
 
 
@@ -771,6 +772,18 @@ const returnProduct = async(req,res)=>{
     }
 }
 
+const searchResults = async(req,res)=>{
+    try {
+        const search = req.query.query;    
+        const products = await Product.find({ Name: { $regex: new RegExp(search, 'i') } });    
+        const resultFound = products.length>0;            
+        res.render("search",{username:req.session.username,products,resultFound})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");    
+    }
+}
+
 
 
 
@@ -802,6 +815,7 @@ module.exports = {
     resetpassword,
     cancelProduct,
     addressCheckout,
-    returnProduct  
+    returnProduct,
+    searchResults
  
 }
