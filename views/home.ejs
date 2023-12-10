@@ -11,15 +11,15 @@
         <a class="btn dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Categories
         </a>      
-        <ul class="dropdown-menu">
-            <% categories.forEach(category => { %>
-                <li class="d-flex justify-content-center">
-                    <a style="text-decoration: none;" href="/categoryfilter?id=<%= category._id %>">
-                        <%= category.categoryName %>
-                    </a>
-                </li>
-            <% }); %>
-        </ul>
+        <ul class="dropdown-menu dropdownselect">
+          <% categories.forEach(category => { %>
+              <li class="d-flex justify-content-center ">
+                  <a style="text-decoration: none;" href="#" data-category-id="<%= category._id %>">
+                      <%= category.categoryName %>
+                  </a>
+              </li>
+          <% }); %>
+      </ul>      
     </div>
     
    
@@ -148,6 +148,117 @@
     }
   });
     });
+    // frontend JavaScript
+const categoryDropdown = document.querySelector('.dropdownselect');
+
+categoryDropdown.addEventListener('click', async (event) => {
+    if (event.target.tagName === 'A') {
+        event.preventDefault();
+        const categoryId = event.target.dataset.categoryId;
+        const url = `/categoryfilter?id=${categoryId}`;
+
+        try {
+            const response = await fetch(url);
+            const filteredProducts = await response.json();
+            // Update the DOM with the filtered products, e.g., replace the current product list.
+            updateProductList(filteredProducts);
+        } catch (error) {
+            console.error('Error fetching filtered products:', error);
+        }
+    }
+});
+
+function updateProductList(products) {
+    const productRow = document.getElementById('productRow');
+
+    // Clear existing products in the product row
+    productRow.innerHTML = '';
+
+    // Iterate through the new products and add them to the product row
+    products.forEach(product => {
+        const productCol = document.createElement('div');
+        productCol.classList.add('col-md-8', 'col-lg-6', 'col-xl-3', 'card-main', 'p-3');
+
+        const productCard = document.createElement('div');
+        productCard.classList.add('card', 'card-div-product');
+
+        const imgDiv = document.createElement('div');
+        imgDiv.classList.add('imgdiv', 'mt-2');
+
+        const productLink = document.createElement('a');
+        productLink.href = `/products?productId=${product._id}`;
+
+        const productImage = document.createElement('img');
+        productImage.src = `/images/uploads/${product.ProductImage[0].filename}`;
+        productImage.classList.add('card-img-top');
+        productImage.alt = product.Name;
+
+        productLink.appendChild(productImage);
+        imgDiv.appendChild(productLink);
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        const titleDiv = document.createElement('div');
+        titleDiv.classList.add('text-center');
+
+        const title = document.createElement('h3');
+        title.classList.add('card-title', 'capitalize');
+        title.style.marginBottom = '15px';
+        title.textContent = product.Name;
+
+        titleDiv.appendChild(title);
+
+        const detailsDiv = document.createElement('div');
+        detailsDiv.classList.add('d-flex', 'justify-content-around');
+
+        const brand = document.createElement('h5');
+        brand.textContent = product.Brand;
+
+        const price = document.createElement('h6');
+        price.textContent = `₹${product.Price}`;
+
+        detailsDiv.appendChild(brand);
+        detailsDiv.appendChild(price);
+
+        const stockDiv = document.createElement('div');
+        stockDiv.classList.add('d-flex', 'justify-content-around', 'mt-1');
+
+        if (product.Stock === 0) {
+            const outOfStock = document.createElement('p');
+            outOfStock.classList.add('text-danger');
+            outOfStock.textContent = 'Out of Stock';
+            stockDiv.appendChild(outOfStock);
+        } else {
+            const addToCartBtn = document.createElement('button');
+            addToCartBtn.classList.add('btn', 'addtocart');
+            addToCartBtn.setAttribute('onclick', `addToCart('${product._id}')`);
+            addToCartBtn.textContent = 'Add to cart';
+
+            stockDiv.appendChild(addToCartBtn);
+        }
+
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('d-flex', 'justify-content-center');
+        messageContainer.id = `message-container-${product._id}`;
+        const message = document.createElement('p');
+
+        messageContainer.appendChild(message);
+
+        cardBody.appendChild(titleDiv);
+        cardBody.appendChild(detailsDiv);
+        cardBody.appendChild(stockDiv);
+        cardBody.appendChild(messageContainer);
+
+        productCard.appendChild(imgDiv);
+        productCard.appendChild(cardBody);
+
+        productCol.appendChild(productCard);
+        productRow.appendChild(productCol);
+    });
+}
+
+
 
   
 
