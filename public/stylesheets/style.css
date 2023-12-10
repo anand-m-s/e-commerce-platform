@@ -45,8 +45,11 @@ body {
 }
 .search__btn{
     border-radius: 0;
+    padding: 8px 22px;
     background-color: rgb(167, 223, 55);
+    transition : all 0.2s ease; 
 }
+
 .search__btn:hover{
     border-radius: 0;
     background-color: rgb(143, 211, 6);
@@ -409,10 +412,19 @@ img{
     }
 }
 
-/* home page  
+ /* home page   */
+
+ #popover {
+      position: absolute;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      display: none; /* Initially hidden */
+    }
 
 
-/* home page   */
+ /* home page    */
 
 /* product details */
 .addtocart{

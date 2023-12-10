@@ -26,6 +26,7 @@ router.get("/checkout",isAuth,userController.loadCheckOutPage);
 router.get("/orderlist",isAuth,userController.loadOrderList);
 router.get("/orderdetails",isAuth,userController.OrderDetails);
 router.get("/search",isAuth,userController.searchResults)
+router.get("/categoryfilter",isAuth,userController.categoryFilter)
 
 
 router.post("/addproductstocart",userController.addProductsToCart);

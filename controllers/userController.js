@@ -75,6 +75,9 @@ const homelogin = async (req, res) => {
             path: 'Category',
             match: { isListed: true } // Filters the populated Category
         });
+        const categories = await Category.find({isListed:true});
+   
+
         // Filter out products where Category is null (not populated)
         const products = filteredproducts.filter(product => product.Category !== null);
        
@@ -84,7 +87,7 @@ const homelogin = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
                 // const messages = getAndClearGlobalMessages(req);
-                res.render("home", { username: req.session.username, products})
+                res.render("home", { username: req.session.username, products,categories})
             }     
     } catch (error) {
         console.log(error);
@@ -784,6 +787,19 @@ const searchResults = async(req,res)=>{
     }
 }
 
+const categoryFilter = async (req, res) => {
+    try {
+        const categoryId = req.query.id;
+     
+        const filteredProducts = await Product.find({ Category: categoryId });
+        const categories = await Category.find({ isListed: true });
+        res.render("home", { username: req.session.username, products: filteredProducts, categories });
+    } catch (error) {
+        console.log(error);
+    }
+  };
+  
+
 
 
 
@@ -816,6 +832,6 @@ module.exports = {
     cancelProduct,
     addressCheckout,
     returnProduct,
-    searchResults
- 
+    searchResults,
+    categoryFilter 
 }

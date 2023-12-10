@@ -5,6 +5,29 @@
 
 <div>
 
+  <div class="bg-black mt-1" style="display: flex; justify-content: space-around; align-items: center; color: #fff; height: 2rem;">
+    <div>
+      <div class="dropdown">
+        <a class="btn dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Categories
+        </a>      
+        <ul class="dropdown-menu">
+            <% categories.forEach(category => { %>
+                <li class="d-flex justify-content-center">
+                    <a style="text-decoration: none;" href="/categoryfilter?id=<%= category._id %>">
+                        <%= category.categoryName %>
+                    </a>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+    
+   
+    </div>
+    <p>filter</p>
+    <p>sort</p>
+  </div>
+
   
   <!--  carousel-->
   <div class="carousel_style">
@@ -78,7 +101,7 @@
 
 
 <%-include("./partials/footer")  %> 
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
   function addToCart(productId){
     const message = document.querySelector(`#message-container-${productId}`);
@@ -125,5 +148,15 @@
     }
   });
     });
+
+  
+
+
+
+
+
+
+
 </script>
+
 <%-include("./partials/end")  %> 
