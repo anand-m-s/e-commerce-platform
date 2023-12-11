@@ -3,6 +3,7 @@ const router = express.Router();
 const userController = require("../controllers/userController")
 const cartController = require("../controllers/cartController")
 const paymentController = require('../controllers/paymentController')
+const orderController = require('../controllers/orderController')
 const isAuth = require('../middleware/isAuth')
 const {setErrorMessage,locals} = require('../middleware/globalFunc');
 router.use(setErrorMessage);
@@ -27,6 +28,8 @@ router.get("/orderlist",isAuth,userController.loadOrderList);
 router.get("/orderdetails",isAuth,userController.OrderDetails);
 router.get("/search",isAuth,userController.searchResults)
 router.get("/categoryfilter",isAuth,userController.categoryFilter)
+router.get("/success",isAuth,orderController.successPage)
+router.get("/wallet",isAuth,userController.loadWallet)
 
 
 router.post("/addproductstocart",userController.addProductsToCart);
@@ -41,10 +44,10 @@ router.post("/updateuser",userController.updateUser);
 router.post('/removeFromCart',cartController.removeFromCart);
 router.post('/updateQuantity',cartController.updateQuantity);
 router.post("/signupVerify",userController.signupVerify);
-router.post('/cancelproduct',userController.cancelProduct);
 router.post('/checkout',paymentController.checkOut);
 router.post('/updatePayment',paymentController.updatePayment);
-router.post("/return",userController.returnProduct)
+router.post('/cancelproduct',orderController.cancelProduct);
+router.post("/return",orderController.returnProduct)
   
 
 module.exports = router;

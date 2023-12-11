@@ -212,7 +212,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
             text: "Your Order is confirmed.",
             icon: "success"
         });
-        window.location.href = "/home";
+        window.location.href = "/success";
     } else if (response.status === 201) {
         console.log('razorpay');
         response.json().then((res) => {
@@ -238,7 +238,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                             }),
                         });
                       
-                        window.location.href = '/home';
+                        window.location.href = '/success';
                     },
                 };
 

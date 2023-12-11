@@ -23,6 +23,9 @@ router.get("/productadd",isAuth,adminController.productAdd);
 router.get("/salesreport",isAuth,  salesController.getSalesReport);
 router.get('/salesreport/:payment',salesController.getFilterSalesReport);
 router.get('/dated-sales-report',  salesController.getDatedReport);
+router.get("/coupons",(req,res)=>{
+    res.render("coupons");
+})
 
 
 
