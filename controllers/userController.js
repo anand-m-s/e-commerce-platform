@@ -790,10 +790,10 @@ const searchResults = async(req,res)=>{
 const categoryFilter = async (req, res) => {
     try {
         const categoryId = req.query.id;
-        console.log(categoryId);
+     
      
         const filteredProducts = await Product.find({ Category: categoryId });
-        console.log(filteredProducts);
+     
         const categories = await Category.find({ isListed: true });
         res.json(filteredProducts);
     } catch (error) {

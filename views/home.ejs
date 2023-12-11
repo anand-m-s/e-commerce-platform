@@ -5,16 +5,16 @@
 
 <div>
 
-  <div class="bg-black mt-1" style="display: flex; justify-content: space-around; align-items: center; color: #fff; height: 2rem;">
+  <div class=" mt-1" style="display: flex; justify-content: space-around; align-items: center; height: 2rem;">
     <div>
       <div class="dropdown">
-        <a class="btn dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="btn dropdown-toggle  " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Categories
         </a>      
-        <ul class="dropdown-menu dropdownselect">
+        <ul class="dropdown-menu dropdownselect  secondary-nav">
           <% categories.forEach(category => { %>
-              <li class="d-flex justify-content-center ">
-                  <a style="text-decoration: none;" href="#" data-category-id="<%= category._id %>">
+              <li class="d-flex justify-content-center catogory__li">
+                  <a class="categoryfilter"  href="#" data-category-id="<%= category._id %>">
                       <%= category.categoryName %>
                   </a>
               </li>
@@ -24,8 +24,8 @@
     
    
     </div>
-    <p>filter</p>
-    <p>sort</p>
+    <p class="secondary-nav" >filter</p>
+    <p class="secondary-nav" >sort</p>
   </div>
 
   

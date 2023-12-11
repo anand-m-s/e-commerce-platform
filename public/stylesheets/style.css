@@ -414,14 +414,26 @@ img{
 
  /* home page   */
 
- #popover {
-      position: absolute;
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
-      border-radius: 5px;
-      display: none; /* Initially hidden */
-    }
+.categoryfilter{
+    text-decoration: none;   
+}
+
+.categoryfilter:hover{
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: .3rem;
+    padding: .5rem;
+    
+}
+
+
+/* .secondary-nav{
+    background-color: #000;
+    color: #fff;
+} */
+
+
+
 
 
  /* home page    */
