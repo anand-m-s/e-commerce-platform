@@ -6,6 +6,7 @@ const Category = require("../model/category");
 const Address = require("../model/address");
 const Cart = require("../model/cart");
 const Order = require("../model/order");
+const WishList = require('../model/wishlist')
 const Wallet = require("../model/wallet");
 const Coupon = require("../model/coupon")
 const bcrypt = require("bcrypt");
@@ -82,14 +83,24 @@ const homelogin = async (req, res) => {
 
         // Filter out products where Category is null (not populated)
         const products = filteredproducts.filter(product => product.Category !== null);
-       
-            const user = await User.findById(req.session.userId);
+         // Fetch wishlist items for the current user
+         const user = await User.findById(req.session.userId);
+    // const wishListItems =  await WishList.find({ user: req.session.userId }).populate('product');
+    // const wishlistProductIds = wishListItems.map(item => item.product._id);
+     // Get the wishlist products for the current user
+     const wishlist = await WishList.findOne({ user: req.session.userId });
+
+     // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
+     const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];
+     console.log(wishlistProductIds);
+
+     
             if(user && user.Isblocked){
                 req.session.userId=null;
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
-                // const messages = getAndClearGlobalMessages(req);
-                res.render("home", { username: req.session.username, products,categories})
+             
+                res.render("home", { username: req.session.username, products,categories,wishlistProductIds})
             }     
     } catch (error) {
         console.log(error);
@@ -595,6 +606,61 @@ const applyCoupon= async (req, res) => {
     }
   }
 
+  const loadWishList = async (req, res) => {
+    try {
+      const userId = req.session.userId;
+      // Fetch wishlist items for the current user
+      const wishListItems = await WishList.find({ user: userId }).populate('product');
+      res.render('wishlist', { wishListItems,username:req.session.username});
+    } catch (error) {
+      console.log(error);
+      // Handle errors appropriately
+      res.status(500).send('Internal Server Error');
+    }
+  };
+
+  const addToWishList = async (req, res) => {
+    try {
+      const { productId } = req.body;
+      const userId = req.session.userId;
+  
+    
+      const existingWishList = await WishList.findOne({ user: userId });
+  
+      if (existingWishList && existingWishList.product.includes(productId)) {
+        
+        existingWishList.product = existingWishList.product.filter(id => id.toString() !== productId);
+        await existingWishList.save();
+  
+        return res.status(201).json({ success: true, message: 'Product removed from the wishlist' });
+      }
+  
+      
+      let userWishList = await WishList.findOne({ user: userId });
+  
+      if (!userWishList) {
+       
+        userWishList = new WishList({
+          user: userId,
+          product: [productId],
+        });
+      } else {
+        
+        userWishList.product.push(productId);
+      }
+      await userWishList.save();
+      res.status(200).json({ success: true, message: 'Product added to the wishlist successfully' });
+    } catch (error) {
+      console.error('Error adding/removing product to/from wishlist:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  };
+  
+  
+  
+
+  
+
 
 
 
@@ -627,5 +693,6 @@ module.exports = {
     addressCheckout,
     searchResults,
     categoryFilter,
-    loadWallet,applyCoupon
+    loadWallet,applyCoupon,
+    addToWishList,loadWishList
 }

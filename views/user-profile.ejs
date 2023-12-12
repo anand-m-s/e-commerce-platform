@@ -33,7 +33,10 @@
 
                  <button type="button" class="btn btn-outline-success">Orders</button>
                </a> 
-                <button type="button" class="btn btn-outline-primary ms-1">Wishlist</button>
+               <a href="/wishlist">
+
+                 <button type="button" class="btn btn-outline-primary ms-1">Wishlist</button>
+               </a>
               </div>
             </div>
           </div>
@@ -102,21 +105,21 @@
             <% for (let i = 0; i < address.length; i += 2) { %>
                 <div class="row mb-3">
                     <% for (let j = i; j < i + 2 && j < address.length; j++) { %>
-                        <div class="col-md-6 userprofile-main">
+                        <div class="col-md-4 userprofile-main">
                             <div class="p-3 userprofile-title position-relative  ">
                                
                                 <div class="card-header  ">
                                     <h5 class="text-center">Address <%= j + 1 %></h5>
                                 </div>
-                                <div class="d-flex userprofile-card">
+                                <div class="d-flex userprofile-card shadow-lg rounded">
                                     <div>
-                                        <p class="item-1"><strong>Full Name:</strong> <%= address[j].fullName %></p>      
-                                        <p class="item-2"><strong>Address Line:</strong> <%= address[j].addressline %></p>
-                                        <p class="item-3"><strong>City:</strong>    <%= address[j].city %></p>
-                                        <p class="item-4"><strong>State:</strong>   <%= address[j].state %></p>
-                                        <p class="item-5"><strong>Pincode:</strong> <%= address[j].pincode %></p>
-                                        <p class="item-6"><strong>Country:</strong> <%= address[j].country %></p>
-                                        <p class="item-7"><strong>Phone:</strong>   <%= address[j].phone %></p>
+                                        <p class="item-1"> <%= address[j].fullName %></p>      
+                                        <p class="item-2"> <%= address[j].addressline %></p>
+                                        <p class="item-3"><%= address[j].city %></p>
+                                        <p class="item-4"><%= address[j].state %></p>
+                                        <p class="item-5"><%= address[j].pincode %></p>
+                                        <p class="item-6"><%= address[j].country %></p>
+                                        <p class="item-7"><%= address[j].phone %></p>
                                     </div>
                                     <div class="" style="width: 25px; margin-left: auto; margin-right: 0;">
                                       <a   href="/userAddressEdit?id=<%= address[j]._id %>" >

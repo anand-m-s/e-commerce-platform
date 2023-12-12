@@ -746,10 +746,14 @@ img{
 /* userprofile */
 
 .userprofile-card{
-    border: 2px solid rgb(164, 210, 70);
+    /* border: 1px solid rgb(164, 210, 70); */
  
     padding: 1rem;
     background-color:#fff;
+}
+.userprofile-main{
+    width: 18rem;
+
 }
 
 .addaddressbtn{

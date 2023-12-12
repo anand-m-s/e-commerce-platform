@@ -26,10 +26,12 @@ router.get("/addtocart",isAuth,cartController.addToCart);
 router.get("/checkout",isAuth,userController.loadCheckOutPage);
 router.get("/orderlist",isAuth,userController.loadOrderList);
 router.get("/orderdetails",isAuth,userController.OrderDetails);
-router.get("/search",isAuth,userController.searchResults)
-router.get("/categoryfilter",isAuth,userController.categoryFilter)
-router.get("/success",isAuth,orderController.successPage)
-router.get("/wallet",isAuth,userController.loadWallet)
+router.get("/search",isAuth,userController.searchResults);
+router.get("/categoryfilter",isAuth,userController.categoryFilter);
+router.get("/success",isAuth,orderController.successPage);
+router.get("/wallet",isAuth,userController.loadWallet);
+router.get("/wishlist",isAuth,userController.loadWishList)
+
 
 
 router.post("/addproductstocart",userController.addProductsToCart);
@@ -49,6 +51,7 @@ router.post('/updatePayment',paymentController.updatePayment);
 router.post('/cancelproduct',orderController.cancelProduct);
 router.post("/return",orderController.returnProduct);
 router.post("/apply-coupon",userController.applyCoupon);
+router.post("/add-to-wishlist",userController.addToWishList)
   
 
 module.exports = router;
