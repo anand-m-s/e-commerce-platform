@@ -25,7 +25,8 @@ body {
     /* border-bottom: 0.3px solid rgb(239, 232, 232); */
     /* border-right: 0.3px solid rgb(239, 232, 232); */
     /* background-color: rgba(102, 219, 219,.2); */
-    background-color:rgba(255, 255, 255,.5);
+    background: transparent;
+    backdrop-filter: blur(15px);
     /* background: transparent; */
     /* backdrop-filter: blur(35px); */
     box-shadow: #7caf4c;
@@ -227,6 +228,10 @@ border-right: 1px solid rgba(163, 163, 201,.3);
     color: #fff;
     border-radius: 1rem;
  }
+
+
+
+
 
 
 .add-product-head{
@@ -794,6 +799,10 @@ img{
 
   
   }
+
+
+
+  
   
 
 

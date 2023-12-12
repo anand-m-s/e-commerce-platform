@@ -5,11 +5,13 @@ const Product = require("../model/productModel");
 const User = require("../model/userModel");
 const Order = require("../model/order");
 const Address = require("../model/address");
-const bcrypt = require("bcrypt");
 const Category = require("../model/category");
+const Coupon = require("../model/coupon")
+const bcrypt = require("bcrypt");
 const Path = require("path");
 const sharp = require("sharp")
 const { upload } = require('../helpers/multerFunc');
+const { log } = require("debug/src/node");
 //Admin Login
 const adminLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -531,6 +533,42 @@ const admindashboard = async (req, res) => {
   }
 };
 
+const loadCoupon = async(req,res)=>{
+  try {
+    const coupon = await Coupon.find({})
+    res.render("admin/coupons",{email:req.session.email,coupon});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const addCoupon = async (req, res) => {
+  try {
+      const { startDate, endDate, discountValue, usedusersCount, usersLimit, description, couponCode, purchaseLimit } = req.body;
+
+      const newCoupon = new Coupon({
+          startDate,
+          endDate,
+          discountValue,
+          usedusersCount,
+          usersLimit,
+          description,
+          couponCode,
+          purchaseLimit
+      });
+
+      await newCoupon.save();
+
+      res.redirect('/admin/coupons');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error'); 
+  }
+};
+
+
+
+
 
 
 
@@ -556,6 +594,6 @@ module.exports = {
   updatecategory,
   orders,
   orderdetails, updateOrderStatus,
-  // addproduct,
-  // updateProduct,
+  loadCoupon,
+  addCoupon,
 }

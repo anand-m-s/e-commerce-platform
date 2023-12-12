@@ -47,7 +47,8 @@ router.post("/signupVerify",userController.signupVerify);
 router.post('/checkout',paymentController.checkOut);
 router.post('/updatePayment',paymentController.updatePayment);
 router.post('/cancelproduct',orderController.cancelProduct);
-router.post("/return",orderController.returnProduct)
+router.post("/return",orderController.returnProduct);
+router.post("/apply-coupon",userController.applyCoupon);
   
 
 module.exports = router;

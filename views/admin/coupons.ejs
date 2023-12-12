@@ -1,0 +1,164 @@
+<%-include("../partials/admin-header") %>
+
+
+    <div class="content mt-5">
+        <div class="container">
+            <div class="row d-flex justify-content-start">
+                <div class="col-md-4">
+                    <div id="AddCpnForm">
+                        <form class="row g-3 needs-validation d-flex my-3 shadow-lg p-4 rounded" style="background-color: lightgrey;" action="/admin/coupon" method="POST" id="couponForm">
+                            <div class="col-md-6">
+                                <label for="startDate" class="form-label">Starting Date</label>
+                                <input type="Date" class="form-control" id="startDate" name="startDate" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="Date" class="form-control" id="endDate" name="endDate" required>
+                                <div class="valid-feedback">
+                                    Looks good!
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 ">
+                                <label for="couponValue" class="form-label">Discount Percentage (%)</label>
+                                <div class="input-group has-validation">
+                                    <input type="Number" class="form-control" id="discountValue" name="discountValue"
+                                    aria-describedby="inputGroupPrepend" placeholder="" required>
+                                    <div class="invalid-feedback">
+                                        Please choose a Coupon Value
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 ">
+                                <label for="couponLimit" class="form-label">No. of Coupon</label>
+                                <input type="number" class="form-control" id="couponLimit" name="usersLimit" required>
+                                <div class="invalid-feedback">
+                                    Please provide a Limit.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 ">
+                                <label for="couponCode" class="form-label">Coupon Code</label>
+                                <input type="text" class="form-control" id="couponCode" name="couponCode" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid coupon code.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 ">
+                                <label for="purchaseLimit" class="form-label">Purchase Limit</label>
+                                <input type="number" class="form-control" id="purchaseLimit" name="purchaseLimit" required>
+                                <div class="invalid-feedback">
+                                    Please provide a valid coupon code.
+                                </div>
+                            </div>
+                            
+                            <div class="form-floating col-md-12 ">
+                                <textarea class="form-control" id="description" name="description" required></textarea>
+                                <label class="form-label" for="floatingTextarea">Description</label>
+                                <div class="invalid-feedback">
+                                    Please provide a Description.
+                                </div>
+                            </div>
+                            
+
+                            <div class="">
+                                <button class="btn" style="background-color: rgb(75, 195, 242); color: #fff;" id="addCouponButton" type="submit">Add coupon</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>                         
+            </div>
+            <div class="container">
+
+         
+            <div class="row mt-5  ">
+                <h3 class="mb-3">Coupons</h3>
+             
+                <div class="col-md-12">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>#ID</th>
+                                <th>Coupon code</th>
+                                <th>Discount Percentage</th>
+                                <th>Used Count</th>
+                                <th>Coupon left</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% let counter = 1; %>
+                            <% coupon.forEach(couponItem => { %>
+                                <tr>
+                                    <td><%= counter %></td>
+                                    <td><%= couponItem.couponCode %></td>
+                                    <td><%= couponItem.discountValue %></td>
+                                    <td><%= couponItem.usedUsersCount %></td>
+                                    <td><%= couponItem.usersLimit %></td>
+                                    <td><%= couponItem.description %></td>
+                                    <td><%= couponItem.startDate.toLocaleDateString() %></td>
+                                    <td><%= couponItem.endDate.toLocaleDateString() %></td>
+                                    <td class="">
+                                        <a class="d-flex justify-content-center" style="text-decoration: none; color: black; border: 1px solid blue;" href="">Edit</a>
+                                        <br>
+                                        <a class="d-flex justify-content-center" style="text-decoration: none; color: black; border: 1px solid blueviolet;" href="">Delete</a>
+                                    </td>
+                                </tr>
+                                <% counter++; %>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        document.getElementById('couponForm').addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    
+        function validateForm() {
+            var startDate = new Date(document.getElementById('startDate').value);
+            var endDate = new Date(document.getElementById('endDate').value);
+            var discountValue = document.getElementById('discountValue').value;
+            var couponLimit = document.getElementById('couponLimit').value;
+            var couponCode = document.getElementById('couponCode').value;
+            var purchaseLimit = document.getElementById('purchaseLimit').value;
+            var description = document.getElementById('description').value;
+    
+            var isValid = true;
+    
+            // Check if required fields are empty
+            if (!startDate || !endDate || !discountValue || !couponLimit || !couponCode || !purchaseLimit || !description) {
+                isValid = false;
+                alert('Please fill out all required fields.');
+            }
+    
+            // Check if end date is less than start date
+            if (startDate > endDate) {
+                isValid = false;
+                alert('End date must be greater than or equal to start date.');
+            }
+    
+            return isValid;
+        }
+    </script>
+    
+
+    
+    <%-include("../partials/end") %>

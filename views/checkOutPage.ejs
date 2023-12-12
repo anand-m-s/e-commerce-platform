@@ -4,7 +4,7 @@
 
 <div class="container " >
   <main>
-    <div class="py-5 text-center">
+    <div class="text-center">
         <h2>Checkout</h2>
     </div>
 
@@ -61,7 +61,7 @@
                     <img style="width: 10rem; border-radius: 2rem;" src="/images/uploads/<%= item.product.ProductImage[0].filename %>" alt="<%= item.product.Name %>" class="product-image">
                     <div class="ms-3">
                       <h6 class="my-0"><%= item.product.Name %></h6>
-                      <small class="text-body-secondary"><%= item.product.Description %></small>
+                      <small class="text-body-secondary"><%= item.product.Brand %> <%= item.product.Features[0].Ram %> <%= item.product.Features[0].Storage %><br><%= item.product.Features[0].Processor %></small>
                     </div>
                   </div>
                   <span class="d-flex">
@@ -69,11 +69,41 @@
                   </span>
                 </li>
               <% }); %>
-              <!-- Add your other list items here -->
-              <li class="list-group-item d-flex justify-content-end mt-2 text-white bg-black ">
-                <strong>Total : </strong>
-                <strong> ₹<%= totalAmount %></strong>
-              </li>
+                <li class="list-group-item mt-1 rounded">
+                  
+                  <strong>Coupon : </strong>                
+                <button class="btn border bg-black text-white " id="showCouponButton">Show coupon</button>   
+
+                <div class="" style="display:none;"  id="coupon-success">
+                  <p style="color: green;"> Coupon applied</p>
+                </div>            
+            
+                <div class="row" style="display: none;" id="couponContainer">
+                    <div class="col-md-6 mt-4 d-flex flex-column">
+                        <% coupons.forEach(coupon => { %>
+                            <label>
+                                <input type="radio" class="couponRadio" name="selectedCoupon" value="<%= coupon.couponCode %>">
+                                <%= coupon.couponCode %>
+                            </label>
+                        <% }); %>
+                    </div>
+                  
+                    <button class="btn border bg-black text-white mt-3" style="width: 11rem; height: 2rem; display: flex; align-items: center; justify-content: center;" id="applyCouponButton">Apply coupon</button>
+                    
+                    <div >
+                    <p id="couponError" class="mt-3" style="color: red;"></p>
+                    </div>
+                  </div>
+             
+                
+
+                </li>
+        
+                       <li id="totalAmount" class="list-group-item d-flex justify-content-end mt-2 text-white bg-black rounded">
+                          <strong>Total : </strong>
+                       <div id="totalAmountValue"><%= totalAmount %></div>
+                        </li>
+
             </ul>
 
             <div id="paymentMethods" class="m-2">
@@ -169,6 +199,62 @@
 
 }
 
+// coupon management
+
+document.getElementById('showCouponButton').addEventListener('click', function () {
+        let couponContainer = document.getElementById('couponContainer');
+        couponContainer.style.display = couponContainer.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('applyCouponButton').addEventListener('click', async function () {        
+    var selectedCoupon = document.querySelector('.couponRadio:checked');
+    let successmsg = document.getElementById("coupon-success")
+
+    if (selectedCoupon) {
+        var selectedCouponCode = selectedCoupon.value;           
+        try {
+            const response = await fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ selectedCouponCode })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              if(response.status==200){
+
+                // document.getElementById('totalAmount').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
+                // document.getElementById('totalAmountValue').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
+                document.getElementById('totalAmountValue').innerHTML = `${Math.floor(data.totalAmount)}`;
+                successmsg.style.display="block"
+                // setTimeout(()=>{
+                //   successmsg.style.display="none"
+                // },2000)
+                
+              }else if(response.status==201){
+
+                document.getElementById('couponError').innerHTML = data.error;
+                setTimeout(()=>{
+                  
+                  document.getElementById('couponError').innerHTML = '';
+                },1000)
+              }
+                
+            } 
+
+            console.log(data);
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+        }
+    } else {
+        console.log('No coupon selected.');
+    }
+});
+
+
 document.getElementById('checkoutButton').addEventListener('click', function () {
     const billingAddressRadio = document.querySelector('input[name="billingAddress"]:checked');
     const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
@@ -183,6 +269,9 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
     }
     const billingAddressIndex = billingAddressRadio.value;
     const paymentMethod = paymentMethodRadio.value;
+    const totalAmountElement = document.querySelector("#totalAmountValue");
+    const totalAmount = parseFloat(totalAmountElement.innerText);
+    console.log(totalAmount);
 
      Swal.fire({
       title: "Are you sure?",
@@ -194,6 +283,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
       confirmButtonText: "Yes"
     }).then(async(result) => {
       if (result.isConfirmed) {
+       
         fetch('/checkout', {
           method: 'POST',
           headers: {
@@ -202,6 +292,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
           body: JSON.stringify({
             billingAddress: billingAddressIndex,
             paymentMethod: paymentMethod,
+            totalAmount:totalAmount,
           }),
         }).then(async response => {  // Fix: Change 'data' to 'response'
     console.log(response.status);
@@ -218,9 +309,10 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
         response.json().then((res) => {
             if (res.order) {                             
                 console.log(res.order);
+                const amountInRupees = res.order.amount/100
                 var options = {
                     key: 'rzp_test_S1qqFuHam7RlxX',
-                    amount: res.order.amount,                    
+                    amount: amountInRupees,                    
                     currency: res.order.currency,
                     name: 'Electronics',
                     description: 'description',
@@ -234,7 +326,8 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                             body: JSON.stringify({
                                 payment_details: razorpayResponse,
                                 billingAddress: billingAddressIndex,
-                                paymentMethod: paymentMethod,                                                            
+                                paymentMethod: paymentMethod,
+                                totalAmount:amountInRupees,                                                            
                             }),
                         });
                       
@@ -260,7 +353,6 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
           // Handle errors, display an alert, or other actions
         });
 });
-
 </script>
 <%- include("./partials/end") %>
 

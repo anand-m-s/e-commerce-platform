@@ -15,7 +15,8 @@ const razorpayInstance = new Razorpay({
 const checkOut = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { billingAddress, paymentMethod } = req.body;
+    const { billingAddress, paymentMethod,totalAmount } = req.body;
+    console.log(totalAmount);
     console.log(paymentMethod);
     const user = await User.findById(userId);
     if (!user) {
@@ -31,10 +32,10 @@ const checkOut = async (req, res) => {
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
-    const totalAmount = cart.products.reduce(
-      (acc, item) => acc + item.product.Price * item.quantity,
-      0
-    );
+    // const totalAmount = cart.products.reduce(
+    //   (acc, item) => acc + item.product.Price * item.quantity,
+    //   0
+    // );
       if(paymentMethod==='cod'){
           console.log("inside cod");
           const newOrder = new Order({
@@ -99,7 +100,7 @@ const updatePayment = async (req, res) => {
   try {
       console.log('inside the update payment');
       const userId = req.session.userId;
-      const { billingAddress, paymentMethod } = req.body;
+      const { billingAddress, paymentMethod,totalAmount} = req.body;
       console.log(req.body);
       const user = await User.findById(userId);
       const selectedAddress = user.address[billingAddress];
@@ -111,10 +112,10 @@ const updatePayment = async (req, res) => {
       if (!cart) {
           return res.status(404).json({ status: false, message: 'Cart not found' });
       }
-      const totalAmount = cart.products.reduce(
-          (acc, item) => acc + item.product.Price * item.quantity,
-          0
-        );      
+      // const totalAmount = cart.products.reduce(
+      //     (acc, item) => acc + item.product.Price * item.quantity,
+      //     0
+      //   );      
         const payment_details = req.body.payment_details;
       const orderData = {
           user: userId,

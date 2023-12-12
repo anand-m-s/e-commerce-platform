@@ -23,9 +23,7 @@ router.get("/productadd",isAuth,adminController.productAdd);
 router.get("/salesreport",isAuth,  salesController.getSalesReport);
 router.get('/salesreport/:payment',salesController.getFilterSalesReport);
 router.get('/dated-sales-report',  salesController.getDatedReport);
-router.get("/coupons",(req,res)=>{
-    res.render("coupons");
-})
+router.get("/coupons",isAuth,adminController.loadCoupon)
 
 
 
@@ -36,6 +34,7 @@ router.post("/addproduct", upload.array('ProductImage', 5),productController.add
 router.post("/updateproduct",upload.array('ProductImage',5),productController.updateProduct);
 router.post("/updatecategory",adminController.updatecategory);
 router.post('/updateOrderStatus',adminController.updateOrderStatus);
-  
+router.post("/coupon",adminController.addCoupon)
 
+  
 module.exports = router;
