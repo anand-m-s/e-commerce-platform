@@ -81,9 +81,9 @@ const homelogin = async (req, res) => {
         const categories = await Category.find({isListed:true});
    
 
-        // Filter out products where Category is null (not populated)
+
         const products = filteredproducts.filter(product => product.Category !== null);
-         // Fetch wishlist items for the current user
+     
          const user = await User.findById(req.session.userId);
     // const wishListItems =  await WishList.find({ user: req.session.userId }).populate('product');
     // const wishlistProductIds = wishListItems.map(item => item.product._id);
@@ -525,11 +525,11 @@ const searchResults = async(req,res)=>{
         const search = req.query.query;    
         const products = await Product.find({ Name: { $regex: new RegExp(search, 'i') } });    
         const resultFound = products.length>0;    
-        // const wishlist = await WishList.findOne({ user: req.session.userId });
+        const wishlist = await WishList.findOne({ user: req.session.userId });
 
-        // // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
-        // const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
-        res.render("search",{username:req.session.username,products,resultFound})
+        // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
+        const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
+        res.render("search",{username:req.session.username,products,resultFound,wishlistProductIds})
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");    

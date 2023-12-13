@@ -3,8 +3,6 @@ const Wallet = require("../model/wallet");
 const Product = require("../model/productModel");
 
 
-
-
 const cancelProduct = async (req, res) => {
     try {
         const productId = req.query.productId;
@@ -21,7 +19,7 @@ const cancelProduct = async (req, res) => {
                 },
                 { new: true } // Return the updated document
             );    
-            // console.log(cancelledProduct+"////////////////////");    
+            // console.log(cancelledProduct+"::::::::::::::::::::::::");    
             if (!cancelledProduct) {
                 console.log('Product not found in the order');
                 return res.status(404).json({ success: false, message: 'Product not found in the order' });
@@ -30,11 +28,9 @@ const cancelProduct = async (req, res) => {
             (product) => product.product.toString() === productId
         );
         // console.log("cancelled product details::::::::::"+cancelledProductDetails);
-        // During product cancellation (if necessary)
                 const userWallet = await Wallet.findOne({ user: userId });
          
-                if (!userWallet) {
-                    // Create a new wallet for the user with an initial balance of 0
+                if (!userWallet) {                    
                     const newWallet = new Wallet({
                         user: userId,
                         balance: 0

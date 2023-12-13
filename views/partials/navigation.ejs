@@ -18,7 +18,7 @@
         </li>
       </ul>
       <% if (typeof username !== 'undefined') { %>
-        <% if(currentPath==='/home'){ %>
+        <% if(currentPath==='/home' || currentPath ==="/search"){ %>
           <div style="margin-right: 18rem; display: flex;">
             <input type="text" class="form-control searchInp" placeholder="Search" aria-label="Search" aria-describedby="searchButton" id="searchInput">
             <button class="btn search__btn" id="searchButton">Search</button>
