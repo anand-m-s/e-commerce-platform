@@ -19,7 +19,7 @@ const couponSchema = new mongoose.Schema({
   },
   usersLimit: {
     type: Number,
-    required: true,
+  
   },
   description: {
     type: String,

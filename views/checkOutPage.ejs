@@ -188,25 +188,25 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   function selectPaymentMethod(method) {
-  // Unselect all payment methods
-  document.querySelectorAll('.paymentMethod input[type="radio"]').forEach(input => {
-    input.checked = false;
-  });
-
+    // Unselect all payment methods
+    document.querySelectorAll('.paymentMethod input[type="radio"]').forEach(input => {
+      input.checked = false;
+    });
+    
   // Select the clicked payment method
   const selectedInput = document.querySelector(`.paymentMethod[data-method="${method}"] input[type="radio"]`);
   selectedInput.checked = true;
-
+  
 }
 
 // coupon management
 
 document.getElementById('showCouponButton').addEventListener('click', function () {
-        let couponContainer = document.getElementById('couponContainer');
-        couponContainer.style.display = couponContainer.style.display === 'none' ? 'block' : 'none';
-    });
+  let couponContainer = document.getElementById('couponContainer');
+  couponContainer.style.display = couponContainer.style.display === 'none' ? 'block' : 'none';
+});
 
-    document.getElementById('applyCouponButton').addEventListener('click', async function () {        
+document.getElementById('applyCouponButton').addEventListener('click', async function () {        
     var selectedCoupon = document.querySelector('.couponRadio:checked');
     let successmsg = document.getElementById("coupon-success")
 
@@ -240,7 +240,12 @@ document.getElementById('showCouponButton').addEventListener('click', function (
                 setTimeout(()=>{
                   
                   document.getElementById('couponError').innerHTML = '';
-                },1000)
+                },2000)
+              }else if(response.status==202){
+                document.getElementById('couponError').innerHTML = data.error;
+                setTimeout(()=>{                  
+                  document.getElementById('couponError').innerHTML = '';
+                },2000)
               }
                 
             } 
@@ -258,6 +263,13 @@ document.getElementById('showCouponButton').addEventListener('click', function (
 document.getElementById('checkoutButton').addEventListener('click', function () {
     const billingAddressRadio = document.querySelector('input[name="billingAddress"]:checked');
     const paymentMethodRadio = document.querySelector('input[name="paymentMethod"]:checked');
+    var selectedCoupon = document.querySelector('.couponRadio:checked');
+    
+    if (selectedCoupon) {
+        var selectedCouponCode = selectedCoupon.value;     
+    }else{
+      selectedCouponCode = null;
+    }
 
     if (!billingAddressRadio) {
       alert('Please select a billing address.');
@@ -293,6 +305,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
             billingAddress: billingAddressIndex,
             paymentMethod: paymentMethod,
             totalAmount:totalAmount,
+            selectedCouponCode
           }),
         }).then(async response => {  // Fix: Change 'data' to 'response'
     console.log(response.status);
@@ -327,7 +340,8 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                                 payment_details: razorpayResponse,
                                 billingAddress: billingAddressIndex,
                                 paymentMethod: paymentMethod,
-                                totalAmount:amountInRupees,                                                            
+                                totalAmount:amountInRupees,
+                                selectedCouponCode:res.selectedCouponCode,                                                         
                             }),
                         });
                       

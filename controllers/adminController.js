@@ -533,25 +533,31 @@ const admindashboard = async (req, res) => {
   }
 };
 
-const loadCoupon = async(req,res)=>{
+const loadCoupon = async (req, res) => {
   try {
-    const coupon = await Coupon.find({})
-    res.render("admin/coupons",{email:req.session.email,coupon});
+    // Find all coupons, including expired ones
+    const allCoupons = await Coupon.find({});
+
+    // Filter out expired coupons
+    const currentDate = new Date();
+    const validCoupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);
+
+    res.render("admin/coupons", { email: req.session.email, coupon: validCoupons });
   } catch (error) {
     console.log(error);
   }
-}
+};
+
 
 const addCoupon = async (req, res) => {
   try {
-      const { startDate, endDate, discountValue, usedusersCount, usersLimit, description, couponCode, purchaseLimit } = req.body;
+      const { startDate, endDate, discountValue, usedusersCount,description, couponCode, purchaseLimit } = req.body;
 
       const newCoupon = new Coupon({
           startDate,
           endDate,
           discountValue,
-          usedusersCount,
-          usersLimit,
+          usedusersCount,      
           description,
           couponCode,
           purchaseLimit
@@ -565,6 +571,52 @@ const addCoupon = async (req, res) => {
       res.status(500).send('Internal Server Error'); 
   }
 };
+
+const deleteCoupon = async(req,res)=>{
+  try {
+    const couponId = req.query.couponId;
+    console.log(couponId);
+    await Coupon.findByIdAndDelete(couponId);
+    res.redirect('/admin/coupons')
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+}
+
+
+const loadEditCoupon =async(req,res)=>{
+  try {
+    couponId= req.query.Id;
+    console.log(couponId);
+    const coupon = await Coupon.findById(couponId);
+    res.render("admin/editcoupon",{coupon,email:req.session.email});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const updateCoupon = async(req,res)=>{
+  try {
+    
+    couponId = req.query.Id;
+    const { startDate, endDate, discountValue, usedusersCount,description, couponCode, purchaseLimit } = req.body;
+    const coupon = await Coupon.findById(couponId);
+    coupon.startDate = startDate;
+    coupon.endDate = endDate;
+    coupon.discountValue = discountValue;
+    coupon.couponCode = couponCode;
+    coupon.purchaseLimit = purchaseLimit;
+    coupon.description = description;
+      
+    await coupon.save();
+    res.redirect("/admin/coupons");
+  } catch (error) {
+    console.log(error);
+  }
+  
+
+}
 
 
 
@@ -595,5 +647,5 @@ module.exports = {
   orders,
   orderdetails, updateOrderStatus,
   loadCoupon,
-  addCoupon,
+  addCoupon,deleteCoupon,loadEditCoupon,updateCoupon
 }

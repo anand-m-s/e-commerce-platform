@@ -3,7 +3,7 @@
 
     <div class="content mt-5">
         <div class="container">
-            <div class="row d-flex justify-content-start">
+            <div class="row d-flex justify-content-around">
                 <div class="col-md-4">
                     <div id="AddCpnForm">
                         <form class="row g-3 needs-validation d-flex my-3 shadow-lg p-4 rounded" style="background-color: lightgrey;" action="/admin/coupon" method="POST" id="couponForm">
@@ -31,15 +31,7 @@
                                         Please choose a Coupon Value
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-6 ">
-                                <label for="couponLimit" class="form-label">No. of Coupon</label>
-                                <input type="number" class="form-control" id="couponLimit" name="usersLimit" required>
-                                <div class="invalid-feedback">
-                                    Please provide a Limit.
-                                </div>
-                            </div>
+                            </div>                                                 
                             
                             <div class="col-md-6 ">
                                 <label for="couponCode" class="form-label">Coupon Code</label>
@@ -87,7 +79,7 @@
                                 <th>Coupon code</th>
                                 <th>Discount Percentage</th>
                                 <th>Used Count</th>
-                                <th>Coupon left</th>
+                            
                                 <th>Description</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -102,14 +94,16 @@
                                     <td><%= couponItem.couponCode %></td>
                                     <td><%= couponItem.discountValue %></td>
                                     <td><%= couponItem.usedUsersCount %></td>
-                                    <td><%= couponItem.usersLimit %></td>
+                                 
                                     <td><%= couponItem.description %></td>
                                     <td><%= couponItem.startDate.toLocaleDateString() %></td>
                                     <td><%= couponItem.endDate.toLocaleDateString() %></td>
                                     <td class="">
-                                        <a class="d-flex justify-content-center" style="text-decoration: none; color: black; border: 1px solid blue;" href="">Edit</a>
+                                        <a class="d-flex justify-content-center rounded-3 " style="text-decoration: none; color: #fff; background-color: rgb(81, 194, 232); width: 3.4rem;" href="/admin/editcoupon?Id=<%= couponItem._id %>">Edit</a>
                                         <br>
-                                        <a class="d-flex justify-content-center" style="text-decoration: none; color: black; border: 1px solid blueviolet;" href="">Delete</a>
+                                        <a  href="/admin/deletecoupon?couponId=<%= couponItem._id %>" style="text-decoration: none; color: #fff; background-color: rgb(231, 65, 65);  padding: 3px;" class="delete-coupon-button rounded">Delete</a>
+
+
                                     </td>
                                 </tr>
                                 <% counter++; %>
@@ -126,38 +120,46 @@
 
 
     <script>
-        document.getElementById('couponForm').addEventListener('submit', function (event) {
-            if (!validateForm()) {
-                event.preventDefault(); // Prevent form submission if validation fails
+        document.getElementById('couponForm').addEventListener('submit', async function (event) {
+            // Prevent the default form submission
+            event.preventDefault();
+    
+            // Validate the form asynchronously
+            if (await validateForm()) {
+                // If the form is valid, submit it
+                this.submit();
             }
         });
     
-        function validateForm() {
+        async function validateForm() {
             var startDate = new Date(document.getElementById('startDate').value);
             var endDate = new Date(document.getElementById('endDate').value);
             var discountValue = document.getElementById('discountValue').value;
-            var couponLimit = document.getElementById('couponLimit').value;
             var couponCode = document.getElementById('couponCode').value;
             var purchaseLimit = document.getElementById('purchaseLimit').value;
             var description = document.getElementById('description').value;
     
-            var isValid = true;
-    
             // Check if required fields are empty
-            if (!startDate || !endDate || !discountValue || !couponLimit || !couponCode || !purchaseLimit || !description) {
-                isValid = false;
+            if (!startDate || !endDate || !discountValue || !couponCode || !purchaseLimit || !description) {
                 alert('Please fill out all required fields.');
+                return false;
             }
     
             // Check if end date is less than start date
             if (startDate > endDate) {
-                isValid = false;
                 alert('End date must be greater than or equal to start date.');
+                return false;
             }
+             // Check if discountValue is a positive value
+        if (discountValue <= 0) {
+            alert('Discount value must be a positive number.');
+            return false;
+        }
     
-            return isValid;
+            return true;
         }
     </script>
+    
     
 
     

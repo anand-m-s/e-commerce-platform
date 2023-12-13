@@ -24,17 +24,20 @@ router.get("/salesreport",isAuth,  salesController.getSalesReport);
 router.get('/salesreport/:payment',salesController.getFilterSalesReport);
 router.get('/dated-sales-report',  salesController.getDatedReport);
 router.get("/coupons",isAuth,adminController.loadCoupon)
+router.get('/deletecoupon',adminController.deleteCoupon)
+router.get('/editcoupon',isAuth,adminController.loadEditCoupon)
 
 
 
-router.post("/useractions",adminController.useraction);
+router.post("/useractions",adminController.useraction); 
 router.post("/adminlogin",adminController.adminLogin);
 router.post("/addcategory",adminController.addcategory);
 router.post("/addproduct", upload.array('ProductImage', 5),productController.addproduct);
 router.post("/updateproduct",upload.array('ProductImage',5),productController.updateProduct);
 router.post("/updatecategory",adminController.updatecategory);
 router.post('/updateOrderStatus',adminController.updateOrderStatus);
-router.post("/coupon",adminController.addCoupon)
+router.post("/coupon",adminController.addCoupon);
+router.post("/editcoupon",adminController.updateCoupon)
 
   
 module.exports = router;

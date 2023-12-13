@@ -33,6 +33,9 @@ const orderSchema= new mongoose.Schema({
     cancelDate:{
       type:Date
     },
+    discountPrice:{
+      type:Number,
+    }
   }],
   totalPrice:{
     type:Number,

@@ -20,7 +20,8 @@ const cancelProduct = async (req, res) => {
                     }
                 },
                 { new: true } // Return the updated document
-            );        
+            );    
+            // console.log(cancelledProduct+"////////////////////");    
             if (!cancelledProduct) {
                 console.log('Product not found in the order');
                 return res.status(404).json({ success: false, message: 'Product not found in the order' });
@@ -28,10 +29,10 @@ const cancelProduct = async (req, res) => {
         const cancelledProductDetails = cancelledProduct.products.find(
             (product) => product.product.toString() === productId
         );
-        console.log("cancelled product details::::::::::"+cancelledProductDetails);
+        // console.log("cancelled product details::::::::::"+cancelledProductDetails);
         // During product cancellation (if necessary)
                 const userWallet = await Wallet.findOne({ user: userId });
-
+         
                 if (!userWallet) {
                     // Create a new wallet for the user with an initial balance of 0
                     const newWallet = new Wallet({
@@ -44,7 +45,7 @@ const cancelProduct = async (req, res) => {
 
         if (cancelledProduct.paymentMethod === 'Razorpay') {        
           
-            const refundedAmount = cancelledProductDetails.pricePerQnt * cancelledProductDetails.quantity;
+            const refundedAmount = (cancelledProductDetails.pricePerQnt * cancelledProductDetails.quantity)-cancelledProductDetails.discountPrice;
           
                 userWallet.transactions.push({
                     amount: refundedAmount,

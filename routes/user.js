@@ -52,6 +52,8 @@ router.post('/cancelproduct',orderController.cancelProduct);
 router.post("/return",orderController.returnProduct);
 router.post("/apply-coupon",userController.applyCoupon);
 router.post("/add-to-wishlist",userController.addToWishList)
+router.post('/remove-from-wishlist',userController.removeFromWishlist );
+  
   
 
 module.exports = router;

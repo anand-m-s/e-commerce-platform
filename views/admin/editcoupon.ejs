@@ -1,0 +1,105 @@
+<%-include("../partials/admin-header") %>
+
+
+<div class="content mt-5">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <div id="EditCpnForm">
+                    <form class="row g-3 needs-validation d-flex my-3 shadow-lg p-4 rounded" style="background-color: lightgrey;" action="/admin/editcoupon?Id=<%= coupon._id %>" method="POST" id="editCouponForm">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Starting Date</label>
+                            <input type="Date" class="form-control" id="startDate" name="startDate" value="<%= coupon.startDate %>" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="Date" class="form-control" id="endDate" name="endDate" value="<%= coupon.endDate %>" required>
+                            <div class="valid-feedback">
+                                Looks good!
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="couponValue" class="form-label">Discount Percentage (%)</label>
+                            <div class="input-group has-validation">
+                                <input type="Number" class="form-control" id="discountValue" name="discountValue" aria-describedby="inputGroupPrepend" value="<%= coupon.discountValue %>" required>
+                                <div class="invalid-feedback">
+                                    Please choose a Coupon Value
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="couponCode" class="form-label">Coupon Code</label>
+                            <input type="text" class="form-control" id="couponCode" name="couponCode" value="<%= coupon.couponCode %>" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid coupon code.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="purchaseLimit" class="form-label">Purchase Limit</label>
+                            <input type="number" class="form-control" id="purchaseLimit" name="purchaseLimit" value="<%= coupon.purchaseLimit %>" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid coupon code.
+                            </div>
+                        </div>
+
+                        <div class="form-floating col-md-12">
+                            <textarea class="form-control" id="description" name="description" required><%= coupon.description %></textarea>
+                            <label class="form-label" for="floatingTextarea">Description</label>
+                            <div class="invalid-feedback">
+                                Please provide a Description.
+                            </div>
+                        </div>
+
+                        <div>
+                            <button class="btn" style="background-color: rgb(75, 195, 242); color: #fff;" id="updateCouponButton" type="submit">Update Coupon</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('editCouponForm').addEventListener('submit', async function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Validate the form asynchronously
+        if (await validateForm()) {
+            // If the form is valid, submit it
+            this.submit();
+        }
+    });
+
+    async function validateForm() {
+        var startDate = new Date(document.getElementById('startDate').value);
+        var endDate = new Date(document.getElementById('endDate').value);
+        var discountValue = document.getElementById('discountValue').value;
+        var couponCode = document.getElementById('couponCode').value;
+        var purchaseLimit = document.getElementById('purchaseLimit').value;
+        var description = document.getElementById('description').value;
+
+        // Check if required fields are empty
+        if (!startDate || !endDate || !discountValue || !couponCode || !purchaseLimit || !description) {
+            alert('Please fill out all required fields.');
+            return false;
+        }
+
+        // Check if end date is less than start date
+        if (startDate > endDate) {
+            alert('End date must be greater than or equal to start date.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<%-include("../partials/end") %>

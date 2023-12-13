@@ -3,6 +3,7 @@ const User = require("../model/userModel");
 const Cart = require("../model/cart");
 const Order = require("../model/order")
 const Product = require('../model/productModel')
+const Coupon = require('../model/coupon')
 const Razorpay = require('razorpay'); 
 
 
@@ -15,9 +16,24 @@ const razorpayInstance = new Razorpay({
 const checkOut = async (req, res) => {
   try {
     const userId = req.session.userId;
-    const { billingAddress, paymentMethod,totalAmount } = req.body;
-    console.log(totalAmount);
-    console.log(paymentMethod);
+    const { billingAddress, paymentMethod,totalAmount,selectedCouponCode} = req.body;
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'products.product',
+    });
+    let coupon;
+    if(selectedCouponCode!==null){
+      cart.products.forEach((item) => { 
+        item.couponApplied = true;
+      });        
+      await cart.save();
+
+      coupon = await Coupon.findOne({ couponCode: selectedCouponCode });  
+      coupon.usedBy.push(userId);
+      coupon.usedUsersCount++; 
+
+      await coupon.save();
+       
+    }
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -26,9 +42,7 @@ const checkOut = async (req, res) => {
     if (!selectedAddress) {
       return res.status(400).json({ error: 'Billing address not selected' });
     }
-    const cart = await Cart.findOne({ user: userId }).populate({
-      path: 'products.product',
-    });
+   
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -45,6 +59,7 @@ const checkOut = async (req, res) => {
               product: item.product._id,
               quantity: item.quantity,
               pricePerQnt: item.product.Price,
+              discountPrice: item.couponApplied ? ((item.product.Price * item.quantity * coupon.discountValue) / 100) : 0,
             })),
             totalPrice: totalAmount,
             paymentMethod,
@@ -86,7 +101,7 @@ const checkOut = async (req, res) => {
                   }
                   console.log('Razorpay order created:');
       
-                  return res.status(201).json({order:data})
+                  return res.status(201).json({order:data,selectedCouponCode})
               })
       }
   } catch (error) {
@@ -100,7 +115,13 @@ const updatePayment = async (req, res) => {
   try {
       console.log('inside the update payment');
       const userId = req.session.userId;
-      const { billingAddress, paymentMethod,totalAmount} = req.body;
+      const { billingAddress, paymentMethod,totalAmount,selectedCouponCode} = req.body;
+      let coupon
+      if(selectedCouponCode!==null){
+        console.log(selectedCouponCode);
+         coupon = await Coupon.findOne({ couponCode: selectedCouponCode });  
+        console.log("::::::::::"+coupon);        
+      }
       console.log(req.body);
       const user = await User.findById(userId);
       const selectedAddress = user.address[billingAddress];
@@ -108,6 +129,7 @@ const updatePayment = async (req, res) => {
       const cart = await Cart.findOne({ user: userId }).populate({
           path: 'products.product',
       });
+
       console.log(cart);
       if (!cart) {
           return res.status(404).json({ status: false, message: 'Cart not found' });
@@ -124,6 +146,7 @@ const updatePayment = async (req, res) => {
               product: item.product._id,
               quantity: item.quantity,
               pricePerQnt: item.product.Price,
+              discountPrice: item.couponApplied ? ((item.product.Price * item.quantity * coupon.discountValue) / 100) : 0,
             })),
           paymentMethod,
           totalPrice: totalAmount, 

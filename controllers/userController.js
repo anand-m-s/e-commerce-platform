@@ -92,8 +92,7 @@ const homelogin = async (req, res) => {
 
      // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
      const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];
-     console.log(wishlistProductIds);
-
+   
      
             if(user && user.Isblocked){
                 req.session.userId=null;
@@ -525,7 +524,11 @@ const searchResults = async(req,res)=>{
     try {
         const search = req.query.query;    
         const products = await Product.find({ Name: { $regex: new RegExp(search, 'i') } });    
-        const resultFound = products.length>0;            
+        const resultFound = products.length>0;    
+        // const wishlist = await WishList.findOne({ user: req.session.userId });
+
+        // // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
+        // const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
         res.render("search",{username:req.session.username,products,resultFound})
     } catch (error) {
         console.log(error);
@@ -558,13 +561,16 @@ const loadWallet = async(req,res)=>{
         res.render("wallet",{username:req.session.username,userWallet})
     } catch (error) {
         console.log(error);
+        res.status(500).send('Internal Server Error');
     }
 }
 
 const applyCoupon= async (req, res) => {
     try {
       const { selectedCouponCode } = req.body;
+    //   console.log(selectedCouponCode);
       const coupon = await Coupon.findOne({ couponCode: selectedCouponCode });  
+    //   console.log(coupon);
       if (!coupon) {
         return res.status(404).json({ error: 'Coupon not found' });
       }
@@ -589,14 +595,18 @@ const applyCoupon= async (req, res) => {
       const total = cart.products.reduce(
         (acc, item) => acc + item.product.Price * item.quantity,
         0
-      );      
+      );    
+       // Check if the total is greater than the purchaseLimit
+        if (coupon.purchaseLimit && total <= coupon.purchaseLimit) {
+            return res.status(202).json({ error: `Minimum spend must be above ${coupon.purchaseLimit}`});
+        }  
       const discountAmount = (coupon.discountValue / 100) * total;
       const totalAmount = total - discountAmount;
       // Update the user and coupon records to reflect the usage 
-      coupon.usedBy.push(userId);
-      coupon.usedUsersCount++; 
-      coupon.usersLimit--;
-      await coupon.save();
+    //   coupon.usedBy.push(userId);
+    //   coupon.usedUsersCount++; 
+    //   coupon.usersLimit--;
+    //   await coupon.save();
   
       // Return the updated total amount and any other relevant information
       res.json({ totalAmount, message: 'Coupon applied successfully' });
@@ -655,6 +665,30 @@ const applyCoupon= async (req, res) => {
       res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   };
+
+const removeFromWishlist =async (req, res) => {
+    try {
+      const { productId } = req.body;
+      const userId = req.session.userId;
+  
+
+      const userWishList = await WishList.findOne({ user: userId });
+  
+      if (!userWishList) {
+        return res.status(404).json({ success: false, message: 'Wishlist not found' });
+      }
+  
+
+      userWishList.product = userWishList.product.filter(id => id.toString() !== productId);
+
+      await userWishList.save();
+  
+      res.status(200).json({ success: true, message: 'Product removed from the wishlist successfully' });
+    } catch (error) {
+      console.error('Error removing product from wishlist:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  }
   
   
   
@@ -694,5 +728,5 @@ module.exports = {
     searchResults,
     categoryFilter,
     loadWallet,applyCoupon,
-    addToWishList,loadWishList
+    addToWishList,loadWishList,removeFromWishlist
 }

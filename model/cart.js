@@ -11,6 +11,10 @@ const cartItemSchema = new mongoose.Schema({
       type: Number,
       default: 1,
     },
+    couponApplied: {
+      type: Boolean,
+      default: false
+    },
   }],
   user: {
     type: mongoose.Schema.Types.ObjectId,
