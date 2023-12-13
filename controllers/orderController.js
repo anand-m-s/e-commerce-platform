@@ -139,7 +139,7 @@ const returnProduct = async(req,res)=>{
 const successPage = (req,res)=>{
     try {
         
-        res.render("successpage");
+        res.render("successpage",{title:'Success'});
     } catch (error) {
         
     }

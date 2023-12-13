@@ -99,7 +99,7 @@ const homelogin = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
              
-                res.render("home", { username: req.session.username, products,categories,wishlistProductIds})
+                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds})
             }     
     } catch (error) {
         console.log(error);
@@ -162,7 +162,7 @@ const userLogin = (req, res) => {
             res.redirect("/home")
         } else {
             const msg='';
-            res.render("login-user",{msg})
+            res.render("login-user",{title:"Login",msg})
         }
     } catch (error) {
         console.log(error);
@@ -180,7 +180,7 @@ const logout = (req, res) => {
 
 const about = (req,res)=>{
     try {
-        res.render("about")
+        res.render("about",{title:"About"})
     } catch (error) {
         console.log(error);
         
@@ -188,7 +188,7 @@ const about = (req,res)=>{
 }
 const contact = (req,res)=>{
     try {
-        res.render("contact")
+        res.render("contact",{title:'Contact'})
     } catch (error) {
         console.log(error);
         
@@ -198,7 +198,7 @@ const contact = (req,res)=>{
 //reset password
 const loadForgotPassword =(req,res)=>{
     try {
-        res.render("forgotpassword")
+        res.render("forgotpassword",{title:'Forgotpassword'})
         
     } catch (error) {
         console.log(error);
@@ -261,7 +261,7 @@ const displayProduct = async(req,res)=>{
                 req.session.userId =null;
                 res.render("login-user",{title:"login",errorMessage});
             }
-            res.render("productdetails",{products,username:req.session.username});
+            res.render("productdetails",{title:'Product',products,username:req.session.username});
         }else{
             res.render("productdetails",{products})
         }
@@ -275,7 +275,7 @@ const loadUserProfile = async(req,res)=>{
     try {               
             const users = await User.findById(req.session.userId).populate('address');
             const address = users.address;  // Assuming you want the latest added address            
-            res.render("user-profile",{username:req.session.username,users,address});      
+            res.render("user-profile",{title:"UserProfile",username:req.session.username,users,address});      
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred");
@@ -343,7 +343,7 @@ const editUserAddress = async (req, res) => {
         if (!users || !address) {
             return res.status(404).send("Address not found");
         }
-        res.render("editUserAddress", { users, address });
+        res.render("editUserAddress", { title:'Address',users, address });
     } catch (error) {
         console.error(error);
         res.status(500).send("An error occurred");
@@ -398,7 +398,7 @@ const userProfileEdit = async(req,res)=>{
         
         const userID = req.session.userId;
         const users = await User.findById(userID);
-        res.render("userdetails",{users}); 
+        res.render("userdetails",{title:'userprofile',users}); 
     } catch (error) {
         console.log(error);
     }
@@ -472,7 +472,7 @@ const addProductsToCart = async(req,res)=>{
               if(totalAmount===0){
                 return res.redirect("/addtocart")
               }                   
-            res.render("checkOutPage",{user,address,cart,totalAmount,username:req.session.username,coupons});
+            res.render("checkOutPage",{title:'Checkout',user,address,cart,totalAmount,username:req.session.username,coupons});
       
         
     } catch (error) {
@@ -500,6 +500,7 @@ const loadOrderList = async (req, res) => {
             .limit(perPage);
 
         res.render("orderlist", {
+            title:'Orderlist',
             orders,
             username: req.session.username,
             currentPage: page,
@@ -529,7 +530,7 @@ const searchResults = async(req,res)=>{
 
         // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
         const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
-        res.render("search",{username:req.session.username,products,resultFound,wishlistProductIds})
+        res.render("search",{title:'Search',username:req.session.username,products,resultFound,wishlistProductIds})
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");    
@@ -558,7 +559,7 @@ const loadWallet = async(req,res)=>{
             });
             await newWallet.save();       
         }
-        res.render("wallet",{username:req.session.username,userWallet})
+        res.render("wallet",{title:'Wallet',username:req.session.username,userWallet})
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal Server Error');
@@ -621,7 +622,7 @@ const applyCoupon= async (req, res) => {
       const userId = req.session.userId;
       // Fetch wishlist items for the current user
       const wishListItems = await WishList.find({ user: userId }).populate('product');
-      res.render('wishlist', { wishListItems,username:req.session.username});
+      res.render('wishlist', { title:'Wishlist',wishListItems,username:req.session.username});
     } catch (error) {
       console.log(error);
       // Handle errors appropriately

@@ -30,7 +30,7 @@ const addToCart = async (req, res) => {
           res.json({ username: users.username, cart, totalAmount});
         } else {
           // If it's a regular request, render the addtocart page
-          res.render('addtocart', { username: users.username, cart,totalAmount});
+          res.render('addtocart', { title:'Cart',username: users.username, cart,totalAmount});
         }
      
     } catch (error) {

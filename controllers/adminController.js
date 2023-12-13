@@ -42,7 +42,7 @@ const adminLog = (req, res) => {
     if (req.session.adminId) {
       res.redirect("/admin/admindashboard")
     } else {
-      res.render("admin/admin-login")
+      res.render("admin/admin-login",{title:'Login'})
     }
 
   } catch (error) {
