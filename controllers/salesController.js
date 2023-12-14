@@ -70,7 +70,7 @@ const getSalesReport = async (req, res) => {
         entry.orderDate = entry.orderDate.toISOString().split('T')[0];
       }
   
-      res.render("admin/salesreport", { salesReport, email: req.session.email });
+      res.render("admin/salesreport", { title:'Sales Report',salesReport, email: req.session.email });
     } catch (err) {
       console.error(err);
       res.status(500).send('Internal Server Error');

@@ -33,29 +33,27 @@
           
             </div>
          <% }%>
-      <div class="dropdown">
-        <button class="btn navbtn dropdown-toggle capitalize" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-          <% if (typeof username !== 'undefined') { %>
-            <%=username %> 
-          <% } else { %>
-            Account 
-          <% } %>      
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-          <!-- <li><a class="dropdown-item" href="/login">Login</a></li>
-          <li><a class="dropdown-item" href="/logout">Logout</a></li> -->
-          <li><a class="dropdown-item" href="#">Contact</a></li>
-          <li><a class="dropdown-item" href="#">Settings</a></li>
-          <% if (typeof username !== 'undefined') { %>
-            <li><a class="dropdown-item" href="/userprofile">Profile</a></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li>
-            <% } else { %>
-            <li><a class="dropdown-item" href="/login">Login</a></li>
-          <% } %>
-          
-
-        </ul>
+         <div class="dropdown">
+          <button class="btn navbtn dropdown-toggle capitalize" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <% if (typeof username !== 'undefined') { %>
+                  <%= username %>
+              <% } else { %>
+                  Account
+              <% } %>      
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="/contact">Contact</a></li>
+              
+              <% if (typeof username !== 'undefined') { %>
+                  <li><a class="dropdown-item" href="/userprofile">Profile</a></li>
+                  <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              <% } else { %>
+                  <li><a class="dropdown-item" href="/login">Login</a></li>
+              <% } %>
+          </ul>
       </div>
+      
+     
     </div>
   </div>
 </nav>

@@ -29,7 +29,7 @@ const adminLogin = async (req, res) => {
       }
     } else {
       const errorMessage = "Admin not found";
-      res.render("admin/admin-login", { errorMessage });
+      res.render("admin/admin-login", {title:'Login', errorMessage });
     }
   } catch (err) {
     console.error(err);
@@ -62,9 +62,8 @@ const adminlogout = (req, res) => {
 
 const loadcategory = async (req, res) => {
   try {
-    //fetch category data from the database
     const categories = await Category.find();
-    res.render('admin/addcategory', { email: req.session.email, categories })
+    res.render('admin/addcategory', { title:'Category',email: req.session.email, categories })
   } catch (error) {
     console.log(error);
     res.status(500).send("Error fetching category data");
@@ -78,7 +77,7 @@ const addcategory = async (req, res) => {
     const existingCategory = await Category.findOne({ categoryName });
     if (existingCategory) {
       // return res.status(400).send('Category name already exists.');
-      return res.render('admin/addcategory', { errorMessage: 'Category name already exists.', categories });
+      return res.render('admin/addcategory', { title:'Category',errorMessage: 'Category name already exists.', categories });
     } else {
 
       const newCategory = new Category({ categoryName, categoryDescription, isListed });
@@ -137,7 +136,7 @@ const loadAddProduct = async (req, res) => {
       .limit(itemsPerPage);
     const totalProducts = await Product.countDocuments();
     const totalPages = Math.ceil(totalProducts / itemsPerPage);
-    res.render('admin/productlist', { categories, products, email: req.session.email, currentPage: parseInt(page), totalPages });
+    res.render('admin/productlist', { title:'Product',categories, products, email: req.session.email, currentPage: parseInt(page), totalPages });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
@@ -148,7 +147,7 @@ const productAdd = async (req, res) => {
   const categories = await Category.find({ isListed: true });
   const products = await Product.find({}).populate('Category')
 
-  res.render("admin/addProducts", { categories, products, email: req.session.email })
+  res.render("admin/addProducts", {title:'Product',categories, products, email: req.session.email })
 }
 
 // const addproduct = async (req, res) => {
@@ -235,16 +234,16 @@ const productAdd = async (req, res) => {
 
 
 const usermanage = async (req, res) => {
-  const ITEMS_PER_PAGE = 4; // Adjust as needed
+  const ITEMS_PER_PAGE = 4; 
   try {
 
     const { page = 1, search = '' } = req.query;
-    // Set the number of items per page and calculate skip value
+    
     const itemsPerPage = 4;
     const skip = (page - 1) * itemsPerPage;
-    // Construct a regex pattern for case-insensitive search
+    
     const searchPattern = new RegExp(search, 'i');
-    // Fetch users based on the search pattern
+    
     const users = await User.find({
       $or: [
         { username: { $regex: searchPattern } },
@@ -254,7 +253,7 @@ const usermanage = async (req, res) => {
     })
       .skip(skip)
       .limit(itemsPerPage);
-    // Count the total number of users for pagination
+    
     const totalUsers = await User.countDocuments({
       $or: [
         { username: { $regex: searchPattern } },
@@ -262,9 +261,9 @@ const usermanage = async (req, res) => {
         { phone: { $regex: searchPattern } },
       ],
     });
-    // Calculate total pages
+    
     const totalPages = Math.ceil(totalUsers / itemsPerPage);
-    res.render('admin/usermanagement', { email: req.session.email, users, currentPage: parseInt(page), totalPages, search });
+    res.render('admin/usermanagement', { title:'UserManagement',email: req.session.email, users, currentPage: parseInt(page), totalPages, search });
 
   } catch (error) {
     console.log(error);
@@ -277,14 +276,14 @@ const loadEditCategory = async (req, res) => {
 
     categoryID = req.query.id
     const category = await Category.findById(categoryID)
-    res.render("admin/editcategory", { email: req.session.email, category })
+    res.render("admin/editcategory", { title:'Edit',email: req.session.email, category })
 
 
   } catch (error) {
     console.log(error);
   }
 }
-// Update a category
+
 const updatecategory = async (req, res) => {
   try {
     const categoryID = req.query.id
@@ -297,9 +296,9 @@ const updatecategory = async (req, res) => {
     // Update the category fields
     category.categoryName = categoryName;
     category.categoryDescription = categoryDescription;
-    category.isListed = isListed === 'on'; // Check the checkbox value
+    category.isListed = isListed === 'on'; 
     await category.save();
-    res.redirect("/admin/addcategory"); // Redirect to a category list page or another suitable location
+    res.redirect("/admin/addcategory"); 
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred");
@@ -311,7 +310,7 @@ const deleteProduct = async (req, res) => {
     const productId = req.query.productId;
     console.log(productId);
     if (!productId) {
-      // Handle the case where productId is missing in the query
+      
       return res.status(400).json({ error: 'Product ID is missing in the query parameters' });
     }
     await Product.findByIdAndRemove(productId);
@@ -333,7 +332,7 @@ const editProduct = async (req, res) => {
     // console.log(products);
     if (req.session.adminId) {
 
-      res.render("admin/edit-product", { products, categories, email: req.session.email })
+      res.render("admin/edit-product", { title:'Edit',products, categories, email: req.session.email })
     } else {
       res.redirect("/admin");
     }
@@ -380,7 +379,7 @@ const orders = async (req, res) => {
     const totalOrders = await Order.countDocuments();
     const totalPages = Math.ceil(totalOrders / itemsPerPage);
 
-    res.render('admin/orderlist-admin', { orders, email: req.session.email, currentPage: parseInt(page), totalPages });
+    res.render('admin/orderlist-admin', { title:'Orders',orders, email: req.session.email, currentPage: parseInt(page), totalPages });
 
 
   } catch (error) {
@@ -398,7 +397,7 @@ const orderdetails = async (req, res) => {
     .populate({ path: "address", model: Address })
     .populate("products.product")
     .populate("user")
-  res.render("admin/ordersdetails-admin", { order, email: req.session.email })
+  res.render("admin/ordersdetails-admin", { title:'OrderDetails',order, email: req.session.email })
 
 }
 
@@ -535,14 +534,12 @@ const admindashboard = async (req, res) => {
 
 const loadCoupon = async (req, res) => {
   try {
-    // Find all coupons, including expired ones
-    const allCoupons = await Coupon.find({});
 
-    // Filter out expired coupons
+    const allCoupons = await Coupon.find({});
     const currentDate = new Date();
     const validCoupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);
 
-    res.render("admin/coupons", { email: req.session.email, coupon: validCoupons });
+    res.render("admin/coupons", {title:'Coupons',email: req.session.email, coupon: validCoupons });
   } catch (error) {
     console.log(error);
   }
@@ -590,17 +587,16 @@ const loadEditCoupon =async(req,res)=>{
     couponId= req.query.Id;
     console.log(couponId);
     const coupon = await Coupon.findById(couponId);
-    res.render("admin/editcoupon",{coupon,email:req.session.email});
+    res.render("admin/editcoupon",{title:'Coupon Edit',coupon,email:req.session.email});
   } catch (error) {
     console.log(error);
   }
 }
 
 const updateCoupon = async(req,res)=>{
-  try {
-    
+  try {    
     couponId = req.query.Id;
-    const { startDate, endDate, discountValue, usedusersCount,description, couponCode, purchaseLimit } = req.body;
+    const { startDate, endDate, discountValue,description, couponCode, purchaseLimit } = req.body;
     const coupon = await Coupon.findById(couponId);
     coupon.startDate = startDate;
     coupon.endDate = endDate;

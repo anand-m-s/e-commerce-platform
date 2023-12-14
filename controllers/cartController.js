@@ -15,7 +15,7 @@ const addToCart = async (req, res) => {
             model: 'Category'
           }
         });
-         // If the cart is not found, create a new one
+        
         if(!cart){
           cart = new Cart ({user:userId,products:[]});
           await cart.save();
@@ -26,10 +26,10 @@ const addToCart = async (req, res) => {
           0
         );
         if (req.xhr) {
-          // If it's an AJAX request, send the totalAmount as JSON
+          
           res.json({ username: users.username, cart, totalAmount});
         } else {
-          // If it's a regular request, render the addtocart page
+          
           res.render('addtocart', { title:'Cart',username: users.username, cart,totalAmount});
         }
      
@@ -44,13 +44,13 @@ const removeFromCart = async (req, res) => {
     try {
       const cartItemId = req.query.itemId;
       const productIdToRemove = req.query.productId;
-      // Use your Cart model to remove the specific product from the array
+      
       const updatedCart = await Cart.findByIdAndUpdate(
         cartItemId,
         {
           $pull: {
             products: {
-              _id: productIdToRemove // Assuming productIdToRemove is the ID of the product to remove
+              _id: productIdToRemove 
             }
           }
         },
@@ -78,7 +78,7 @@ const removeFromCart = async (req, res) => {
 const updateQuantity = async (req, res) => {
     const { itemId, newQuantity, productId, cartId } = req.body;
     try {
-      // Update the quantity in the database
+     
       const updatedCart = await Cart.findOneAndUpdate(
         { 'products._id': itemId },
         { $set: { 'products.$.quantity': newQuantity } },
@@ -96,16 +96,16 @@ const updateQuantity = async (req, res) => {
         const updatedPrice = updatedProduct.Price * newQuantity;
         const updatedCartItem = updatedCart.products.find(item => item._id.equals(itemId));
         updatedCartItem.product.Price = updatedPrice;
-        // Save the changes to the cart
+        
         await updatedCart.save();
-        // Populate the cart with product details
+       
         const populatedCart = await Cart.findById(cartId).populate('products.product');
       
         res.status(200).json({
           message: 'Quantity updated successfully.',
           updatedCart,
           updatedPrice: updatedCartItem.product.Price,         
-          cart: populatedCart,// Include the populated cart in the response
+          cart: populatedCart,
           
         });
       } else {

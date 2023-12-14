@@ -130,7 +130,7 @@ const indexlogin = async (req, res) => {
         else {
             const filteredproducts = await Product.find({}).populate({
                 path: 'Category',
-                match: { isListed: true } // Filters the populated Category
+                match: { isListed: true } 
             });
             // Filter out products where Category is null (not populated)
             const products = filteredproducts.filter(product => product.Category !== null);
@@ -215,10 +215,10 @@ const forgotReset =  async (req, res) => {
         
         return res.status(202).json({ error: 'User not found' });
       }  
-      // Extract the phone number from the user object
+     
       const phoneNumber = user.phone;  
-      // You can also perform additional checks or validations here  
-      // Send the phone number as a response
+      
+      
       res.status(200).json({ phoneNumber });
     } catch (error) {
       console.error(error);
@@ -239,7 +239,7 @@ const resetpassword = async (req, res) => {
         await user.save();
         console.log("Password reset successful");
         const msg ='Password reset successful';
-        res.render("login-user",{msg});
+        res.render("login-user",{title:'Login',msg});
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -263,7 +263,7 @@ const displayProduct = async(req,res)=>{
             }
             res.render("productdetails",{title:'Product',products,username:req.session.username});
         }else{
-            res.render("productdetails",{products})
+            res.render("productdetails",{title:'Product',products})
         }
     } catch (error) {
         console.log(error);
@@ -274,7 +274,7 @@ const displayProduct = async(req,res)=>{
 const loadUserProfile = async(req,res)=>{
     try {               
             const users = await User.findById(req.session.userId).populate('address');
-            const address = users.address;  // Assuming you want the latest added address            
+            const address = users.address;  
             res.render("user-profile",{title:"UserProfile",username:req.session.username,users,address});      
     } catch (error) {
         console.log(error);
@@ -298,8 +298,8 @@ const addaddress =async(req,res)=>{
         });
          const savedAddress = await newaddress.save();
 
-        const users = await User.findById(req.session.userId); // Assuming you have the user ID in req.userId
-        users.address.push(savedAddress._id); // Add the new address's ID to the user's address array
+        const users = await User.findById(req.session.userId); 
+        users.address.push(savedAddress._id); 
         await users.save();     
         res.redirect("/userprofile")
     } catch (error) {
@@ -324,8 +324,8 @@ const addressCheckout =async(req,res)=>{
         });
          const savedAddress = await newaddress.save();
 
-        const users = await User.findById(req.session.userId); // Assuming you have the user ID in req.userId
-        users.address.push(savedAddress._id); // Add the new address's ID to the user's address array
+        const users = await User.findById(req.session.userId); 
+        users.address.push(savedAddress._id); 
         await users.save();     
         res.redirect("/checkout")
     } catch (error) {
@@ -463,7 +463,9 @@ const addProductsToCart = async(req,res)=>{
                   model: 'Category'
                 }
               });         
-              const coupons= await Coupon.find({})                 
+              const allCoupons= await Coupon.find({})   
+              const currentDate = new Date();
+              const coupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);              
               const address = user.address                         
             const totalAmount = cart.products.reduce(
                 (acc, item) => acc + item.product.Price * item.quantity,
@@ -517,7 +519,7 @@ const OrderDetails= async(req,res)=>{
         const orderId = req.query.orderId;
         const order = await Order.findById({_id:orderId}).populate({path:"products.product"});
         const address = await Address.findById({_id:order.address});              
-        res.render("orderdetails",{order,address,username:req.session.username});
+        res.render("orderdetails",{title:"orderDetails",order,address,username:req.session.username});
  
 }
 
@@ -527,8 +529,6 @@ const searchResults = async(req,res)=>{
         const products = await Product.find({ Name: { $regex: new RegExp(search, 'i') } });    
         const resultFound = products.length>0;    
         const wishlist = await WishList.findOne({ user: req.session.userId });
-
-        // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
         const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
         res.render("search",{title:'Search',username:req.session.username,products,resultFound,wishlistProductIds})
     } catch (error) {
@@ -551,8 +551,7 @@ const loadWallet = async(req,res)=>{
     try {
         const userId = req.session.userId;
         const userWallet = await Wallet.findOne({ user: userId });
-        if (!userWallet) {
-            // Create a new wallet for the user with an initial balance of 0
+        if (!userWallet) {            
             const newWallet = new Wallet({
                 user: userId,
                 balance: 0
@@ -597,19 +596,19 @@ const applyCoupon= async (req, res) => {
         (acc, item) => acc + item.product.Price * item.quantity,
         0
       );    
-       // Check if the total is greater than the purchaseLimit
+       
         if (coupon.purchaseLimit && total <= coupon.purchaseLimit) {
             return res.status(202).json({ error: `Minimum spend must be above ${coupon.purchaseLimit}`});
         }  
       const discountAmount = (coupon.discountValue / 100) * total;
       const totalAmount = total - discountAmount;
-      // Update the user and coupon records to reflect the usage 
+      
     //   coupon.usedBy.push(userId);
     //   coupon.usedUsersCount++; 
     //   coupon.usersLimit--;
     //   await coupon.save();
   
-      // Return the updated total amount and any other relevant information
+      
       res.json({ totalAmount, message: 'Coupon applied successfully' });
     } catch (error) {
       console.error('Error applying coupon:', error);
@@ -620,12 +619,12 @@ const applyCoupon= async (req, res) => {
   const loadWishList = async (req, res) => {
     try {
       const userId = req.session.userId;
-      // Fetch wishlist items for the current user
+      
       const wishListItems = await WishList.find({ user: userId }).populate('product');
       res.render('wishlist', { title:'Wishlist',wishListItems,username:req.session.username});
     } catch (error) {
       console.log(error);
-      // Handle errors appropriately
+      
       res.status(500).send('Internal Server Error');
     }
   };

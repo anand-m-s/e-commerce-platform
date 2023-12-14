@@ -7,8 +7,7 @@ const cancelProduct = async (req, res) => {
     try {
         const productId = req.query.productId;
         const orderId = req.query.orderId;      
-        const userId = req.session.userId      
-               // Update the product status to 'cancelled' and set cancelDate
+        const userId = req.session.userId            
                const cancelledProduct = await Order.findOneAndUpdate(
                 { _id: orderId, 'products.product': productId },
                 {
@@ -17,7 +16,7 @@ const cancelProduct = async (req, res) => {
                         'products.$.cancelDate': new Date()
                     }
                 },
-                { new: true } // Return the updated document
+                { new: true }
             );    
             // console.log(cancelledProduct+"::::::::::::::::::::::::");    
             if (!cancelledProduct) {
@@ -60,12 +59,12 @@ const cancelProduct = async (req, res) => {
             console.log('Product not found in the order');
         }         
         
-            // Check if all products in the order are cancelled
+       
             const allProductsCancelled = cancelledProduct.products.every(
                 (product) => product.itemStatus === 'cancelled'
             );
                 console.log(allProductsCancelled);
-            // Update order status based on the cancellation
+         
             if (allProductsCancelled) {
                 await Order.findByIdAndUpdate(orderId, { orderStatus: 'Cancel Order' });
             }
@@ -108,19 +107,19 @@ const returnProduct = async(req,res)=>{
         } else {
             console.log('Product not found in the order');
         }  
-        // Find the original order document by orderId
+
         const originalOrder = await Order.findById(orderId);
 
-        // Check if all products in the original order are cancelled or returned
+   
         const allProductsCancelledOrReturned = originalOrder.products.every(
             (product) => ['cancelled', 'returned'].includes(product.itemStatus)
         );
 
         console.log(allProductsCancelledOrReturned);
 
-        // Update order status based on the cancellation or return
+  
         if (allProductsCancelledOrReturned) {
-            // Set orderStatus to 'Returned', depending on your requirement
+   
             await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
         }
 

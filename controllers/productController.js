@@ -8,7 +8,7 @@ const addproduct = async (req, res) => {
       const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
       console.log(req.body);
       const files = req.files;
-      // Create an array of ProductImage objects
+      
       const ProductImage = files.map((file) => ({
         filename: file.filename,
         path: file.path
@@ -29,7 +29,7 @@ const addproduct = async (req, res) => {
         }],
         SalePrice,
         Stock,
-        ProductImage: ProductImage, // Update the field name to match your model
+        ProductImage: ProductImage, 
       });
       await newProduct.save();
       res.status(200).json({ message: 'Product added successfully' });
@@ -95,7 +95,7 @@ const updateProduct = async (req, res) => {
         }
         const { Name, Category, Brand, Description, Price, Storage, Ram, Os, Color, Processor, Stock, SalePrice } = req.body;
 
-        // Update individual properties
+
         product.Name = Name;
         product.Category = Category;
         product.Brand = Brand;

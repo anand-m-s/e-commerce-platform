@@ -66,11 +66,11 @@ const checkOut = async (req, res) => {
             orderStatus: 'Pending',
           });
           await newOrder.save();
-             // Update stock for each product in the order
+             
         for (const item of cart.products) {
             const productId = item.product._id;
             const orderedQuantity = item.quantity;
-            // Update product stock by subtracting ordered quantity
+           
             await Product.findByIdAndUpdate(productId, {
               $inc: { Stock: -orderedQuantity },
             });
@@ -150,7 +150,7 @@ const updatePayment = async (req, res) => {
             })),
           paymentMethod,
           totalPrice: totalAmount, 
-          orderStatus: 'Pending', // Assuming the total is in paise, convert it to rupees
+          orderStatus: 'Pending',
           payment_id: payment_details.razorpay_payment_id,
           payment_status: 'paid',
           order_Id: payment_details.razorpay_payment_id,
@@ -163,25 +163,25 @@ const updatePayment = async (req, res) => {
 
       console.log('Order added successfully');
 
-          // Update stock for each product in the order
+         
           for (const item of cart.products) {
               const productId = item.product._id;
               const orderedQuantity = item.quantity;
-              // Update product stock by subtracting ordered quantity
+             
               await Product.findByIdAndUpdate(productId, {
                 $inc: { Stock: -orderedQuantity },
               });
             }
-            // Clear the user's cart after the order is placed
+            
             cart.products = [];
             // cart.totalAmount = 0;
             await cart.save();
 
-      // You can add additional logic or send a response here
+      
       res.status(200).json({ status: true, message: 'Order placed successfully' });
   } catch (error) {
       console.log(error);
-      res.render('users/page-404');
+      // res.render('page-404');
   }
 };
 
