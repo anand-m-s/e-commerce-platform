@@ -3,122 +3,111 @@
 
 <%-include("./partials/navigation")  %>
 
-<div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2" style="border-right: 0.3px solid rgb(218, 218, 218);">
+     
+      <div class=" mt-1" style="display: flex; justify-content: space-around; align-items: center; height: 2rem;">
+        <div>       
+          <div style="margin-top: 5rem;">
+            <h3 class="">Categories</h3>    
+            <a class="categoryfilter" href="/home?id=all" id="allProductsLink" data-category-id="all">
+              All Products
+            </a>                   
+            <% categories.forEach(category => { %>
+              <div class="d-flex align-items-center">
 
-  <div class=" mt-1" style="display: flex; justify-content: space-around; align-items: center; height: 2rem;">
-    <div>
-      <div class="dropdown">
-        <a class="btn dropdown-toggle  " href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Categories
-        </a>      
-        <ul class="dropdown-menu dropdownselect  secondary-nav">
-          <li class="d-flex justify-content-center">
-            <a class="categoryfilter" href="#" id="allProductsLink">
-                All Products
-            </a>
-        </li>
-          <% categories.forEach(category => { %>
-              <li class="d-flex justify-content-center">
-                  <a class="categoryfilter"  href="#" data-category-id="<%= category._id %>">
-                      <%= category.categoryName %>
-                  </a>
-              </li>
-              <% }); %>
-         
-            </ul>      
-          </div>                   
-    </div>
-    <p class="secondary-nav" ></p>
-    <p class="secondary-nav" ></p>
-  </div>
-
-  
-  <!--  carousel-->
-  <div class="carousel_style">
-  
-    <div id="carouselExampleAutoplaying" class="carousel slide " data-bs-ride="carousel">
-      <div class="carousel-inner ">
-        <div class="carousel-item active">
-          <img src="/images/d5a2a6481656bb58 (1).webp" class="d-block w-100 carousel_style" alt="...">
-        </div>
-        <div class="carousel-item">
-          <img src="/images/89a97ae7c718bee4.webp" class="d-block w-100 carousel_style" alt="...">
-        </div>
-    
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div> 
-  </div>
-  <!-- Carousel -->
-
-  <section >
-    <div class="container ">
-      <div class="row index-row" id="productRow">
-        <% products.forEach(product => { %>
-          <div class="col-md-8 col-lg-6 col-xl-3 card-main p-3">
-            <div class="card card-div-product ">              
-              <div class="imgdiv mt-2">
-                <a href="/products?productId=<%= product._id %>">
-                  <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
+                <a class="categoryfilter" href="/home?id=<%= category._id %>">
+                  <%= category.categoryName %>
                 </a>
-              </div>
-              <div class="card-body">
-                <div class="text-center">
-                  <h3 class="card-title capitalize" style="margin-bottom: 15px;"><%= product.Name %></h3>
+              </div>              
+            <% }); %>
+          </div>
+          
+    
+ 
                   
-                </div>
-                <div>
-                  <div class="d-flex justify-content-around">
-                    <h5><%= product.Brand %></h5>
-                    <h6>₹<%= product.Price %></h6>
+        </div>
+       
+       
+      </div>
+    </div>
+    <div class="col-md-10">
+      <div class="carousel_style">
+  
+        <div id="carouselExampleAutoplaying" class="carousel slide " data-bs-ride="carousel">
+          <div class="carousel-inner ">
+            <div class="carousel-item active">
+              <img src="/images/d5a2a6481656bb58 (1).webp" class="d-block w-100 carousel_style" alt="...">
+            </div>
+            <div class="carousel-item">
+              <img src="/images/89a97ae7c718bee4.webp" class="d-block w-100 carousel_style" alt="...">
+            </div>
+        
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div> 
+      </div>
+
+      <section class="">
+        <div class="container col-md-10">
+          <div class="row index-row " id="productRow">
+            <% products.forEach(product => { %>
+              <div class="col-md-6 col-lg-4 col-xl-4 card-main p-3" id="Product__container">
+                <div class="card card-div-product rounded-4">              
+                  <div class="imgdiv mt-2">
+                    <a href="/products?productId=<%= product._id %>">
+                      <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
+                    </a>
                   </div>
-                </div>
-                <div class="mt-1" style="display: flex; justify-content: space-evenly; align-items: center;">
-                  <% if (product.Stock === 0) { %>
-                    <p class="text-danger">Out of Stock</p>
-                    <% } else { %>
+                  <div class="card-body">
+                    <div class="text-center">
+                      <h3 class="card-title capitalize" style="margin-bottom: 15px;"><%= product.Name %></h3>
                       
-                      <button class="btn addtocart" onclick="addToCart('<%= product._id %>')">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512">                           
-                            <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
-                        </svg>
-                        Add to cart
-                    </button>
-                 
-               
-                  
-                 
-              
-                        
-                        <button class="wishlist-button" style="border: 0; background: transparent;" onclick="addToWishlist('<%= product._id %>')">
-                          <svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 512 512" id="wishlist-icon-<%= product._id %>" 
-                            fill="<%= wishlistProductIds.includes(product._id.toString()) ? 'red' : 'black' %>">
-                            <!-- Your SVG path here -->
-                            <path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3c4.2-4.8 8.7-9.2 13.5-13.3c3.7-3.2 7.5-6.2 11.5-9c0 0 0 0 0 0C313.1 47 353.4 37.9 392.8 45.4C462 58.6 512 119.1 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9zM239.1 145c-.4-.3-.7-.7-1-1.1l-17.8-20c0 0-.1-.1-.1-.1c0 0 0 0 0 0c-23.1-25.9-58-37.7-92-31.2C81.6 101.5 48 142.1 48 189.5v3.3c0 28.5 11.9 55.8 32.8 75.2L256 430.7 431.2 268c20.9-19.4 32.8-46.7 32.8-75.2v-3.3c0-47.3-33.6-88-80.1-96.9c-34-6.5-69 5.4-92 31.2c0 0 0 0-.1 .1s0 0-.1 .1l-17.8 20c-.3 .4-.7 .7-1 1.1c-4.5 4.5-10.6 7-16.9 7s-12.4-2.5-16.9-7z" />
-                          </svg>                     
+                    </div>
+                    <div>
+                      <div class="d-flex justify-content-around">
+                        <h5><%= product.Brand %></h5>
+                        <h6>₹<%= product.Price %></h6>
+                      </div>
+                    </div>
+                    <div class="mt-1" style="display: flex; justify-content: space-evenly; align-items: center;">
+                      <% if (product.Stock === 0) { %>
+                        <p class="text-danger">Out of Stock</p>
+                        <% } else { %>
+                          
+                          <button class="btn addtocart" onclick="addToCart('<%= product._id %>')">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512">                           
+                                <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
+                            </svg>
+                            Add to cart
                         </button>
 
-                    
-
-                    <% } %>
-                  </div>
-                  <div class="d-flex justify-content-center"  id="message-container-<%= product._id %>">
-                    <p></p>
-                  </div>
+                            <button class="wishlist-button" style="border: 0; background: transparent;" onclick="addToWishlist('<%= product._id %>')">                    
+                              <svg xmlns="http://www.w3.org/2000/svg" height="18" width="18" viewBox="0 0 512 512"  fill="<%= wishlistProductIds.includes(product._id.toString()) ? 'red' : 'black' %>" ><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>                  
+                            </button>                              
+                        <% } %>
+                      </div>
+                      <div class="d-flex justify-content-center"  id="message-container-<%= product._id %>">
+                        <p></p>
+                      </div>
+                    </div>
                 </div>
-            </div>
+              </div>
+            <% }); %>
           </div>
-        <% }); %>
-      </div>
+        </div>
+      </section>
+
     </div>
-  </section>
+  </div>
 </div>
   
 
@@ -128,6 +117,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://kit.fontawesome.com/5c55852116.js" crossorigin="anonymous"></script>
 <script>
+  // addToCart
   function addToCart(productId){
     const message = document.querySelector(`#message-container-${productId}`);
     fetch(`/addproductstocart?productId=${productId}`,{
@@ -173,118 +163,31 @@
   });
   
     });
-    // frontend JavaScript
-const categoryDropdown = document.querySelector('.dropdownselect');
+// filter by category
+// document.getElementById('allProductsLink').addEventListener('click',function(){
+//   location.reload();
+// });
+// document.addEventListener('DOMContentLoaded', function() {
+//   const categoryProductsContainer = document.getElementById('productRow');
+//   const categoryFilterLinks = document.querySelectorAll('.categoryfilter');
 
-categoryDropdown.addEventListener('click', async (event) => {
-    if (event.target.tagName === 'A') {
-        event.preventDefault();
-        const categoryId = event.target.dataset.categoryId;
-        const url = `/categoryfilter?id=${categoryId}`;
+//   categoryFilterLinks.forEach(link => {
+//     link.addEventListener('click', function(event) {
+//       event.preventDefault();
 
-        try {
-            const response = await fetch(url);
-            const filteredProducts = await response.json();
-            // Update the DOM with the filtered products, e.g., replace the current product list.
-            updateProductList(filteredProducts);
-        } catch (error) {
-            console.error('Error fetching filtered products:', error);
-        }
-    }
-});
+//       const categoryId = this.getAttribute('data-category-id');
+//       fetch(`/getProductsByCategory?categoryId=${categoryId}`)
+//         .then(response => response.text())
+//         .then(data => {
+//           categoryProductsContainer.innerHTML = data;
+//         })
+//         .catch(error => console.error('Error fetching products:', error));
+//     });
+//   });
+// });
 
-function updateProductList(products) {
-    const productRow = document.getElementById('productRow');
 
-    // Clear existing products in the product row
-    productRow.innerHTML = '';
 
-    // Iterate through the new products and add them to the product row
-    products.forEach(product => {
-        const productCol = document.createElement('div');
-        productCol.classList.add('col-md-8', 'col-lg-6', 'col-xl-3', 'card-main', 'p-3');
-
-        const productCard = document.createElement('div');
-        productCard.classList.add('card', 'card-div-product');
-
-        const imgDiv = document.createElement('div');
-        imgDiv.classList.add('imgdiv', 'mt-2');
-
-        const productLink = document.createElement('a');
-        productLink.href = `/products?productId=${product._id}`;
-
-        const productImage = document.createElement('img');
-        productImage.src = `/images/uploads/${product.ProductImage[0].filename}`;
-        productImage.classList.add('card-img-top');
-        productImage.alt = product.Name;
-
-        productLink.appendChild(productImage);
-        imgDiv.appendChild(productLink);
-
-        const cardBody = document.createElement('div');
-        cardBody.classList.add('card-body');
-
-        const titleDiv = document.createElement('div');
-        titleDiv.classList.add('text-center');
-
-        const title = document.createElement('h3');
-        title.classList.add('card-title', 'capitalize');
-        title.style.marginBottom = '15px';
-        title.textContent = product.Name;
-
-        titleDiv.appendChild(title);
-
-        const detailsDiv = document.createElement('div');
-        detailsDiv.classList.add('d-flex', 'justify-content-around');
-
-        const brand = document.createElement('h5');
-        brand.textContent = product.Brand;
-
-        const price = document.createElement('h6');
-        price.textContent = `₹${product.Price}`;
-
-        detailsDiv.appendChild(brand);
-        detailsDiv.appendChild(price);
-
-        const stockDiv = document.createElement('div');
-        stockDiv.classList.add('d-flex', 'justify-content-around', 'mt-1');
-
-        if (product.Stock === 0) {
-            const outOfStock = document.createElement('p');
-            outOfStock.classList.add('text-danger');
-            outOfStock.textContent = 'Out of Stock';
-            stockDiv.appendChild(outOfStock);
-        } else {
-            const addToCartBtn = document.createElement('button');
-            addToCartBtn.classList.add('btn', 'addtocart');
-            addToCartBtn.setAttribute('onclick', `addToCart('${product._id}')`);
-            addToCartBtn.textContent = 'Add to cart';
-
-            stockDiv.appendChild(addToCartBtn);
-        }
-
-        const messageContainer = document.createElement('div');
-        messageContainer.classList.add('d-flex', 'justify-content-center');
-        messageContainer.id = `message-container-${product._id}`;
-        const message = document.createElement('p');
-
-        messageContainer.appendChild(message);
-
-        cardBody.appendChild(titleDiv);
-        cardBody.appendChild(detailsDiv);
-        cardBody.appendChild(stockDiv);
-        cardBody.appendChild(messageContainer);
-
-        productCard.appendChild(imgDiv);
-        productCard.appendChild(cardBody);
-
-        productCol.appendChild(productCard);
-        productRow.appendChild(productCol);
-    });
-}
-document.getElementById('allProductsLink').addEventListener('click',function(){
-  location.reload();
-});
 
 
 // wishlist
@@ -299,19 +202,21 @@ const addToWishlist = async (productId) => {
     });
 
     const data = await response.json();
-    const wishlistIcon = document.getElementById(`wishlist-icon-${productId}`);
+    // const wishlistIcon = document.getElementById(`wishlist-icon-${productId}`);
 
     if (response.ok) {
-      // Product added successfully
-    window.location.reload()
+   
+          
+        window.location.reload()
+     
     } else {
-      // Error adding product to wishlist
+      
       console.error('Error adding product to wishlist:', data.error);
-      // Handle other cases or change SVG color to another color
+     
     }
   } catch (error) {
     console.error('Error adding product to wishlist:', error);
-    // Handle unexpected errors here
+
   }
 };
 

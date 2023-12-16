@@ -4,6 +4,7 @@ const Cart = require("../model/cart");
 const Order = require("../model/order")
 const Product = require('../model/productModel')
 const Coupon = require('../model/coupon')
+const Address = require('../model/address');
 const Razorpay = require('razorpay'); 
 
 
@@ -42,7 +43,9 @@ const checkOut = async (req, res) => {
     if (!selectedAddress) {
       return res.status(400).json({ error: 'Billing address not selected' });
     }
-   
+    console.log(selectedAddress);
+    const deliveryAddress = await Address.findOne({_id:selectedAddress});
+    console.log(deliveryAddress);       
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -54,7 +57,7 @@ const checkOut = async (req, res) => {
           console.log("inside cod");
           const newOrder = new Order({
             user: userId,
-            address: selectedAddress,
+            address: deliveryAddress,
             products: cart.products.map((item) => ({
               product: item.product._id,
               quantity: item.quantity,

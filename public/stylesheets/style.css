@@ -22,19 +22,11 @@ body {
     z-index: 10; 
 }
 #navbaradmin{
-    /* border-bottom: 0.3px solid rgb(239, 232, 232); */
-    /* border-right: 0.3px solid rgb(239, 232, 232); */
-    /* background-color: rgba(102, 219, 219,.2); */
-    background: transparent;
-    backdrop-filter: blur(15px);
-    /* background: transparent; */
-    /* backdrop-filter: blur(35px); */
-    box-shadow: #7caf4c;
+    background: linear-gradient(109.6deg, rgba(251, 250, 225,.5) 11.2%, rgba(206, 240, 185,.5) 47.5%, rgba(100, 163, 111,.5) 100.2%);   
+    backdrop-filter: blur(50px);
     padding: 1.3rem; 
     position: sticky;
-    top: 0;
-    z-index: 10; 
-    
+    top: 0;   
 }
 
 .searchInp{
@@ -90,7 +82,7 @@ body {
 
 /* Add hover effect for links */
 .navbar-nav a.nav-link:hover {
-    background-color: rgb(165, 225, 23); /* Change background color on hover */
+    background-color: rgb(149, 208, 12); /* Change background color on hover */
     border-radius: .5rem;
    
 }
@@ -434,20 +426,28 @@ img{
 }
 
  /* home page   */
+ .categories-dropdown{
+    background-color: rgb(193, 222, 231);
+ }
+ .categories-dropdown:hover{
+    background-color: rgb(147, 210, 229);
+ }
 
-.categoryfilter{
-    text-decoration: none;   
-    color: #000;
-    
-}
 
 .categoryfilter:hover{
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: .3rem;
-    padding: .5rem;
-    
+    text-decoration: none;       
+    color: #fff;
+    background-color: #000; 
+    border-radius: 1rem;
+     
+    padding: .5rem;  
 }
+.categoryfilter{
+    text-decoration: none;       
+    color: #000;    
+}
+
+
 
 
 /* .secondary-nav{
@@ -463,9 +463,9 @@ img{
 
 /* product details */
 .addtocart{
-    background-color: #ffffff;
+    background-color: #a1db59;
     color:#000;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .addtocart a{

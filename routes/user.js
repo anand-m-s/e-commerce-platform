@@ -17,7 +17,7 @@ router.get("/contact",userController.contact);
 router.get("/logout",userController.logout);
 router.get("/products",userController.displayProduct);
 router.get("/forgotpassword",userController.loadForgotPassword);
-router.get('/home',isAuth,userController.homelogin);
+router.get('/home',isAuth,userController.Loadhome);
 router.get("/userprofile",isAuth,userController.loadUserProfile);
 router.get("/userAddressEdit",isAuth,userController.editUserAddress);
 router.get('/userAddressDelete',isAuth,userController.deleteAddress);
@@ -30,7 +30,9 @@ router.get("/search",isAuth,userController.searchResults);
 router.get("/categoryfilter",isAuth,userController.categoryFilter);
 router.get("/success",isAuth,orderController.successPage);
 router.get("/wallet",isAuth,userController.loadWallet);
-router.get("/wishlist",isAuth,userController.loadWishList)
+router.get("/wishlist",isAuth,userController.loadWishList);
+// router.get('/getProductsByCategory',userController.filterByCat);
+  
 
 
 

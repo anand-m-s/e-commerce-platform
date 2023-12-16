@@ -71,29 +71,28 @@ const login = async (req, res) => {
     }
 }
 
-const homelogin = async (req, res) => {
-    try {
-        // const products = await Product.find({})
-        const filteredproducts = await Product.find({}).populate({
-            path: 'Category',
-            match: { isListed: true } // Filters the populated Category
-        });
+const Loadhome = async (req, res) => {
+    try {       
+        const categoryId = req.query.id;    
+        let filteredproducts;
+        if (categoryId && categoryId!=='all') {
+            filteredproducts = await Product.find({
+                Category: categoryId,
+            }).populate({
+                path: 'Category',
+                match: { isListed: true },
+            });
+        } else {
+            filteredproducts = await Product.find({}).populate({
+                path: 'Category',
+                match: { isListed: true },
+            });
+        }            
         const categories = await Category.find({isListed:true});
-   
-
-
-        const products = filteredproducts.filter(product => product.Category !== null);
-     
+        const products = filteredproducts.filter(product => product.Category !== null);     
          const user = await User.findById(req.session.userId);
-    // const wishListItems =  await WishList.find({ user: req.session.userId }).populate('product');
-    // const wishlistProductIds = wishListItems.map(item => item.product._id);
-     // Get the wishlist products for the current user
      const wishlist = await WishList.findOne({ user: req.session.userId });
-
-     // Extract product IDs from the wishlist (assuming the product field in the wishlist contains product IDs)
-     const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];
-   
-     
+     const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
             if(user && user.Isblocked){
                 req.session.userId=null;
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
@@ -106,6 +105,31 @@ const homelogin = async (req, res) => {
     }
 }
 
+// const filterByCat = async (req, res) => {
+//     try {
+//       const categoryId = req.query.categoryId;
+//       let query = {};  
+//       if (categoryId !== 'all') {
+//         query = { Category: categoryId};
+//       } 
+//     //   const products = await Product.find(query).populate('Category')
+//       const products = await Product.find(query).populate({
+//         path: 'Category',
+//         match: { isListed: true } 
+//     });
+//     const wishlist = await WishList.findOne({ user: req.session.userId });
+//     const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];    
+//     //   console.log(products);    
+//       res.json({ products,wishlistProductIds });
+//     } catch (error) {
+//       console.error('Error fetching products by category:', error);
+//       res.status(500).json({ error: 'Internal server error' });
+//     }
+//   };
+  
+  
+
+  
 
 const signupVerify = async(req,res) =>{
     const {phone,Email}= req.body;
@@ -180,7 +204,7 @@ const logout = (req, res) => {
 
 const about = (req,res)=>{
     try {
-        res.render("about",{title:"About"})
+        res.render("about",{title:"About",username:req.session.username})
     } catch (error) {
         console.log(error);
         
@@ -188,7 +212,7 @@ const about = (req,res)=>{
 }
 const contact = (req,res)=>{
     try {
-        res.render("contact",{title:'Contact'})
+        res.render("contact",{title:'Contact',username:req.session.username})
     } catch (error) {
         console.log(error);
         
@@ -515,12 +539,17 @@ const loadOrderList = async (req, res) => {
 };
 
 const OrderDetails= async(req,res)=>{
-   
+    try {
+        
         const orderId = req.query.orderId;
         const order = await Order.findById({_id:orderId}).populate({path:"products.product"});
-        const address = await Address.findById({_id:order.address});              
+        const address = order.address             
         res.render("orderdetails",{title:"orderDetails",order,address,username:req.session.username});
- 
+    } catch (error) {
+    console.log(error);        
+    }
+
+   
 }
 
 const searchResults = async(req,res)=>{
@@ -701,7 +730,7 @@ const removeFromWishlist =async (req, res) => {
 module.exports = {
     register,
     login,
-    homelogin,
+    Loadhome,
     indexlogin,
     signuplogin,
     userLogin,
