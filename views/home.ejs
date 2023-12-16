@@ -7,10 +7,11 @@
   <div class="row">
     <div class="col-md-2" style="border-right: 0.3px solid rgb(218, 218, 218);">
      
-      <div class=" mt-1" style="display: flex; justify-content: space-around; align-items: center; height: 2rem;">
-        <div>       
-          <div style="margin-top: 5rem;">
-            <h3 class="">Categories</h3>    
+      <div class=" m-1" style="display: flex; justify-content: center; align-items: center;">           
+          <div>
+            <h4>Filter</h4>
+            <h4 class="">Categories</h4>  
+            <hr>  
             <a class="categoryfilter" href="/home?id=all" id="allProductsLink" data-category-id="all">
               All Products
             </a>                   
@@ -23,14 +24,58 @@
               </div>              
             <% }); %>
           </div>
-          
-    
- 
-                  
         </div>
-       
-       
-      </div>
+        <hr>
+
+        <div class="m-1" >
+ 
+
+          <div class="custom-wrapper"> 
+  
+            <div class="header"> 
+                <h4 class="projtitle"> 
+                   Price
+                  </h4> 
+            </div> 
+  
+            <div class="price-input-container"> 
+                <div class="price-input"> 
+                    <div class="price-field"> 
+                        <span>Min</span> 
+                        <input type="number" 
+                               class="min-input" 
+                               value="2500"> 
+                    </div> 
+                    <div class="price-field"> 
+                        <span>Max</span> 
+                        <input type="number" 
+                               class="max-input" 
+                               value="8500"> 
+                    </div> 
+                </div> 
+                <div class="slider-container"> 
+                    <div class="price-slider"> 
+                    </div> 
+                </div> 
+            </div> 
+  
+            <!-- Slider -->
+            <div class="range-input"> 
+                <input type="range" 
+                       class="min-range" 
+                       min="0" 
+                       max="10000" 
+                       value="2500" 
+                       step="1"> 
+                <input type="range" 
+                       class="max-range" 
+                       min="0" 
+                       max="10000" 
+                       value="8500" 
+                       step="1"> 
+            </div> 
+        </div> 
+        </div>
     </div>
     <div class="col-md-10">
       <div class="carousel_style">
@@ -57,11 +102,11 @@
       </div>
 
       <section class="">
-        <div class="container col-md-10">
+        <div class="container col-md-11 ">
           <div class="row index-row " id="productRow">
             <% products.forEach(product => { %>
-              <div class="col-md-6 col-lg-4 col-xl-4 card-main p-3" id="Product__container">
-                <div class="card card-div-product rounded-4">              
+              <div class="col-md-6 col-lg-4 col-xl-4 card-main p-3 " id="Product__container">
+                <div class="card card-div-product rounded-4 shadow-lg">              
                   <div class="imgdiv mt-2">
                     <a href="/products?productId=<%= product._id %>">
                       <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />
@@ -116,7 +161,11 @@
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://kit.fontawesome.com/5c55852116.js" crossorigin="anonymous"></script>
+<script src="/javascripts/activeNavbar.js"></script>
+<script src="/javascripts/priceSlider.js"></script>
 <script>
+  let activepath = window.location.pathname
+  console.log(activepath);
   // addToCart
   function addToCart(productId){
     const message = document.querySelector(`#message-container-${productId}`);
@@ -203,20 +252,13 @@ const addToWishlist = async (productId) => {
 
     const data = await response.json();
     // const wishlistIcon = document.getElementById(`wishlist-icon-${productId}`);
-
-    if (response.ok) {
-   
-          
-        window.location.reload()
-     
-    } else {
-      
-      console.error('Error adding product to wishlist:', data.error);
-     
+    if (response.ok) {             
+        window.location.reload()     
+    } else {      
+      console.error('Error adding product to wishlist:', data.error);     
     }
   } catch (error) {
     console.error('Error adding product to wishlist:', error);
-
   }
 };
 
