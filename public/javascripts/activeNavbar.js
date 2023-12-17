@@ -1,6 +1,6 @@
  document.addEventListener("DOMContentLoaded", function () {
     var currentPath = window.location.pathname;
-    console.log(currentPath);
+
 
     // Get all the navigation links
     var navLinks = document.querySelectorAll(".nav-link");

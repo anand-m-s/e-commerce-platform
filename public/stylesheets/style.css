@@ -445,12 +445,9 @@ img{
     left: 63px; 
 }  */
   
-.header h4 { 
-    font-size: 30px; 
-    color: #01940b; 
-    display: flex; 
-    justify-content: center; 
-    padding: 20px; 
+.header h5 { 
+    /* font-size: 30px;  */
+    color: #007780;    
 } 
   
 /* Styles for the price input container */
@@ -580,12 +577,20 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: #000; 
     border-radius: .5rem;
     padding: .4rem;  
-     
+    cursor: pointer;     
 }
 .categoryfilter{
     text-decoration: none;       
     color: #000;    
 }
+.categoryActive {
+    background-color: rgb(126, 196, 27);
+    color: #ffffff;
+    font-style: bold;
+    padding: .5rem;
+    border-radius: .2rem;
+  }
+
 
 
 

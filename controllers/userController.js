@@ -73,23 +73,41 @@ const login = async (req, res) => {
 
 const Loadhome = async (req, res) => {
     try {       
-        const categoryId = req.query.id;    
-        let filteredproducts;
-        if (categoryId && categoryId!=='all') {
-            filteredproducts = await Product.find({
-                Category: categoryId,
-            }).populate({
-                path: 'Category',
-                match: { isListed: true },
-            });
-        } else {
-            filteredproducts = await Product.find({}).populate({
-                path: 'Category',
-                match: { isListed: true },
-            });
-        }            
+        // console.log("inside home load :::::::::");
+        console.log("query here::::::::::::::::::",req.query);
+        const {ram,storage,minPrice,maxPrice,categoryName}=req.query;  
+        let matchCondition = {};
+        let categoryId = await Category.findOne({categoryName:categoryName});
+        if(categoryId){
+            let id =categoryId._id;
+            // console.log(id);
+            matchCondition.Category = id;
+        }
+        if (ram) {
+          matchCondition['Features.Ram'] = ram;
+        }    
+        if (storage) {
+          matchCondition['Features.Storage'] = storage;
+        }    
+        if (minPrice || maxPrice) {
+          matchCondition.Price = {};
+          if (minPrice) {
+            matchCondition.Price.$gte = parseFloat(minPrice);
+          }
+          if (maxPrice) {
+            matchCondition.Price.$lte = parseFloat(maxPrice);
+          }
+        }    
+        let filteredProducts = await Product.aggregate([
+          { $match: matchCondition },
+        ]);                  
         const categories = await Category.find({isListed:true});
-        const products = filteredproducts.filter(product => product.Category !== null);     
+        const products = filteredProducts.filter(product => product.Category !== null);
+           
+        let msg ;
+        if(products.length<1){
+            msg="No products found!"
+        }
          const user = await User.findById(req.session.userId);
      const wishlist = await WishList.findOne({ user: req.session.userId });
      const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];        
@@ -98,7 +116,7 @@ const Loadhome = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
              
-                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds})
+                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg})
             }     
     } catch (error) {
         console.log(error);
