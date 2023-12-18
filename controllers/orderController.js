@@ -83,6 +83,7 @@ const cancelProduct = async (req, res) => {
 const returnProduct = async(req,res)=>{
     try {
         const {orderId,productId,reason}= req.body;
+        const userId = req.session.userId
         console.log(reason);   
         const returnedProduct = await Order.findOneAndUpdate(
             {_id:orderId,'products.product':productId},
@@ -101,6 +102,31 @@ const returnProduct = async(req,res)=>{
         const returnedProductDetails = returnedProduct.products.find(
             (product) => product.product.toString() === productId
         );
+
+        const userWallet = await Wallet.findOne({ user: userId });
+         
+        if (!userWallet) {                    
+            const newWallet = new Wallet({
+                user: userId,
+                balance: 0
+            });
+            await newWallet.save();
+       
+        }
+
+     
+  
+            const refundedAmount = (returnedProductDetails.pricePerQnt * returnedProductDetails.quantity)-returnedProductDetails.discountPrice;
+        
+                userWallet.transactions.push({
+                    amount: refundedAmount,
+                    type: 'credit'
+                });
+            
+            userWallet.balance += refundedAmount;
+            await userWallet.save();
+            console.log(userWallet);
+
         if (returnedProductDetails) {
             const returnQuantity = returnedProductDetails.quantity;
             console.log(`returned Quantity: ${returnQuantity}`);
