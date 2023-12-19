@@ -78,6 +78,7 @@ if (currentURL.includes('/signup')) {
       Confirmpassword: loginform.confirmPassword.value,
       phone: loginform.phone.value,
       Email: loginform.email.value,
+      Referral: loginform.refferal.value,
     };
     let errorMessages = [];
 
@@ -138,6 +139,8 @@ if (errorMessages.length > 0) {
 
     }else if(response.status===209){
       errorP.innerHTML = "User already exists"
+    }else if(response.status===211){
+      errorP.innerHTML="Invalid referral code"
     }
     // ---------------------------res.status(200).json({status:true})----------------------
     // No errors, clear error message container

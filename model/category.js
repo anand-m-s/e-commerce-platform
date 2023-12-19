@@ -11,10 +11,10 @@ const categorySchema = new mongoose.Schema({
     },
     isListed: {
         type: Boolean,
-      default: true, // Set the default value to true (or false if preferred)
+      default: true, 
     },
   }, {
-    timestamps: true, // Add createdAt and updatedAt timestamps
+    timestamps: true, 
   });  
 
 

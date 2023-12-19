@@ -9,18 +9,19 @@
                     <form class="row g-3 needs-validation d-flex my-3 shadow-lg p-4 rounded" style="background-color: lightgrey;" action="/admin/editcoupon?Id=<%= coupon._id %>" method="POST" id="editCouponForm">
                         <div class="col-md-6">
                             <label for="startDate" class="form-label">Starting Date</label>
-                            <input type="Date" class="form-control" id="startDate" name="startDate" value="<%= coupon.startDate %>" required>
+                            <input type="Date" class="form-control" id="startDate" name="startDate" value="<%= coupon.startDate.toISOString().split('T')[0] %>" required>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label for="endDate" class="form-label">End Date</label>
-                            <input type="Date" class="form-control" id="endDate" name="endDate" value="<%= coupon.endDate %>" required>
+                            <input type="Date" class="form-control" id="endDate" name="endDate" value="<%= coupon.endDate.toISOString().split('T')[0] %>" required>
                             <div class="valid-feedback">
                                 Looks good!
                             </div>
                         </div>
+                        
 
                         <div class="col-md-6">
                             <label for="couponValue" class="form-label">Discount Percentage (%)</label>

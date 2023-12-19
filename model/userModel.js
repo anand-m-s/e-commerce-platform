@@ -21,15 +21,35 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Address', 
     },],
+    referralCode: {
+        type: String,
+        default: RandomReferralCode,
+        unique: true, 
+    },
+    userReferred: [{
+        type: String,
+        unique: true,
+    }],
 }, {
-    timestamps: true, // Add createdAt and updatedAt timestamps
+    timestamps: true,
   });  
-// Add a method to the schema to verify the provided password
+
 userSchema.methods.authenticate = function (password) {
-    // Compare the provided password with the hashed password in the database
+    
     return bcrypt.compareSync(password, this.password);
 };
 
+function RandomReferralCode() {
+
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const codeLength = 6;
+    let referralCode = '';
+    for (let i = 0; i < codeLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        referralCode += characters.charAt(randomIndex);
+    }
+    return referralCode;
+    }
 
 const User = mongoose.model('User', userSchema);
 

@@ -23,6 +23,7 @@
                 </div>
                 
                 <div class = "product-div-right">
+                    <p id="message-container"></p>
                     <span class = "product-name"><%=products.Name %>(<%= products.Features[0].Color %>,<%= products.Features[0].Storage %>)</span>
                     <span class = "product-price">₹ <%=products.Price %></span>
                     <div class = "product-rating">
@@ -49,9 +50,9 @@
                         <% if(products.Stock===0){ %>
                             <p class="text-danger">Out of Stock</p>
                             <% }else{ %>
-                        <a href="/addtocart">
-                            <button  type = "button" class = "add-cart-btn">Add to cart</button>
-                        </a>                            
+                       
+                            <button  type = "button" class = "add-cart-btn" onclick="addToCart('<%= products._id %>')">Add to cart</button>
+                                                
                         <!-- <button  type = "button" class = "buy-now-btn">Buy Now</button> -->
                         <% } %>
                     
@@ -62,4 +63,35 @@
     </div>
     <%-include("./partials/footer")  %> 
     <script src="/javascripts/productDetail.js"></script>   
+    <script>
+
+        // addToCart
+        function addToCart(productId){
+          const message = document.querySelector(`#message-container`);
+          fetch(`/addproductstocart?productId=${productId}`,{
+            method:'POST',
+            headers: {
+              'Content-Type':'application/json',        
+            },
+          }).then(response=>{
+            if(response.status===200){
+            //   message.innerHTML = "Product added successfully";
+            //   message.style.color="green";
+            //   setTimeout(() => {
+            //     message.innerHTML="";
+            //   }, 1000);
+                window.location.href="/addtocart"
+            }else if(response.status===208){  
+              message.innerHTML="Product already in cart";
+              message.style.color="red";
+              setTimeout(() => {
+                message.innerHTML="";
+              }, 1000);
+            }
+          
+          }).catch(error=>{
+            console.error("error adding products to cart:",error)
+          });
+        }
+    </script>
     <%-include("./partials/end")  %> 

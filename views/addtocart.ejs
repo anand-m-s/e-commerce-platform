@@ -188,37 +188,33 @@ function updateQuantity(itemId, newQuantity, productId,cartId,maxStock) {
       }
     })
     .then(data => {
-  if (data && data.updatedCart && data.updatedPrice !== undefined) {
-    // Update the price in the UI
-    priceElement.innerHTML = `₹${data.updatedPrice}`;
-        // Access the populated cart data
-        const populatedCart = data.cart;
-    // Calculate the total amount based on the populated cart
+  if (data && data.updatedCart && data.updatedPrice !== undefined) {    
+    priceElement.innerHTML = `₹${data.updatedPrice}`;        
+        const populatedCart = data.cart;    
     const totalAmount = populatedCart.products.reduce(
       (acc, item) => acc + item.product.Price * item.quantity,
       0
     );    
     totprice.innerHTML =`₹${totalAmount}`
-
   }
 }).catch(error => {
-      // Handle network error if needed
+      
       console.error('Network error:', error);
     });
   
 }
 else {                
         if (updatedQuantity < 1) {
-      // Display an error message when attempting to reduce quantity below 1
+      
       errorMessage.innerHTML = 'Quantity cannot be less than 1.';
     } else {
-      // Display an error message when attempting to increase quantity beyond stock limit
+      
       errorMessage.innerHTML = "Sorry, you've reached the maximum available stock for this product. Please contact support for assistance.";
     }
         setTimeout(() => {
           errorMessage.innerHTML = '';
           console.log('Error message cleared.');
-        }, 2000); // 3000 milliseconds (3 seconds)
+        }, 2000); 
     }
 }
 

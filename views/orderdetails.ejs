@@ -3,6 +3,9 @@
 
 <div class="container">
     <article class="card">
+        <div style="display: flex; justify-content: end;">
+                <a href="/invoice?orderId=<%= order._id %>">view Invoice</a>
+        </div>
         <header class="card-header text-white bg-black">  My Orders / Tracking </header>
         <div class="card-body">
             <h6>Order ID:<%= order._id %></h6>

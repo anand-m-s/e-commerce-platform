@@ -76,6 +76,7 @@
 
                 <div class="" style="display:none;"  id="coupon-success">
                   <p style="color: green;"> Coupon applied</p>
+                  <button id="unapplyCoupon" class="btn rounded-1" style="background-color: red; color: #fff;">Remove coupon</button>
                 </div>            
             
                 <div class="row" style="display: none;" id="couponContainer">
@@ -200,6 +201,9 @@
 }
 
 // coupon management
+document.getElementById('unapplyCoupon').addEventListener('click',()=>{
+window.location.reload();
+})
 
 document.getElementById('showCouponButton').addEventListener('click', function () {
   let couponContainer = document.getElementById('couponContainer');
@@ -208,7 +212,8 @@ document.getElementById('showCouponButton').addEventListener('click', function (
 
 document.getElementById('applyCouponButton').addEventListener('click', async function () {        
     var selectedCoupon = document.querySelector('.couponRadio:checked');
-    let successmsg = document.getElementById("coupon-success")
+    let successmsg = document.getElementById("coupon-success");
+  
 
     if (selectedCoupon) {
         var selectedCouponCode = selectedCoupon.value;           
@@ -229,7 +234,9 @@ document.getElementById('applyCouponButton').addEventListener('click', async fun
                 // document.getElementById('totalAmount').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
                 // document.getElementById('totalAmountValue').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
                 document.getElementById('totalAmountValue').innerHTML = `${Math.floor(data.totalAmount)}`;
-                successmsg.style.display="block"
+                successmsg.style.display="block";
+               
+
                 // setTimeout(()=>{
                 //   successmsg.style.display="none"
                 // },2000)

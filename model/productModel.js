@@ -40,6 +40,10 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  offerPercentage: {
+    type: Number,
+    default:0,
+  },
 }, {
   timestamps: true,
 });

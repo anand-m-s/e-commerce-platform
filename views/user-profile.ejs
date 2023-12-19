@@ -53,6 +53,17 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-center  p-3">
              
+             
+
+                  <% if (users.referralCode) { %>
+                    <p class="mb-0">Referral Code: <br><%= users.referralCode %></p>
+                <% } %>
+                
+                 
+                 
+                </li>
+                <li class="list-group-item d-flex justify-content-center  p-3">
+             
                   <a style="text-decoration: none;" href="/logout">
 
                     <p class="mb-0" >Logout</p>

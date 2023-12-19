@@ -11,6 +11,8 @@ const Wallet = require("../model/wallet");
 const Coupon = require("../model/coupon")
 const bcrypt = require("bcrypt");
 const calc = require("../helpers/Calculate");
+var easyinvoice = require('easyinvoice');
+const { Readable } = require("stream");
 const {setGlobalMessage,getAndClearGlobalMessages} =require('../helpers/globalFunc');
 const { log } = require("debug/src/node");
 
@@ -29,7 +31,8 @@ const register = async (req, res) => {
         } else {
             // Hash the password
             const hashedPassword = await bcrypt.hash(Password, 10);
-            const newUser = new User({ username: Username, email: Email, password: hashedPassword, phone })
+            const newUser = new User({ username: Username, email: Email, password: hashedPassword, phone });
+
             const userresult = await newUser.save();
             console.log(userresult);
             res.redirect("/login");
@@ -150,15 +153,39 @@ const Loadhome = async (req, res) => {
   
 
 const signupVerify = async(req,res) =>{
-    const {phone,Email}= req.body;
-    const existingUser = await User.findOne({ $or: [{ email: Email },{phone:phone}] });
-        if (existingUser) {
-            // Sending a 409 Conflict status code for user conflict
+    const {phone,Email,Referral}= req.body;
+    const formattedPhone = `+91${phone}`;
+    const existingUser = await User.findOne({ $or: [{ email: Email },{phone:formattedPhone}] });
+        if (existingUser) {         
             return res.status(209).json({status:true});
-        }else if(!existingUser){
-            return res.status(200).json({status:true});
         }
-
+        if (Referral) {
+            const referredUser = await User.findOne({ referralCode: Referral });
+            console.log(referredUser);
+            if (referredUser) {              
+                referredUser.userReferred.push(formattedPhone);
+                await referredUser.save();        
+                let referredUserWallet = await Wallet.findOne({ user: referredUser._id });
+                // console.log(referredUserWallet);
+                if (!referredUserWallet) {                    
+                    const newWallet = new Wallet({
+                        user: referredUser._id,
+                        balance: 0
+                    });
+                    referredUserWallet = await newWallet.save();
+                }
+                    referredUserWallet.balance += 100;
+                    referredUserWallet.transactions.push({
+                        amount: 100,
+                        type: 'credit'
+                    });
+                    await referredUserWallet.save();
+               
+            } else {
+                return res.status(211).json({ status: true });
+            }
+        }
+            return res.status(200).json({status:true});        
 }
 
 
@@ -566,8 +593,6 @@ const OrderDetails= async(req,res)=>{
     } catch (error) {
     console.log(error);        
     }
-
-   
 }
 
 const searchResults = async(req,res)=>{
@@ -736,6 +761,121 @@ const removeFromWishlist =async (req, res) => {
       res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
   }
+
+const loadInvoice = async(req,res)=>{
+    try {
+        const orderId = req.query.orderId;
+        const userId = req.session.userId;
+        order = await Order.findById(orderId).populate({path:"products.product"});
+        const address = order.address  
+        const user = await User.findById(userId);
+        // console.log(user);
+        // console.log(order);
+        res.render('invoice',{title:'Invoice',order,address,user,username:req.session.username});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const invoiceDownload=async (req,res)=>{
+   
+    try {
+            const id = req.query.id;
+            // console.log('///////////////// ',id);
+            const userId = req.session.userId;
+            const result = await Order.findById({ _id: id }).populate('user').populate('products.product')
+            // const address = result.user.address.find((item) => item._id.toString() === result.address.toString());
+            console.log(result);
+            
+            const address = result.address            
+            const user = await User.findById({ _id: userId });      
+           
+            if (!result || !result.address) {
+                return res.status(404).json({ error: "Order not found or address missing" });
+            }
+     
+            const order = {
+                id: id,
+                total: result.totalPrice,
+                date: result.createdAt, // Use the formatted date
+                paymentMethod: result.paymentMethod,
+                orderStatus: result.orderStatus,
+                name: address.fullName,
+                mobile: address.phone,
+                house: address.addressline,
+                pincode: address.pincode,
+                city: address.city,
+                state: address.state,
+                products: result.products,
+            };
+            console.log(order,';;;;;;;;;;;;;;;;;;;;;;;');        
+            // Assuming products is an array, adjust if needed
+            const products = order.products.map((product, i) => ({
+                description: product.product.Name,
+                quantity: parseInt(product.quantity),                
+                price: parseInt(product.pricePerQnt),
+                total:result.totalPrice,
+                "tax-rate": 0,
+            }));
+    // console.log(products);
+                  
+            const isoDateString = order.date;
+            const isoDate = new Date(isoDateString);
+        
+            const options = { year: "numeric", month: "long", day: "numeric" };
+            const formattedDate = isoDate.toLocaleDateString("en-US", options);
+            const data = {
+              customize: {
+                //  "template": fs.readFileSync('template.html', 'base64') // Must be base64 encoded html
+              },
+              images: {
+                // The invoice background
+                background: "",
+              },
+              // Your own data
+              sender: {
+                company: "Shopping cartel",
+                address: "Experience",
+                city: "Ernakulam",
+                country: "India",
+              },
+              client: {
+                company: "Customer Address",
+                "zip": order.name,
+                "city": order.city,
+                "address": order.house,
+                "pincode":order.pincode
+                // "custom1": "custom value 1",
+                // "custom2": "custom value 2",
+                // "custom3": "custom value 3"
+              },
+              information: {
+                number: "order" + order.id,
+                date: formattedDate,
+              },
+              products: products,
+              "bottom-notice": "Happy shoping and visit again",
+            };
+            // console.log(data+'::::::::::::::::::::::');
+        let pdfResult = await easyinvoice.createInvoice(data);
+            const pdfBuffer = Buffer.from(pdfResult.pdf, "base64");
+       
+            // Set HTTP headers for the PDF response
+            res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
+            res.setHeader("Content-Type", "application/pdf");
+        
+            // Create a readable stream from the PDF buffer and pipe it to the response
+            const pdfStream = new Readable();
+            pdfStream.push(pdfBuffer);
+            pdfStream.push(null);
+            pdfStream.pipe(res);
+        } catch (error) {
+            console.error('Error in invoiceDownload:', error);
+            res.status(500).json({ error: error.message });
+        }
+        
+  
+}
   
   
   
@@ -775,5 +915,6 @@ module.exports = {
     searchResults,
     categoryFilter,
     loadWallet,applyCoupon,
-    addToWishList,loadWishList,removeFromWishlist
+    addToWishList,loadWishList,removeFromWishlist,
+    loadInvoice,invoiceDownload
 }

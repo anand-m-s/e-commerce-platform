@@ -129,6 +129,8 @@ const updatePayment = async (req, res) => {
       const user = await User.findById(userId);
       const selectedAddress = user.address[billingAddress];
       console.log(selectedAddress);     
+      const deliveryAddress = await Address.findOne({_id:selectedAddress});
+      console.log(deliveryAddress);       
       const cart = await Cart.findOne({ user: userId }).populate({
           path: 'products.product',
       });
@@ -144,7 +146,7 @@ const updatePayment = async (req, res) => {
         const payment_details = req.body.payment_details;
       const orderData = {
           user: userId,
-          address: selectedAddress,
+          address: deliveryAddress,
           products: cart.products.map((item) => ({
               product: item.product._id,
               quantity: item.quantity,

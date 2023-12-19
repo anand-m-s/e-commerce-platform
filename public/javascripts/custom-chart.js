@@ -17,6 +17,16 @@
     productsPerMonth = productsPerMonth.map((item) => Number(item));
     productsPerMonth = Array(productsPerMonth);
     productsPerMonth = productsPerMonth[0];
+
+    let yearlySalesArray = document.getElementById("yearlySalesArray").value;
+
+    yearlySalesArray = yearlySalesArray.trim(); // Remove leading and trailing whitespace
+    yearlySalesArray = yearlySalesArray.split(",");
+    yearlySalesArray = yearlySalesArray.map((item) => Number(item));
+    yearlySalesArray = Array(yearlySalesArray);
+    yearlySalesArray = yearlySalesArray[0];
+    console.log(yearlySalesArray);
+
     /Sale statistics Chart/
     if ($("#myChart").length) {
       var ctx = document.getElementById("myChart").getContext("2d");
@@ -70,6 +80,54 @@
         },
       });
     } //End
+  // Yearly sales Chart
+if ($("#myChart3").length) {
+  var ctx3 = document.getElementById("myChart3").getContext("2d");
+  var chart3 = new Chart(ctx3, {
+    type: "bar",
+    data: {
+      labels: [2023, 2024, 2025, 2026, 2027],
+      datasets: [
+        {
+          label: "Yearly Sales",
+          backgroundColor: "rgba(75, 192, 192, 0.5)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+          data: yearlySalesArray,
+        },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+            usePointStyle: true,
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          stacked: true,
+        },
+      },
+      animation: {
+        onComplete: () => {
+          console.log("Animation complete");
+        },
+        delay: (context) => {
+          return context.dataIndex * 100; // Adjust the delay as needed
+        },
+        easing: "easeInOutQuart", // Use a different easing function if desired
+        duration: 1000, // Animation duration in milliseconds
+      },
+    },
+  });
+}
+
+    
   })(jQuery);
   
   /Sale statistics Chart/
@@ -123,3 +181,5 @@
     data: polarData,
     options: polarOptions,
   });
+
+  

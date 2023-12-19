@@ -31,6 +31,8 @@ router.get("/categoryfilter",isAuth,userController.categoryFilter);
 router.get("/success",isAuth,orderController.successPage);
 router.get("/wallet",isAuth,userController.loadWallet);
 router.get("/wishlist",isAuth,userController.loadWishList);
+router.get('/invoice',isAuth,userController.loadInvoice);
+router.get('/invoiceDownload',userController.invoiceDownload);
   
 
 

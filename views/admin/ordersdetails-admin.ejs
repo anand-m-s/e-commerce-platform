@@ -9,7 +9,7 @@
                 <div class="card-body row">
                  
                     <div class="col"> <strong>Customer:</strong> <br> <%= order.user.username %> <br> <%= order.user.phone %>  </div>
-                    <div class="col"> <strong>Deliver to:</strong> <br><%= order.address.fullName%> <br> <%= order.address.addressline %><br><%= order.address.city,%> ,<%= order.address.pincode %> <br> <%= order.address.phone %>  </div>
+                    <div class="col"> <strong>Deliver to:</strong> <br><%= address.fullName%> <br> <%= address.addressline %><br><%= address.city,%> ,<%= address.pincode %> <br> <%= address.phone %>  </div>
                     <div class="col"  id="statusDetails"> <strong>Status:</strong> <br> <%= order.orderStatus %></div>
                     <div class="col"> 
                         <div class="dropdown">

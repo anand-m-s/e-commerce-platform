@@ -50,12 +50,12 @@ function findStartDate(days) {
 }
 
 function generateTemplate(salesReport) {
-    // Assuming `templateString` is your EJS template string
+  
     const template = ejs.compile(templateString);
     const html = template({ salesReport: salesReport });
     document.querySelector('#salesReport').innerHTML = html;
   
-    // Assuming `dataTable` is a DataTable instance
+  
     dataTable.destroy();
     dataTable = new DataTable('#salesReport');
   }

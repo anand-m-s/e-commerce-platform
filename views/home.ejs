@@ -69,7 +69,7 @@
                 <input type="range" 
                        class="max-range" 
                        min="0" 
-                       max="90000" 
+                       max="100000" 
                        value="0" 
                        step="1"> 
             </div> 
@@ -155,7 +155,7 @@
           <div class="row index-row " id="productRow">
             <% products.forEach(product => { %>
               <div class="col-md-6 col-lg-4 col-xl-4 card-main p-3 " id="Product__container">
-                <div class="card card-div-product rounded-4 shadow-lg">              
+                <div class="card card-div-product rounded-4">              
                   <div class="imgdiv mt-2">
                     <a href="/products?productId=<%= product._id %>">
                       <img  src="/images/uploads/<%= product.ProductImage[0].filename %>" class="card-img-top" alt="<%= product.Name %>" />

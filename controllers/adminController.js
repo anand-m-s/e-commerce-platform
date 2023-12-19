@@ -393,11 +393,11 @@ const orderdetails = async (req, res) => {
 
 
   const orderId = req.query.orderId;
-  const order = await Order.findById({ _id: orderId })
-    .populate({ path: "address", model: Address })
+  const order = await Order.findById({ _id: orderId })  
     .populate("products.product")
     .populate("user")
-  res.render("admin/ordersdetails-admin", { title:'OrderDetails',order, email: req.session.email })
+  const address = order.address;
+  res.render("admin/ordersdetails-admin", { title:'OrderDetails',order,address, email: req.session.email })
 
 }
 
@@ -471,6 +471,35 @@ const admindashboard = async (req, res) => {
       return monthData ? monthData.count : 0;
     });
     // monthly sale end
+    // yearly sale start
+ 
+        const yearlySales = await Order.aggregate([
+          {
+            $match: {
+              orderStatus: "Delivered", // Filter by status
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $year: "$createdAt",
+              },
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $sort: {
+              _id: 1,
+            },
+          },
+        ]);
+        const currentYear = new Date().getFullYear();
+        const yearlySalesArray = Array.from({ length:5}, (_, index) => {
+          const yearData = yearlySales.find((item) => item._id === ( currentYear+ index));
+          return yearData ? yearData.count : 0;
+        });
+
+    // yearly sale end
     const orderStatus = await Order.aggregate([
       {
         $match: {
@@ -524,6 +553,7 @@ const admindashboard = async (req, res) => {
       totalRevenue,
       orders,
       orderStatusArray,
+      yearlySalesArray
 
     })
   } catch (error) {
@@ -611,8 +641,83 @@ const updateCoupon = async(req,res)=>{
     console.log(error);
   }
   
-
 }
+
+const loadOffers = async(req,res)=>{
+  try {
+    const ITEMS_PER_PAGE = 4;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const products = await Product.find({}).skip(skip).limit(ITEMS_PER_PAGE);        
+    const totalProducts = await Product.countDocuments({});
+    const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+    const categories = await Category.find()
+    // const products = await Product.find({})  
+    res.render("admin/offers",{title:'offers',products,email:req.session.email,currentPage:page,totalPages,categories});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const applyOffer = async (req, res) => {
+  try {
+      const productId = req.query;
+      const { offerPercentage } = req.body;
+      console.log(offerPercentage);
+      const product = await Product.findOne(productId);
+      // console.log(product);  
+      product.offerPercentage = 0;
+      product.offerPercentage = offerPercentage; 
+      product.Price = product.SalePrice - (product.SalePrice * (product.offerPercentage / 100));
+      await product.save();
+      res.status(200).json({ success: true, message: 'Offer applied successfully.' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'An error occurred while applying the offer.' });
+  }
+};
+
+
+// const categoryOffer = async(req,res)=>{
+//   try {    
+//     const {categoryId,offerPercentage}= req.body;
+//     console.log(categoryId);
+//     console.log(offerPercentage);
+//     const category = await Category.findById(categoryId);
+//     console.log(category);
+//     const products = await Product.find({Category:categoryId});
+//     console.log(products);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+const categoryOffer = async (req, res) => {
+  try {
+    const { categoryId, offerPercentage } = req.body;
+    console.log(categoryId);
+    console.log(offerPercentage);
+    const category = await Category.findById(categoryId);
+    console.log(category);
+    if (category) {
+      const products = await Product.find({ Category: categoryId });
+      for (const product of products) {   
+        product.offerPercentage = offerPercentage;
+        product.Price = product.SalePrice - (product.SalePrice * (product.offerPercentage / 100));
+        await product.save();
+      }
+
+      res.status(200).json({ success: true, message: 'Category offer applied successfully.' });
+    } else {
+      res.status(404).json({ success: false, message: 'Category not found.' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'An error occurred while applying the category offer.' });
+  }
+};
+
+
 
 
 
@@ -643,5 +748,6 @@ module.exports = {
   orders,
   orderdetails, updateOrderStatus,
   loadCoupon,
-  addCoupon,deleteCoupon,loadEditCoupon,updateCoupon
+  addCoupon,deleteCoupon,loadEditCoupon,updateCoupon,
+  loadOffers,applyOffer,categoryOffer
 }
