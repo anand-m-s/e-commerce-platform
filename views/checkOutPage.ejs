@@ -116,6 +116,10 @@
                   <input type="radio" name="paymentMethod" value="Razorpay" style="display: none;">
                   <label for="Razorpay">Razorpay</label>
               </div>                
+              <div class="paymentMethod" data-method="wallet" onclick="selectPaymentMethod('wallet')">
+                  <input type="radio" name="paymentMethod" value="wallet" style="display: none;">
+                  <label for="wallet">Wallet</label>
+              </div>                
             </div>
 
         <button style="width: 22rem; color: #fff;" id="checkoutButton" class="btn btn-success m-2 p-3"> <!-- Add a submit button -->
@@ -188,16 +192,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  function selectPaymentMethod(method) {
-    // Unselect all payment methods
-    document.querySelectorAll('.paymentMethod input[type="radio"]').forEach(input => {
+  function selectPaymentMethod(method) {    
+    document.querySelectorAll('.paymentMethod input[type="radio"]').forEach(input => {      
       input.checked = false;
-    });
-    
-  // Select the clicked payment method
+    });  
   const selectedInput = document.querySelector(`.paymentMethod[data-method="${method}"] input[type="radio"]`);
-  selectedInput.checked = true;
-  
+  selectedInput.checked = true;  
 }
 
 // coupon management
@@ -225,27 +225,16 @@ document.getElementById('applyCouponButton').addEventListener('click', async fun
                 },
                 body: JSON.stringify({ selectedCouponCode })
             });
-
             const data = await response.json();
-
             if (response.ok) {
               if(response.status==200){
-
                 // document.getElementById('totalAmount').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
                 // document.getElementById('totalAmountValue').innerHTML = `<strong>Total : </strong> ₹${Math.floor(data.totalAmount)}`;
                 document.getElementById('totalAmountValue').innerHTML = `${Math.floor(data.totalAmount)}`;
-                successmsg.style.display="block";
-               
-
-                // setTimeout(()=>{
-                //   successmsg.style.display="none"
-                // },2000)
-                
+                successmsg.style.display="block";                                
               }else if(response.status==201){
-
                 document.getElementById('couponError').innerHTML = data.error;
-                setTimeout(()=>{
-                  
+                setTimeout(()=>{                  
                   document.getElementById('couponError').innerHTML = '';
                 },2000)
               }else if(response.status==202){
@@ -253,10 +242,8 @@ document.getElementById('applyCouponButton').addEventListener('click', async fun
                 setTimeout(()=>{                  
                   document.getElementById('couponError').innerHTML = '';
                 },2000)
-              }
-                
+              }                
             } 
-
             console.log(data);
         } catch (error) {
             console.error('Error applying coupon:', error);
@@ -291,13 +278,8 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
     const totalAmountElement = document.querySelector("#totalAmountValue");
     const totalAmount = parseFloat(totalAmountElement.innerText);
     console.log(totalAmount);
-    
-    
       let razorpayTimestamp;
-
-
       const pollingInterval = 3000;
-
      Swal.fire({
       title: "Are you sure?",
       text: "Confirm this order",
@@ -333,20 +315,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
     } else if (response.status === 201) {
         console.log('razorpay');
         response.json().then((res) => {
-            if (res.order) {                             
-              // const pollIntervalId = setInterval(async () => {
-              //   razorpayTimestamp = Date.now();
-              //   const updatedCartResponse = await fetch('/getCartTimestamp');
-              //   const updatedCartTimestamp = await updatedCartResponse.json();
-              //     console.log(razorpayTimestamp);
-              //     console.log(updatedCartTimestamp);
-
-              //     if (updatedCartTimestamp > razorpayTimestamp) {                    
-              //       clearInterval(pollIntervalId);
-              //       window.location.reload();
-              //      await Swal.fire('Cart Updated', 'The cart has been updated. Please reload the page.', 'warning');
-              //     }
-              //   }, pollingInterval);
+            if (res.order) {                                 
               razorpayTimestamp = new Date();
               const pollIntervalId = setInterval(async () => {
                 try {
@@ -356,8 +325,7 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                   console.log('Razorpay Timestamp:', razorpayTimestamp);
                   // console.log('Updated Cart Timestamp:', updatedCartTimestamp);
                   
-                  if (updatedCartTimestamp) {
-                    // Convert both timestamps to JavaScript Date objects
+                  if (updatedCartTimestamp) {                    
                     const updatedCartDate = new Date(updatedCartTimestamp);
                     console.log('Updated Cart Timestamp 2::', updatedCartDate);
                     const razorpayDate = razorpayTimestamp;
@@ -372,9 +340,6 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                   console.error('Error during cart polling:', error);
                 }
               }, pollingInterval);
-
-
-
                 console.log(res.order);
                 const amountInRupees = res.order.amount/100
                 var options = {
@@ -407,7 +372,16 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
                 rzp.open();
             }
         });
-    } else if (response.status === 501) {
+    }else if(response.status === 202){
+      console.log('Success:', response);
+        await Swal.fire({
+            title: "Confirmed",
+            text: "Your Order is confirmed.",
+            icon: "success"
+        });
+        window.location.href = "/success";
+
+    } else if (response.status === 208) {
         await Swal.fire('Couldnt place order!', 'Insufficient Balance.', 'warning');
     } else {
         console.error('Failed to complete the order. Status code:', response.status);

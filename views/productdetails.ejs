@@ -87,6 +87,9 @@
               setTimeout(() => {
                 message.innerHTML="";
               }, 1000);
+            }else if(response.status===207){
+                alert("hi")
+                window.location.href='/login'
             }
           
           }).catch(error=>{

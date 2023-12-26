@@ -367,18 +367,14 @@ const useraction = async (req, res) => {
 
 const orders = async (req, res) => {
   try {
-
-    const { page = 1, itemsPerPage = 7 } = req.query;
+    const { page = 1, itemsPerPage = 10} = req.query;
     const skip = (page - 1) * itemsPerPage;
-
     const orders = await Order.find().populate('user')
       .sort({_id:-1})
       .skip(skip)
       .limit(itemsPerPage);
-
     const totalOrders = await Order.countDocuments();
     const totalPages = Math.ceil(totalOrders / itemsPerPage);
-
     res.render('admin/orderlist-admin', { title:'Orders',orders, email: req.session.email, currentPage: parseInt(page), totalPages });
 
 

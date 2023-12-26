@@ -490,11 +490,11 @@ const updateUser = async(req,res)=>{
 
 const addProductsToCart = async(req,res)=>{
     try {        
+        if (!req.session.userId) {          
+            return res.redirect('/login');
+        }
         const productId = req.query.productId;
-        const userId = req.session.userId
-        // const user = await User.findById(req.session.userId);
-  
-     
+        const userId = req.session.userId     
         let userCart = await Cart.findOne({user:userId});
         if (!userCart) {
             // If the cart doesn't exist, create a new one

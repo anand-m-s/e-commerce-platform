@@ -6,6 +6,7 @@ const Product = require('../model/productModel')
 const Coupon = require('../model/coupon')
 const Address = require('../model/address');
 const Razorpay = require('razorpay'); 
+const Wallet = require("../model/wallet");
 
 
 const razorpayInstance = new Razorpay({
@@ -21,11 +22,11 @@ const checkOut = async (req, res) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
     });
-    console.log(cart);
+    // console.log(cart);
     let items = cart.products;
     // console.log(items);
-    let totalQuantity = items.reduce((acc,item)=> acc+item.quantity,0);
-    console.log(totalQuantity);
+    // let totalQuantity = items.reduce((acc,item)=> acc+item.quantity,0);
+    // console.log(totalQuantity);
     let coupon;
     if(selectedCouponCode!==null){
       cart.products.forEach((item) => { 
@@ -35,8 +36,7 @@ const checkOut = async (req, res) => {
       coupon = await Coupon.findOne({ couponCode: selectedCouponCode });  
       coupon.usedBy.push(userId);
       coupon.usedUsersCount++; 
-      await coupon.save();
-       
+      await coupon.save();       
     }
     const user = await User.findById(userId);  
     const selectedAddress = user.address[billingAddress];  
@@ -44,10 +44,10 @@ const checkOut = async (req, res) => {
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
-    const checkAmount = cart.products.reduce(
-      (acc, item) => acc + item.product.Price * item.quantity,
-      0
-    );
+    // const checkAmount = cart.products.reduce(
+    //   (acc, item) => acc + item.product.Price * item.quantity,
+    //   0
+    // );
       if(paymentMethod==='cod'){
           console.log("inside cod");
           const newOrder = new Order({
@@ -72,8 +72,7 @@ const checkOut = async (req, res) => {
             await Product.findByIdAndUpdate(productId, {
               $inc: { Stock: -orderedQuantity },
             });
-          }
-          // Clear the user's cart after the order is placed
+          }      
           cart.products = [];
           // cart.totalAmount = 0;
           await cart.save();
@@ -99,8 +98,47 @@ const checkOut = async (req, res) => {
                   }
                   console.log('Razorpay order created:');
       
-                  return res.status(201).json({order:data,selectedCouponCode,totalQuantity,checkAmount})
+                  return res.status(201).json({order:data,selectedCouponCode})
               })
+      }
+      if(paymentMethod==='wallet'){
+        console.log("inside wallet");
+        const wallet = await Wallet.findOne({user:userId});    
+        if(totalAmount>wallet.balance){
+          return res.status(208).json({message:'insufficient balance'});
+        }
+        wallet.transactions.push({
+          amount: totalAmount,
+          type: 'debit'          
+      });
+        wallet.balance-=totalAmount;
+        await wallet.save();
+          console.log(wallet);
+          const newOrder = new Order({
+            user: userId,
+            address: deliveryAddress,
+            products: cart.products.map((item) => ({
+              product: item.product._id,
+              quantity: item.quantity,
+              pricePerQnt: item.product.Price,
+              discountPrice: item.couponApplied ? ((item.product.Price * item.quantity * coupon.discountValue) / 100) : 0,
+            })),
+            totalPrice: totalAmount,
+            paymentMethod,
+            orderStatus: 'Pending',
+          });
+          await newOrder.save();             
+        for (const item of cart.products) {
+            const productId = item.product._id;
+            const orderedQuantity = item.quantity;           
+            await Product.findByIdAndUpdate(productId, {
+              $inc: { Stock: -orderedQuantity },
+            });
+          }      
+          cart.products = [];        
+          await cart.save();
+          return res.status(202).json({ success: true, message: 'Order placed successfully' });
+
       }
   } catch (error) {
     console.error(error);
