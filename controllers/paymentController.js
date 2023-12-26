@@ -21,38 +21,33 @@ const checkOut = async (req, res) => {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'products.product',
     });
+    console.log(cart);
+    let items = cart.products;
+    // console.log(items);
+    let totalQuantity = items.reduce((acc,item)=> acc+item.quantity,0);
+    console.log(totalQuantity);
     let coupon;
     if(selectedCouponCode!==null){
       cart.products.forEach((item) => { 
         item.couponApplied = true;
-      });        
+      });       
       await cart.save();
-
       coupon = await Coupon.findOne({ couponCode: selectedCouponCode });  
       coupon.usedBy.push(userId);
       coupon.usedUsersCount++; 
-
       await coupon.save();
        
     }
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    const user = await User.findById(userId);  
     const selectedAddress = user.address[billingAddress];  
-    if (!selectedAddress) {
-      return res.status(400).json({ error: 'Billing address not selected' });
-    }
-    console.log(selectedAddress);
-    const deliveryAddress = await Address.findOne({_id:selectedAddress});
-    console.log(deliveryAddress);       
+    const deliveryAddress = await Address.findOne({_id:selectedAddress});   
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
-    // const totalAmount = cart.products.reduce(
-    //   (acc, item) => acc + item.product.Price * item.quantity,
-    //   0
-    // );
+    const checkAmount = cart.products.reduce(
+      (acc, item) => acc + item.product.Price * item.quantity,
+      0
+    );
       if(paymentMethod==='cod'){
           console.log("inside cod");
           const newOrder = new Order({
@@ -104,7 +99,7 @@ const checkOut = async (req, res) => {
                   }
                   console.log('Razorpay order created:');
       
-                  return res.status(201).json({order:data,selectedCouponCode})
+                  return res.status(201).json({order:data,selectedCouponCode,totalQuantity,checkAmount})
               })
       }
   } catch (error) {

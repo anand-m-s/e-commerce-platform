@@ -564,12 +564,19 @@ const admindashboard = async (req, res) => {
 
 const loadCoupon = async (req, res) => {
   try {
-
-    const allCoupons = await Coupon.find({});
-    const currentDate = new Date();
-    const validCoupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);
-
-    res.render("admin/coupons", {title:'Coupons',email: req.session.email, coupon: validCoupons });
+    const ITEMS_PER_PAGE = 2;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * ITEMS_PER_PAGE;    
+    await Coupon.deleteMany({ endDate: { $lt: new Date() } });
+    const totalProducts = await Coupon.countDocuments({});
+    // console.log(totalProducts);
+    const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+    const allCoupons = await Coupon.find({}).skip(skip).limit(ITEMS_PER_PAGE)   
+    // console.log(allCoupons);
+    // const currentDate = new Date();
+    // const validCoupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);
+    // console.log(validCoupons);
+    res.render("admin/coupons", {title:'Coupons',email: req.session.email, coupon: allCoupons,totalPages,currentPage:page });
   } catch (error) {
     console.log(error);
   }

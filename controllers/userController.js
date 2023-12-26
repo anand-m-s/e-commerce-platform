@@ -619,23 +619,40 @@ const categoryFilter = async (req, res) => {
     }
   };
 
-const loadWallet = async(req,res)=>{
+  const loadWallet = async (req, res) => {
     try {
         const userId = req.session.userId;
+        const page = parseInt(req.query.page) || 1;
+        const itemsPerPage = 8;
         const userWallet = await Wallet.findOne({ user: userId });
-        if (!userWallet) {            
+        if (!userWallet) {
             const newWallet = new Wallet({
                 user: userId,
-                balance: 0
+                balance: 0,
             });
-            await newWallet.save();       
-        }
-        res.render("wallet",{title:'Wallet',username:req.session.username,userWallet})
+            await newWallet.save();
+        }        
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = page * itemsPerPage;    
+        const transactions = userWallet
+            ? userWallet.transactions.slice(startIndex, endIndex)
+            : [];
+        const totalTransactions = userWallet ? userWallet.transactions.length : 0;
+        const totalPages = Math.ceil(totalTransactions / itemsPerPage);
+        res.render("wallet", {
+            title: 'Wallet',
+            username: req.session.username,
+            userWallet,
+            transactions,
+            currentPage: page,
+            totalPages,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal Server Error');
     }
-}
+};
+
 
 const applyCoupon= async (req, res) => {
     try {
@@ -673,14 +690,11 @@ const applyCoupon= async (req, res) => {
             return res.status(202).json({ error: `Minimum spend must be above ${coupon.purchaseLimit}`});
         }  
       const discountAmount = (coupon.discountValue / 100) * total;
-      const totalAmount = total - discountAmount;
-      
+      const totalAmount = total - discountAmount;      
     //   coupon.usedBy.push(userId);
     //   coupon.usedUsersCount++; 
     //   coupon.usersLimit--;
-    //   await coupon.save();
-  
-      
+    //   await coupon.save();        
       res.json({ totalAmount, message: 'Coupon applied successfully' });
     } catch (error) {
       console.error('Error applying coupon:', error);

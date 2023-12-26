@@ -33,6 +33,7 @@ router.get("/wallet",isAuth,userController.loadWallet);
 router.get("/wishlist",isAuth,userController.loadWishList);
 router.get('/invoice',isAuth,userController.loadInvoice);
 router.get('/invoiceDownload',userController.invoiceDownload);
+router.get('/getCartTimestamp',cartController.cartTimeStamp)
   
 
 
@@ -52,7 +53,7 @@ router.post("/signupVerify",userController.signupVerify);
 router.post('/checkout',paymentController.checkOut);
 router.post('/updatePayment',paymentController.updatePayment);
 router.post('/cancelproduct',orderController.cancelProduct);
-router.post("/return",orderController.returnProduct);
+router.post("/returnrequest",orderController.returnRequest);
 router.post("/apply-coupon",userController.applyCoupon);
 router.post("/add-to-wishlist",userController.addToWishList)
 router.post('/remove-from-wishlist',userController.removeFromWishlist );

@@ -118,9 +118,26 @@ const updateQuantity = async (req, res) => {
   };
 
 
+  const cartTimeStamp = async(req,res)=>{
+    try {
+      const userId = req.session.userId;
+      const cart = await Cart.findOne({user:userId});
+      if (!cart) {
+        return res.status(404).json({ error: 'Cart not found' });
+      }      
+      console.log(cart.updatedAt,"::::::updated timestamp:::::::::::::::::");
+      res.json({ updatedCartTimestamp: cart.updatedAt });
+    } catch (error){
+      console.error('Error fetching cart timestamp:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      
+    }
+  }
+
 
   module.exports={
     addToCart,
     removeFromCart,
     updateQuantity,
+    cartTimeStamp
   }

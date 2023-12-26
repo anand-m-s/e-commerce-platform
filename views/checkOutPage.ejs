@@ -291,6 +291,12 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
     const totalAmountElement = document.querySelector("#totalAmountValue");
     const totalAmount = parseFloat(totalAmountElement.innerText);
     console.log(totalAmount);
+    
+    
+      let razorpayTimestamp;
+
+
+      const pollingInterval = 3000;
 
      Swal.fire({
       title: "Are you sure?",
@@ -328,6 +334,47 @@ document.getElementById('checkoutButton').addEventListener('click', function () 
         console.log('razorpay');
         response.json().then((res) => {
             if (res.order) {                             
+              // const pollIntervalId = setInterval(async () => {
+              //   razorpayTimestamp = Date.now();
+              //   const updatedCartResponse = await fetch('/getCartTimestamp');
+              //   const updatedCartTimestamp = await updatedCartResponse.json();
+              //     console.log(razorpayTimestamp);
+              //     console.log(updatedCartTimestamp);
+
+              //     if (updatedCartTimestamp > razorpayTimestamp) {                    
+              //       clearInterval(pollIntervalId);
+              //       window.location.reload();
+              //      await Swal.fire('Cart Updated', 'The cart has been updated. Please reload the page.', 'warning');
+              //     }
+              //   }, pollingInterval);
+              razorpayTimestamp = new Date();
+              const pollIntervalId = setInterval(async () => {
+                try {
+                  const updatedCartResponse = await fetch('/getCartTimestamp');
+                  const { updatedCartTimestamp } = await updatedCartResponse.json();
+
+                  console.log('Razorpay Timestamp:', razorpayTimestamp);
+                  // console.log('Updated Cart Timestamp:', updatedCartTimestamp);
+                  
+                  if (updatedCartTimestamp) {
+                    // Convert both timestamps to JavaScript Date objects
+                    const updatedCartDate = new Date(updatedCartTimestamp);
+                    console.log('Updated Cart Timestamp 2::', updatedCartDate);
+                    const razorpayDate = razorpayTimestamp;
+
+                    if (updatedCartDate > razorpayDate) {
+                      clearInterval(pollIntervalId);
+                      window.location.reload();
+                      await Swal.fire('Cart Updated', 'The cart has been updated. Please reload the page.', 'warning');
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error during cart polling:', error);
+                }
+              }, pollingInterval);
+
+
+
                 console.log(res.order);
                 const amountInRupees = res.order.amount/100
                 var options = {

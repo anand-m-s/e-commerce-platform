@@ -112,13 +112,16 @@
           onclick="cropImages()">Add product</button>
       </div>
       <!-- Container to display the cropped image -->
-      <div class="outputcropcontainer">
+  
 
-        <div class="cropoutput">
+        <div class="cropoutput row">
+         
+
+            <div id="outputContainer" style="display: flex; justify-content: space-around;" class="col-md-12"></div>
+         
           
-          <div id="outputContainer" style="display: block;max-width: 100%; "></div>
         </div>
-      </div>
+   
 
       <!-- <div class="text-center p-2">
         <button class="btn btn-success btn-block mt-1 " type="button" onclick="addProduct()">Add Product</button>
@@ -172,11 +175,14 @@
         submitButton.disabled = false;
       }
     });
-
     productImageInput.addEventListener('change', (event) => {
+      const input = event.target;
+      const maxCount = 5;
       const file = event.target.files[0];
-      const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', "image/webp"]; // Add more formats if needed
-
+      const allowedFormats = ['image/jpeg', 'image/png', "image/webp"]; // Add more formats if needed
+      if(input.files.length>maxCount){
+        alert("only 5 images allowed")
+      }
       if (file) {
         if (!allowedFormats.includes(file.type)) {
           productImageInput.classList.add('is-invalid');
@@ -185,7 +191,7 @@
         } else {
           productImageInput.classList.remove('is-invalid');
           productImageInput.nextElementSibling.textContent = '';
-          submitButton.disabled = false;
+          submitButton.disabled = false;          
         }
       }
     });
@@ -246,14 +252,6 @@
 
           cropperContainer.appendChild(imageElement);
           containerElement.appendChild(cropperContainer);
-
-
-
-
-
-
-
-
           const overlayDiv = document.createElement('div');
           overlayDiv.classList.add('cropper-overlay')
           overlayDiv.style.width = '100%'
@@ -291,8 +289,8 @@
             saveCrop.setAttribute('type', 'button')
             saveCrop.innerText = 'Crop';
             saveCrop.style.position = 'absolute';
-            saveCrop.style.right = '-20%';
-            saveCrop.style.top = '50%';
+            // saveCrop.style.right = '-20%';
+            // saveCrop.style.top = '50%';            
             cropperContainer.appendChild(saveCrop);
 
 

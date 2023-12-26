@@ -2,9 +2,12 @@
 <%- include("./partials/navigation") %>
 
 <div class="container">
+    <div class="d-flex justify-content-end">
+
+        <a href="/invoice?orderId=<%= order._id %>" class="p-2 rounded-2" style="text-decoration: none; background-color: grey; color: #fff; " >view Invoice</a>
+    </div>
     <article class="card">
         <div style="display: flex; justify-content: end;">
-                <a href="/invoice?orderId=<%= order._id %>">view Invoice</a>
         </div>
         <header class="card-header text-white bg-black">  My Orders / Tracking </header>
         <div class="card-body">
@@ -47,11 +50,11 @@
                         </figcaption>
                     </figure>
                     <div class="order-control-btn mt-3 ">
-                        <% if(order.orderStatus==="Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned") {%>
+                        <% if(order.orderStatus==="Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned" && item.itemStatus!=="Return requested") {%>
                        <button class="p-1 return-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Return</button>
                        <% }  %>
                       
-                       <% if (order.orderStatus !== "Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned") { %>
+                       <% if (order.orderStatus !== "Delivered" && item.itemStatus!=="cancelled" && item.itemStatus!=="returned" ) { %>
                         <button class="p-1 cancel-button" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Cancel</button>
                     <% } %>
                     </div>
@@ -126,10 +129,10 @@ document.querySelectorAll('.return-button').forEach(button => {
                     return 'Please enter a reason for returning.';
                 }
             },
-        });
+        }); 
         if (reason) {
             // Make a fetch call to handle the return logic
-            fetch('/return', {
+            fetch('/returnrequest', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +144,7 @@ document.querySelectorAll('.return-button').forEach(button => {
                     console.log(data);
                     if (data.success) {
                         // Update UI or show a success message
-                        Swal.fire('Success!', 'Item returned successfully.', 'success')
+                        Swal.fire('Return requested', 'Your return request has been recived by us ,Please wait for the approval', 'info')
                             .then(() => {
                                 window.location.reload();
                             });

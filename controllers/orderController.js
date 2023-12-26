@@ -80,7 +80,7 @@ const cancelProduct = async (req, res) => {
     }
 };
 
-const returnProduct = async(req,res)=>{
+const returnRequest = async(req,res)=>{
     try {
         const {orderId,productId,reason}= req.body;
         const userId = req.session.userId
@@ -89,72 +89,60 @@ const returnProduct = async(req,res)=>{
             {_id:orderId,'products.product':productId},
             {
                 $set: {
-                    'products.$.itemStatus': 'returned',
+                    'products.$.itemStatus': 'Return requested',
                     'products.$.returnReason': reason,                    
                 }
             },
             { new: true }
         );
-        if (!returnedProduct) {
-            console.log('Product not found in the order');
-            return res.status(404).json({ success: false, message: 'Product not found in the order' });
-        }
-        const returnedProductDetails = returnedProduct.products.find(
-            (product) => product.product.toString() === productId
-        );
+        // if (!returnedProduct) {
+        //     console.log('Product not found in the order');
+        //     return res.status(404).json({ success: false, message: 'Product not found in the order' });
+        // }
+        // const returnedProductDetails = returnedProduct.products.find(
+        //     (product) => product.product.toString() === productId
+        // );
 
-        const userWallet = await Wallet.findOne({ user: userId });
+        // const userWallet = await Wallet.findOne({ user: userId });
          
-        if (!userWallet) {                    
-            const newWallet = new Wallet({
-                user: userId,
-                balance: 0
-            });
-            await newWallet.save();
-       
-        }
-
-     
-  
-            const refundedAmount = (returnedProductDetails.pricePerQnt * returnedProductDetails.quantity)-returnedProductDetails.discountPrice;
+        // if (!userWallet) {                    
+        //     const newWallet = new Wallet({
+        //         user: userId,
+        //         balance: 0
+        //     });
+        //     await newWallet.save();       
+        // }       
+        //     const refundedAmount = (returnedProductDetails.pricePerQnt * returnedProductDetails.quantity)-returnedProductDetails.discountPrice;
         
-                userWallet.transactions.push({
-                    amount: refundedAmount,
-                    type: 'credit'
-                });
+        //         userWallet.transactions.push({
+        //             amount: refundedAmount,
+        //             type: 'credit'
+        //         });
             
-            userWallet.balance += refundedAmount;
-            await userWallet.save();
-            console.log(userWallet);
-
-        if (returnedProductDetails) {
-            const returnQuantity = returnedProductDetails.quantity;
-            console.log(`returned Quantity: ${returnQuantity}`);
-        } else {
-            console.log('Product not found in the order');
-        }  
-
-        const originalOrder = await Order.findById(orderId);
-
+        //     userWallet.balance += refundedAmount;
+        //     await userWallet.save();
+        //     console.log(userWallet);
+        // if (returnedProductDetails) {
+        //     const returnQuantity = returnedProductDetails.quantity;
+        //     console.log(`returned Quantity: ${returnQuantity}`);
+        // } else {
+        //     console.log('Product not found in the order');
+        // }  
+        // const originalOrder = await Order.findById(orderId);   
+        // const allProductsCancelledOrReturned = originalOrder.products.every(
+        //     (product) => ['cancelled', 'returned'].includes(product.itemStatus)
+        // );
+        // console.log(allProductsCancelledOrReturned);
+        // if (allProductsCancelledOrReturned) {
    
-        const allProductsCancelledOrReturned = originalOrder.products.every(
-            (product) => ['cancelled', 'returned'].includes(product.itemStatus)
-        );
-
-        console.log(allProductsCancelledOrReturned);
-
-  
-        if (allProductsCancelledOrReturned) {
-   
-            await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
-        }
-
-        await Product.findByIdAndUpdate(productId, {
-            $inc: { Stock: returnedProductDetails.quantity }
-        });
-        const updatedOrder = await Order.findById(orderId);
-        console.log('Product returned successfully');        
-        res.status(200).json({ success: true, message: 'Product returned successfully' });
+        //     await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
+        // }
+        // await Product.findByIdAndUpdate(productId, {
+        //     $inc: { Stock: returnedProductDetails.quantity }
+        // });
+        // const updatedOrder = await Order.findById(orderId);
+        // console.log('Product returned successfully');        
+        res.status(200).json({ success: true, message: 'Return request sended' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Internal server error' });        
@@ -170,9 +158,79 @@ const successPage = (req,res)=>{
     }
 }
 
+const returnApprove =async(req,res)=>{
+    try {
+        const {orderId,productId}= req.body; 
+        const returnedProduct = await Order.findOneAndUpdate(
+            {_id:orderId,'products.product':productId},
+            {
+                $set: {
+                    'products.$.itemStatus': 'returned',                                     
+                }
+            },
+            { new: true }
+        );
+        // console.log(returnedProduct);
+        const userId = returnedProduct.user;
+        // console.log(userId);
+        if (!returnedProduct) {
+            console.log('Product not found in the order');
+            return res.status(404).json({ success: false, message: 'Product not found in the order' });
+        }
+        const returnedProductDetails = returnedProduct.products.find(
+            (product) => product.product.toString() === productId
+        );
+
+        const userWallet = await Wallet.findOne({ user: userId });
+         
+        if (!userWallet) {                    
+            const newWallet = new Wallet({
+                user: userId,
+                balance: 0
+            });
+            await newWallet.save();       
+        }       
+            const refundedAmount = (returnedProductDetails.pricePerQnt * returnedProductDetails.quantity)-returnedProductDetails.discountPrice;
+        
+                userWallet.transactions.push({
+                    amount: refundedAmount,
+                    type: 'credit'
+                });
+            
+            userWallet.balance += refundedAmount;
+            await userWallet.save();
+            // console.log(userWallet);
+        if (returnedProductDetails) {
+            const returnQuantity = returnedProductDetails.quantity;
+            console.log(`returned Quantity: ${returnQuantity}`);
+        } else {
+            console.log('Product not found in the order');
+        }  
+        const originalOrder = await Order.findById(orderId);   
+        const allProductsCancelledOrReturned = originalOrder.products.every(
+            (product) => ['cancelled', 'returned'].includes(product.itemStatus)
+        );
+        console.log(allProductsCancelledOrReturned);
+        if (allProductsCancelledOrReturned) {
+   
+            await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
+        }
+        await Product.findByIdAndUpdate(productId, {
+            $inc: { Stock: returnedProductDetails.quantity }
+        });
+        const updatedOrder = await Order.findById(orderId);
+        console.log('Product returned successfully');        
+        res.status(200).json({ success: true, message: 'Return request sended' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });        
+    }
+}
+
 module.exports ={
     successPage,
     cancelProduct,
-    returnProduct
+    returnRequest,
+    returnApprove
 }
 

@@ -67,13 +67,13 @@
                         </div>
                         <figcaption class="info align-self-center">
                             <p class="title"> <%= item.product.Name %> <br> </p> <span class="text-muted">Price: <%= item.product.Price %> <br>Quantity: <%= item.quantity %> <br> Item status : <%= item.itemStatus %> </span>
-                            <p>Total amount : <%= item.product.Price*item.quantity %></p>
-                           
-                            
-
-                            
-                        </figcaption>
-                    </figure>               
+                            <p>Total amount : <%= item.product.Price*item.quantity %></p>                            
+                        </figcaption>   
+                    </figure>                                
+                        <% if (item.itemStatus === 'Return requested' ) { %>
+                            <button class="p-2 approve-btn rounded-2" style="background-color: rgb(38, 113, 218); color: #fff; border: 0;" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Approved Request</button>
+                            <button class="p-2 decline-btn rounded-2" style="background-color: rgb(211, 47, 47); color: #fff; border: 0;" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Declined Request</button>
+                        <% } %>
                    
                 </li>
                 <%}) %>
@@ -87,46 +87,46 @@
     </article>
 </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// Add an event listener to the dropdown items
+
 const dropdownItems = document.querySelectorAll('.dropdown-item');
 
 dropdownItems.forEach(item => {
     item.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent the default behavior of the anchor tag
+        event.preventDefault(); 
 
-        // Extract the status from the data-status attribute
+        
         const newStatus = this.getAttribute('data-status');
         const orderId = '<%= order._id%>'
         console.log(orderId);
         console.log(newStatus)
 
-        // Update the order status using the fetch function
+        
         updateOrderStatus(orderId,newStatus);
     });
 });
 
 function updateOrderStatus(orderId, status) {
-    // Assuming your server endpoint for updating order status is '/updateOrderStatus'
+    
     const url = `/admin/updateOrderStatus`;
 
     fetch(url, {
-        method: 'POST', // You can use 'PUT' or 'PATCH' depending on your server API
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            // You may need to include other headers like authorization if required
+           
         },
-        // You can include a request body if your server expects it
+        
         body: JSON.stringify({ orderId, status }),
     })
     .then(response => response.json())
     .then(data => {
-        // Assuming your server responds with the updated order status
+        
         const updatedStatus = status;
         console.log(updatedStatus);
 
-        // Update the front-end to reflect the new status
+        
         updateFrontendStatus(updatedStatus);
 
         console.log('Order status updated successfully:', updatedStatus);
@@ -137,13 +137,13 @@ function updateOrderStatus(orderId, status) {
 }
 
 function updateFrontendStatus(status) {
-    // Implement the logic to update the front-end with the new status
-    // You can update the DOM, trigger UI changes, etc.
+    
+    
     const statusDetailsDiv = document.getElementById('statusDetails');
     if (statusDetailsDiv) {
         statusDetailsDiv.innerHTML = `<strong>Status:</strong><br>${status}`;
     }
-    //Set the color based on the status
+    
 
     switch(status.toLowerCase()){
         case  'delivered':
@@ -160,6 +160,53 @@ function updateFrontendStatus(status) {
     }
     console.log('Updating front-end with new status:', status);
 }
+
+document.querySelectorAll('.approve-btn').forEach(button => {
+    button.addEventListener('click', async function () {
+        const orderId = this.getAttribute('data-order-id');
+        const productId = this.getAttribute('data-product-id');
+
+        // Display confirmation dialog before submitting the request
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, approve the return request!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the admin confirms, proceed with the fetch request
+                fetch('/admin/approveReturn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ orderId, productId }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.success) {
+                            // Show success message on approval
+                            Swal.fire('Approved', 'Product returned', 'success')
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        } else {
+                            // Show error message on failure
+                            Swal.fire('Error!', 'Failed to return item. Please try again.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Network error:', error);
+                    });
+            }
+        });
+    });
+});
+
 
 </script>
 

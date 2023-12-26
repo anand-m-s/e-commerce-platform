@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const salesController = require("../controllers/salesController");
-const productController = require("../controllers/productController")
+const productController = require("../controllers/productController");
+const orderController = require("../controllers/orderController");
 const isAuth = require('../middleware/adminAuth')
 const { upload } = require('../helpers/multerFunc'); 
 
@@ -40,7 +41,8 @@ router.post('/updateOrderStatus',adminController.updateOrderStatus);
 router.post("/coupon",adminController.addCoupon);
 router.post("/editcoupon",adminController.updateCoupon);
 router.post('/applyoffer',adminController.applyOffer);
-router.post('/categoryOffer',adminController.categoryOffer)
+router.post('/categoryOffer',adminController.categoryOffer);
+router.post('/approveReturn',orderController.returnApprove)
 
   
 module.exports = router;
