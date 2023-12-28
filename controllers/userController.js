@@ -107,7 +107,7 @@ const Loadhome = async (req, res) => {
         
         const totalProducts = filteredProducts.length;
         const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
-        const skip = (page - 1) * ITEMS_PER_PAGE;
+        const skip = (currentPage - 1) * ITEMS_PER_PAGE;
         const paginatedProducts = await Product.aggregate([
             { $match: matchCondition },
             { $skip: skip },
