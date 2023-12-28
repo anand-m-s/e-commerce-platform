@@ -77,7 +77,7 @@ const login = async (req, res) => {
 const Loadhome = async (req, res) => {
     try {           
         const {ram,storage,minPrice,maxPrice,categoryName}=req.query;  
-        const page = parseInt(req.query.page) || 1;
+        const currentPage = parseInt(req.query.page) || 1;
         const ITEMS_PER_PAGE = 10;
         let matchCondition = {};
         let categoryId = await Category.findOne({categoryName:categoryName});
@@ -129,7 +129,7 @@ const Loadhome = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
              
-                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg,totalPages,page})
+                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg,totalPages,currentPage})
             }     
     } catch (error) {
         console.log(error);
