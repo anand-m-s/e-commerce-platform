@@ -12,57 +12,61 @@
           </div>
           <div class="card-body ">
             <p id="qerrormsg" style="color: red;"></p>
-            <!-- Loop through each product in the cart -->
+         
             <% cart.products.forEach(item => { %>
               <div id="cart-item-<%= item._id %>" class="row  cart-products-card mb-1 p-3">
                 <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
-                  <!-- Image -->
+             
                   <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
                     <img src="/images/uploads/<%= item.product.ProductImage[0].filename %>" class="w-100" alt="<%= item.product.name %>" />                  
                     <a href="#!">
                       <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
                     </a>
                   </div>
-                  <!-- Image -->
+                
                 </div>
 
                 <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
-                  <!-- Data -->
+                
                   <p><strong><%= item.product.Name %>(<%= item.product.Features[0].Color %>,<%= item.product.Features[0].Storage %>)</strong></p>
                   <p>Brand: <%= item.product.Brand %></p>
                   <p>RAM: <%= item.product.Features[0].Ram %></p>
                   <p>Price: <%= item.product.Price %></p>
             
                   
-                  <!-- Add more product details as needed -->
+              
                  
                 </div>
 
                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                   <!-- Quantity -->
-                  <div class="d-flex mb-4">
-                    <button class="btn m-3 btn-outline-danger" style="height:2em;" onclick="updateQuantity('<%= item._id %>', -1,'<%= item.product._id %>','<%=cart._id%>','<%=item.product.Stock%>')">
-                      <p>-</p>
-                    </button>
+                  <% if(item.product.Stock !== 0) { %>
+                    <div class="d-flex mb-4">
+                      <button class="btn m-3 btn-outline-danger" style="height:2em;" onclick="updateQuantity('<%= item._id %>', -1, '<%= item.product._id %>', '<%= cart._id %>', '<%= item.product.Stock %>')">
+                        <p>-</p>
+                      </button>
                   
-                    <div class="form-floating">
-                      <input
-                      id="form_<%= item._id %>"
-                        min="1"
-                        max="10"
-                        name="quantity"
-                        value="<%= item.quantity %>"
-                        type="number"
-                        class="form-control quantityInput"
-                        onchange="updateQuantity('<%=item._id %>', this.value)"
-                      />
-                      <label class="form-label" for="form1"></label>
+                      <div class="form-floating">
+                        <input
+                          id="form_<%= item._id %>"
+                          min="1"
+                          max="10"
+                          name="quantity"
+                          value="<%= item.quantity %>"
+                          type="number"
+                          class="form-control quantityInput"
+                          onchange="updateQuantity('<%= item._id %>', this.value, '<%= item.product._id %>', '<%= cart._id %>', '<%= item.product.Stock %>')"
+                        />
+                        <label class="form-label" for="form_<%= item._id %>"></label>
+                      </div>
+                  
+                      <button class="btn m-3 btn-outline-success" style="height: 2em;" onclick="updateQuantity('<%= item._id %>', 1, '<%= item.product._id %>', '<%= cart._id %>', '<%= item.product.Stock %>')">
+                        <p>+</p>
+                      </button>
                     </div>
-                  
-                    <button id="plus-btn" class="btn m-3 btn-outline-success" style="height: 2em;" onclick="updateQuantity('<%= item._id %>', 1,'<%= item.product._id %>','<%=cart._id%>','<%=item.product.Stock%>')">
-                      <p>+</p>
-                    </button>
-                  </div>
+                  <% } else { %>
+                    <p class="text-danger fs-4" id="outofstock" stock="false" style="margin-left: 4rem;">Out of stock</p>                
+                  <% } %>                                   
                   <!-- Quantity -->
 
                   <!-- Price -->
@@ -94,7 +98,7 @@
             <!-- Single item -->
           </div>                  
         </div>
-        <!-- Add the expected shipping delivery details here if needed -->
+    
 
       </div>
       <div class="col-md-4">
@@ -104,7 +108,7 @@
           </div>
           <div class="card-body">
             <ul class="list-group list-group-flush">
-              <!-- Calculate total amount dynamically based on the products in the cart -->
+         
               <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                 PRICE DETAILS
               </li>
@@ -117,7 +121,7 @@
                     </strong>
                 </div>    
                 <!-- <h5 class="totalAmount">₹</h5> -->
-               <!-- Add this code to display the total amount in your addtocart.ejs template -->
+           
                      
                      
               </li>
@@ -137,11 +141,9 @@
                 <h5 id="totalAmoutFrontend">₹<%= totalAmount %></h5>
                
               </li>
-            </ul>
-          
-            <button type="button" class="btn checkoutbtn btn-lg btn-block">
-              <a style="text-decoration: none;" href="/checkout">
-
+            </ul>            
+            <button type="button" id="checkout" class="btn checkoutbtn btn-lg btn-block">
+              <a style="text-decoration: none;" href='/checkout'>
                 Go to checkout
               </a>
             </button>
@@ -160,6 +162,15 @@ const totalAmountElement = document.querySelector('.total');
 const errorMessage = document.getElementById('qerrormsg');
 const plusbutton = document.getElementById('plus-btn');
 
+const outofstockbtn = document.getElementById('outofstock');
+const checkoutBtn = document.getElementById('checkout');
+
+checkoutBtn.addEventListener('click', function(event) {
+  if (outofstockbtn.getAttribute('stock') === 'false') {
+    event.preventDefault();     
+    errorMessage.innerHTML="cannot proceed to checkout. Product is out of stock"        
+  }
+});
 
 function updateQuantity(itemId, newQuantity, productId,cartId,maxStock) {
   const quantityInput = document.querySelector(`#form_${itemId}`);
@@ -240,7 +251,7 @@ else {
           if (removedItemElement) {
             removedItemElement.remove();
           }        
-         
+         window.location.reload()
         })
         .catch(error => console.error('Error:', error));
       });

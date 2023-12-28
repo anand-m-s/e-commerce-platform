@@ -4,8 +4,7 @@ const Cart = require("../model/cart");
 
 
 const addToCart = async (req, res) => {
-    try {
-     
+    try {     
         const userId = req.session.userId;
         const users = await User.findById(userId);
         let cart = await Cart.findOne({ user: userId }).populate({
@@ -15,24 +14,20 @@ const addToCart = async (req, res) => {
             model: 'Category'
           }
         });
-        
+        // console.log(cart.products);        
         if(!cart){
           cart = new Cart ({user:userId,products:[]});
           await cart.save();
-        }  
-      
+        }        
         const totalAmount = cart.products.reduce(
           (acc, item) => acc + item.product.Price * item.quantity,
           0
         );
-        if (req.xhr) {
-          
+        if (req.xhr) {          
           res.json({ username: users.username, cart, totalAmount});
-        } else {
-          
+        } else {          
           res.render('addtocart', { title:'Cart',username: users.username, cart,totalAmount});
-        }
-     
+        }     
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Internal Server Error' });

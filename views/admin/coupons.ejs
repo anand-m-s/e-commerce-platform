@@ -69,7 +69,25 @@
 
          
             <div class="row mt-5  ">
-                <h3 class="mb-3">Coupons</h3>
+                <div>
+                    <h3 class="mb-3">Coupons</h3>
+                    <div class="d-flex justify-content-end m-2">
+                        <button class="btn btn-secondary" style="margin-right: 1rem;" id="allcoupons"> All coupons</button>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Select Date
+                        </button>
+                        <ul class="dropdown-menu">
+                          <form action="#" id="dateForm">
+                            <li class="dropdown-item text-muted" href="#">From</li>
+                            <li> <input type="date" name="startDate" id="EndDate" class="mb-3 dropdown-item"></li>
+                            <li class="dropdown-item text-muted" href="#">To</li>
+                            <li> <input type="date" name="endDate" id="endDate" class="mb-3 dropdown-item"></li>
+                            <li class="dropdown-item"><button type="submit" class="btn btn-dark ">Find</button></li>
+                          </form>
+                        </ul>
+                        <p id="dateErr" class="mb-3 text-danger"></p>
+                      </div>
+                </div>
              
                 <div class="col-md-12">
                     <table class="table table-bordered table-striped">
@@ -125,7 +143,7 @@
                           
                           <% for (let i = 1; i <= totalPages; i++) { %>
                             <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                              <a class="page-link" href="/admin/coupons?page=<%= i %>"><%= i %></a>
+                              <a class="page-link bg-dark" href="/admin/coupons?page=<%= i %>"><%= i %></a>
                             </li>
                           <% } %>
                           
@@ -149,13 +167,45 @@
 
 
     <script>
-        document.getElementById('couponForm').addEventListener('submit', async function (event) {
-            // Prevent the default form submission
-            event.preventDefault();
-    
-            // Validate the form asynchronously
-            if (await validateForm()) {
-                // If the form is valid, submit it
+        // filter
+
+        const dateForm = document.getElementById('dateForm');
+        dateForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let startDate = dateForm.startDate.value;
+        let endDate = dateForm.endDate.value;
+
+        if (startDate === '' || endDate === '') {
+            document.querySelector('#dateErr').innerHTML = 'Please select Date';
+        } else {
+            startDate = new Date(startDate);
+            endDate = new Date(endDate);
+
+            if (startDate >= endDate) {
+            document.querySelector('#dateErr').innerHTML = 'Please check your selected Date';
+            } else {
+            const isoStartDate = startDate.toISOString();
+            const isoEndDate = endDate.toISOString();
+            // Encode dates before adding to URL
+            const encodedStartDate = encodeURIComponent(isoStartDate);
+            const encodedEndDate = encodeURIComponent(isoEndDate);
+
+            const datedFilter = `/admin/coupons?startDate=${encodedStartDate}&endDate=${encodedEndDate}`;
+            window.location.href = datedFilter;
+            }
+        }
+        });
+
+        document.getElementById('allcoupons').addEventListener('click', function () {
+        const currentUrl = window.location.href.split('?')[0];
+        window.location.href=currentUrl
+        });
+
+
+        document.getElementById('couponForm').addEventListener('submit', async function (event) {           
+            event.preventDefault();    
+            if (await validateForm()) {              
                 this.submit();
             }
         });
@@ -166,25 +216,19 @@
             var discountValue = document.getElementById('discountValue').value;
             var couponCode = document.getElementById('couponCode').value;
             var purchaseLimit = document.getElementById('purchaseLimit').value;
-            var description = document.getElementById('description').value;
-    
-            // Check if required fields are empty
+            var description = document.getElementById('description').value;       
             if (!startDate || !endDate || !discountValue || !couponCode || !purchaseLimit || !description) {
                 alert('Please fill out all required fields.');
                 return false;
-            }
-    
-            // Check if end date is less than start date
+            }                
             if (startDate > endDate) {
                 alert('End date must be greater than or equal to start date.');
                 return false;
-            }
-             // Check if discountValue is a positive value
+            }             
         if (discountValue <= 0) {
             alert('Discount value must be a positive number.');
             return false;
-        }
-    
+        }    
             return true;
         }
     </script>

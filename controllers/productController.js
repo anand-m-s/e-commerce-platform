@@ -42,49 +42,6 @@ const addproduct = async (req, res) => {
   };
 
 
-//   const updateProduct = async (req, res) => {
-//     try {
-//         const productId = req.query.id;
-//         const product = await Product.findById(productId);
-//         if (!product) {
-//           return res.status(404).json({ error: 'Product not found' });
-//         }
-//         const { Name, Category, Brand, Description, Price, Storage, Ram, Os, Color, Processor, Stock, SalePrice } = req.body;
-  
-//         // Update individual properties
-//         product.Name = Name;
-//         product.Category = Category;
-//         product.Brand = Brand;
-//         product.Description = Description;
-//         product.Price = Price;
-//         product.SalePrice = SalePrice;
-//         product.Stock = Stock;  
-//         // Update Features field
-//         product.Features = [{
-//           Processor: Processor,
-//           Ram: Ram,
-//           Storage: Storage,
-//           Os: Os,
-//           Color: Color
-//         }];
-        
-//         if (req.files && req.files.length > 0) {
-//           const productImage = req.files.map(file => ({
-//             filename: file.filename,
-//             path: file.path
-//           }));
-//           product.ProductImage = productImage;
-//         }
-  
-//         await product.save();
-//         res.redirect(`/admin/addproduct`);
-      
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   };
-
 
 const updateProduct = async (req, res) => {
     try {

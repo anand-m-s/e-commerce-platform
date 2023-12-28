@@ -38,7 +38,7 @@ const cancelProduct = async (req, res) => {
                
                 }
 
-        if (cancelledProduct.paymentMethod === 'Razorpay') {        
+        if (cancelledProduct.paymentMethod === 'Razorpay' || cancelledProduct.paymentMethod === 'wallet') {        
           
             const refundedAmount = (cancelledProductDetails.pricePerQnt * cancelledProductDetails.quantity)-cancelledProductDetails.discountPrice;
           
@@ -95,53 +95,7 @@ const returnRequest = async(req,res)=>{
             },
             { new: true }
         );
-        // if (!returnedProduct) {
-        //     console.log('Product not found in the order');
-        //     return res.status(404).json({ success: false, message: 'Product not found in the order' });
-        // }
-        // const returnedProductDetails = returnedProduct.products.find(
-        //     (product) => product.product.toString() === productId
-        // );
-
-        // const userWallet = await Wallet.findOne({ user: userId });
-         
-        // if (!userWallet) {                    
-        //     const newWallet = new Wallet({
-        //         user: userId,
-        //         balance: 0
-        //     });
-        //     await newWallet.save();       
-        // }       
-        //     const refundedAmount = (returnedProductDetails.pricePerQnt * returnedProductDetails.quantity)-returnedProductDetails.discountPrice;
-        
-        //         userWallet.transactions.push({
-        //             amount: refundedAmount,
-        //             type: 'credit'
-        //         });
-            
-        //     userWallet.balance += refundedAmount;
-        //     await userWallet.save();
-        //     console.log(userWallet);
-        // if (returnedProductDetails) {
-        //     const returnQuantity = returnedProductDetails.quantity;
-        //     console.log(`returned Quantity: ${returnQuantity}`);
-        // } else {
-        //     console.log('Product not found in the order');
-        // }  
-        // const originalOrder = await Order.findById(orderId);   
-        // const allProductsCancelledOrReturned = originalOrder.products.every(
-        //     (product) => ['cancelled', 'returned'].includes(product.itemStatus)
-        // );
-        // console.log(allProductsCancelledOrReturned);
-        // if (allProductsCancelledOrReturned) {
-   
-        //     await Order.findByIdAndUpdate(orderId, { orderStatus: 'Returned' });
-        // }
-        // await Product.findByIdAndUpdate(productId, {
-        //     $inc: { Stock: returnedProductDetails.quantity }
-        // });
-        // const updatedOrder = await Order.findById(orderId);
-        // console.log('Product returned successfully');        
+      
         res.status(200).json({ success: true, message: 'Return request sended' });
     } catch (error) {
         console.error(error);

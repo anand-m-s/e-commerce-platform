@@ -59,16 +59,31 @@ const adminlogout = (req, res) => {
   }
 };
 
-
 const loadcategory = async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.render('admin/addcategory', { title:'Category',email: req.session.email, categories })
+    const itemsPerPage = 5; 
+    const page = parseInt(req.query.page) || 1;
+
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / itemsPerPage);
+
+    const categories = await Category.find()
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
+
+    res.render('admin/addcategory', {
+      title: 'Category',
+      email: req.session.email,
+      categories,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send("Error fetching category data");
   }
-}
+};
+
 
 const addcategory = async (req, res) => {
   try {
@@ -106,25 +121,7 @@ const isListedtoggle = async (req, res) => {
   }
 }
 
-// const loadAddProduct = async(req,res)=>{
-//   try {
-//     // const categories = await Category.find({})
-//     const categories = await Category.find({ isListed: true });
-//     const products = await Product.find({})
-//     if(req.session.adminId){
-//         res.render('admin/addproduct',
-//         {email:req.session.email,
-//           categories,
-//           products
-//         })
-//     }else{
-//         res.redirect("/admin")
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// }
+
 
 const loadAddProduct = async (req, res) => {
   try {
@@ -150,87 +147,7 @@ const productAdd = async (req, res) => {
   res.render("admin/addProducts", {title:'Product',categories, products, email: req.session.email })
 }
 
-// const addproduct = async (req, res) => {
-//   try {
-//     console.log(req.files);
-//     const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
-//     console.log(req.body);
-//     const files = req.files;
-//     // Create an array of ProductImage objects
-//     const ProductImage = files.map((file) => ({
-//       filename: file.filename,
-//       path: file.path
-//     }));
 
-//     const newProduct = new Product({
-//       Name,
-//       Category,
-//       Brand,
-//       Description,
-//       Price,
-//       Features: [{
-//         Processor: Processor,
-//         Ram: RAM,
-//         Storage: Storage,
-//         Os: OS,
-//         Color: Color
-//       }],
-//       SalePrice,
-//       Stock,
-//       ProductImage: ProductImage, // Update the field name to match your model
-//     });
-//     await newProduct.save();
-//     res.status(200).json({ message: 'Product added successfully' });
-//     // res.redirect('/admin/addproduct');
-
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
-
-// const updateProduct = async (req, res) => {
-//   try {
-//       const productId = req.query.id;
-//       const product = await Product.findById(productId);
-//       if (!product) {
-//         return res.status(404).json({ error: 'Product not found' });
-//       }
-//       const { Name, Category, Brand, Description, Price, Storage, Ram, Os, Color, Processor, Stock, SalePrice } = req.body;
-
-//       // Update individual properties
-//       product.Name = Name;
-//       product.Category = Category;
-//       product.Brand = Brand;
-//       product.Description = Description;
-//       product.Price = Price;
-//       product.SalePrice = SalePrice;
-//       product.Stock = Stock;
-
-//       // Update Features field
-//       product.Features = [{
-//         Processor: Processor,
-//         Ram: Ram,
-//         Storage: Storage,
-//         Os: Os,
-//         Color: Color
-//       }];
-//       if (req.files && req.files.length > 0) {
-//         const productImage = req.files.map(file => ({
-//           filename: file.filename,
-//           path: file.path
-//         }));
-//         product.ProductImage = productImage;
-//       }
-
-//       await product.save();
-//       res.redirect(`/admin/addproduct`);
-    
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
 
 
 const usermanage = async (req, res) => {
@@ -239,7 +156,7 @@ const usermanage = async (req, res) => {
 
     const { page = 1, search = '' } = req.query;
     
-    const itemsPerPage = 4;
+    const itemsPerPage = 8;
     const skip = (page - 1) * itemsPerPage;
     
     const searchPattern = new RegExp(search, 'i');
@@ -558,25 +475,33 @@ const admindashboard = async (req, res) => {
   }
 };
 
+
+
 const loadCoupon = async (req, res) => {
   try {
-    const ITEMS_PER_PAGE = 2;
+    const ITEMS_PER_PAGE = 5;
     const page = parseInt(req.query.page) || 1;
-    const skip = (page - 1) * ITEMS_PER_PAGE;    
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+
+    let filter = {};
+    if (req.query.startDate && req.query.endDate) {
+      const startDate = new Date(req.query.startDate);
+      const endDate = new Date(req.query.endDate); 
+   filter = {
+     startDate: { $gte: startDate },
+     endDate: { $lte: endDate},
+   };
+    }
     await Coupon.deleteMany({ endDate: { $lt: new Date() } });
     const totalProducts = await Coupon.countDocuments({});
-    // console.log(totalProducts);
     const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
-    const allCoupons = await Coupon.find({}).skip(skip).limit(ITEMS_PER_PAGE)   
-    // console.log(allCoupons);
-    // const currentDate = new Date();
-    // const validCoupons = allCoupons.filter(coupon => coupon.endDate >= currentDate);
-    // console.log(validCoupons);
-    res.render("admin/coupons", {title:'Coupons',email: req.session.email, coupon: allCoupons,totalPages,currentPage:page });
+    const allCoupons = await Coupon.find(filter).skip(skip).limit(ITEMS_PER_PAGE);       
+    res.render("admin/coupons", { title: 'Coupons', email: req.session.email, coupon: allCoupons, totalPages, currentPage: page });
   } catch (error) {
     console.log(error);
   }
 };
+
 
 
 const addCoupon = async (req, res) => {
@@ -681,19 +606,7 @@ const applyOffer = async (req, res) => {
 };
 
 
-// const categoryOffer = async(req,res)=>{
-//   try {    
-//     const {categoryId,offerPercentage}= req.body;
-//     console.log(categoryId);
-//     console.log(offerPercentage);
-//     const category = await Category.findById(categoryId);
-//     console.log(category);
-//     const products = await Product.find({Category:categoryId});
-//     console.log(products);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+
 
 const categoryOffer = async (req, res) => {
   try {

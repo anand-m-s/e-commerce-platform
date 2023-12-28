@@ -75,10 +75,10 @@ const login = async (req, res) => {
 }
 
 const Loadhome = async (req, res) => {
-    try {       
-        // console.log("inside home load :::::::::");
-        console.log("query here::::::::::::::::::",req.query);
+    try {           
         const {ram,storage,minPrice,maxPrice,categoryName}=req.query;  
+        const page = parseInt(req.query.page) || 1;
+        const ITEMS_PER_PAGE = 10;
         let matchCondition = {};
         let categoryId = await Category.findOne({categoryName:categoryName});
         if(categoryId){
@@ -103,10 +103,20 @@ const Loadhome = async (req, res) => {
         }    
         let filteredProducts = await Product.aggregate([
           { $match: matchCondition },
-        ]);                  
+        ]);   
+        
+        const totalProducts = filteredProducts.length;
+        const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+        const skip = (page - 1) * ITEMS_PER_PAGE;
+        const paginatedProducts = await Product.aggregate([
+            { $match: matchCondition },
+            { $skip: skip },
+            { $limit: ITEMS_PER_PAGE },
+        ]);
+        console.log(paginatedProducts);
         const categories = await Category.find({isListed:true});
-        const products = filteredProducts.filter(product => product.Category !== null);
-           
+        const products = paginatedProducts.filter(product => product.Category !== null);
+           console.log(products);
         let msg ;
         if(products.length<1){
             msg="No products found!"
@@ -119,38 +129,12 @@ const Loadhome = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
              
-                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg})
+                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg,totalPages,currentPage:page})
             }     
     } catch (error) {
         console.log(error);
     }
 }
-
-// const filterByCat = async (req, res) => {
-//     try {
-//       const categoryId = req.query.categoryId;
-//       let query = {};  
-//       if (categoryId !== 'all') {
-//         query = { Category: categoryId};
-//       } 
-//     //   const products = await Product.find(query).populate('Category')
-//       const products = await Product.find(query).populate({
-//         path: 'Category',
-//         match: { isListed: true } 
-//     });
-//     const wishlist = await WishList.findOne({ user: req.session.userId });
-//     const wishlistProductIds = wishlist ? wishlist.product.map(String) : [];    
-//     //   console.log(products);    
-//       res.json({ products,wishlistProductIds });
-//     } catch (error) {
-//       console.error('Error fetching products by category:', error);
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   };
-  
-  
-
-  
 
 const signupVerify = async(req,res) =>{
     const {phone,Email,Referral}= req.body;

@@ -72,7 +72,7 @@
                     </figure>                                
                         <% if (item.itemStatus === 'Return requested' ) { %>
                             <button class="p-2 approve-btn rounded-2" style="background-color: rgb(38, 113, 218); color: #fff; border: 0;" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Approved Request</button>
-                            <button class="p-2 decline-btn rounded-2" style="background-color: rgb(211, 47, 47); color: #fff; border: 0;" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Declined Request</button>
+                            <!-- <button class="p-2 decline-btn rounded-2" style="background-color: rgb(211, 47, 47); color: #fff; border: 0;" data-order-id="<%= order._id %>" data-product-id="<%= item.product._id %>">Declined Request</button> -->
                         <% } %>
                    
                 </li>
