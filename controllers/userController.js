@@ -129,7 +129,7 @@ const Loadhome = async (req, res) => {
                 res.render("login-user", { title: "Login", errorMessage:"Your account is blocked" });
             }else{
              
-                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg,totalPages,currentPage:page})
+                res.render("home", { title:"Home",username: req.session.username, products,categories,wishlistProductIds,msg,totalPages,page})
             }     
     } catch (error) {
         console.log(error);
