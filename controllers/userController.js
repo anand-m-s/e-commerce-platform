@@ -113,10 +113,10 @@ const Loadhome = async (req, res) => {
             { $skip: skip },
             { $limit: ITEMS_PER_PAGE },
         ]);
-        console.log(paginatedProducts);
+        // console.log(paginatedProducts);
         const categories = await Category.find({isListed:true});
         const products = paginatedProducts.filter(product => product.Category !== null);
-           console.log(products);
+        //    console.log(products);
         let msg ;
         if(products.length<1){
             msg="No products found!"

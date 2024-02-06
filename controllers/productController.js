@@ -4,9 +4,9 @@ const Product = require('../model/productModel');
 
 const addproduct = async (req, res) => {
     try {
-      console.log(req.files);
+   
       const { Name, Category, Brand, Description, Price, Storage, RAM, OS, Color, Processor, Stock, SalePrice } = req.body;
-      console.log(req.body);
+    
       const files = req.files;
       
       const ProductImage = files.map((file) => ({
